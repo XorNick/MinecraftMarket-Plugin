@@ -13,6 +13,7 @@ public class Signs extends MarketCommand {
 		super("signs", "Update recent donor signs", "", "minecraftmarket.admin");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run(CommandSender sender, String[] args) {
 		Bukkit.getScheduler().runTaskAsynchronously(Market.getPlugin(), new SignUpdate());

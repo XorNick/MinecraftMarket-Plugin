@@ -2,7 +2,6 @@ package com.minecraftmarket.minecraftmarket;
 
 import com.minecraftmarket.minecraftmarket.json.JSONArray;
 import com.minecraftmarket.minecraftmarket.json.JSONObject;
-
 import com.minecraftmarket.minecraftmarket.util.Json;
 import com.minecraftmarket.minecraftmarket.util.Log;
 import com.minecraftmarket.minecraftmarket.util.Settings;

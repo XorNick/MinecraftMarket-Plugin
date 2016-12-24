@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import com.minecraftmarket.minecraftmarket.Market;
+import com.minecraftmarket.minecraftmarket.util.Chat;
 
 public class RecentGUI {
 
@@ -13,7 +14,7 @@ public class RecentGUI {
 
 	public RecentGUI(Player player) {
 		this.player = player;
-		inv = Bukkit.createInventory(null, 18, "Recent Donors");
+		inv = Bukkit.createInventory(null, 18, Chat.get().translate(Chat.get().getMsg("recent.inv-title")));
 		RecentTask task = new RecentTask(inv);
 		task.runTaskAsynchronously(Market.getPlugin());
 		player.openInventory(inv);

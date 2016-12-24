@@ -33,6 +33,10 @@ public class Chat {
 	public void reloadLanguage() {
 		Settings.get().reloadLanguageConfig();
 	}
+	
+	public String translate(String string) {
+		return ChatColor.translateAlternateColorCodes('&', string);
+	}
 
 	public String getMsg(String string) {
 		return getLanguage().getString(string);

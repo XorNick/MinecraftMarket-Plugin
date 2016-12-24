@@ -15,7 +15,6 @@ import com.minecraftmarket.minecraftmarket.util.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.MetricsLite;
 
 import java.beans.ExceptionListener;
 import java.io.IOException;
@@ -36,6 +35,7 @@ public class Market extends JavaPlugin {
     private static String headName;
 
     private static String awaitingPurchase;
+	public static boolean apiActive;
 
 	@Override
 	public void onDisable() {
@@ -58,7 +58,7 @@ public class Market extends JavaPlugin {
 			saveDefaultSettings();
 			registerEvents();
 			reload();
-			startMetrics();
+			// Start metrics WAS here.
 			startTasks();
 		} catch (Exception e) {
 			Log.log(e);
@@ -86,14 +86,14 @@ public class Market extends JavaPlugin {
 		Chat.get().SetupDefaultLanguage();
         FileConfiguration config = this.getConfig();
         Api.setApi(config.getString("ApiKey", "Apikey here"));
-		this.interval = Math.max(config.getLong("Interval", 90L), 10L);
-		this.isGuiEnabled = config.getBoolean("Enabled-GUI", true);
-		this.shopCommand = config.getString("Shop-Command", "/shop");
-		this.update = config.getBoolean("auto-update", true);
-		this.isSignEnabled = config.getBoolean("Enabled-signs", true);
-        this.color = config.getString("Color", "&0");
-        this.headName = config.getString("HeadName", "Steve");
-        this.awaitingPurchase = config.getString("AwaitingPurchase", "&cAwaiting Purchase");
+		Market.interval = Math.max(config.getLong("Interval", 90L), 10L);
+		Market.isGuiEnabled = config.getBoolean("Enabled-GUI", true);
+		Market.shopCommand = config.getString("Shop-Command", "/shop");
+		Market.update = config.getBoolean("auto-update", true);
+		Market.isSignEnabled = config.getBoolean("Enabled-signs", true);
+        Market.color = config.getString("Color", "&0");
+        Market.headName = config.getString("HeadName", "Steve");
+        Market.awaitingPurchase = config.getString("AwaitingPurchase", "&cAwaiting Purchase");
         Log.setDebugging(config.getBoolean("Debug", false));
     }
 
@@ -107,19 +107,12 @@ public class Market extends JavaPlugin {
 	private boolean authApi() {
 		if (Api.authAPI(Api.getKey())) {
 			getLogger().info("Using API Key: " + Api.getKey());
+			Market.apiActive = true;
 			return true;
 		} else {
 			getLogger().warning("Invalid API Key! Use \"/MM APIKEY <APIKEY>\" to setup your APIKEY");
+			Market.apiActive = false;
 			return false;
-		}
-	}
-
-	private void startMetrics() {
-		try {
-			MetricsLite metrics = new MetricsLite(this);
-			metrics.start();
-		} catch (IOException e) {
-			Log.log(e);
 		}
 	}
 
