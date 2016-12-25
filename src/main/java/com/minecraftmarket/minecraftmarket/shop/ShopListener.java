@@ -36,7 +36,7 @@ public class ShopListener implements Listener {
 				Player player = (Player) event.getWhoClicked();
 				String name = event.getCurrentItem().getItemMeta().getDisplayName();
 				
-				if (name.contains(getMsg("shop.back-to-category"))) {
+				if (name.contains(Chat.get().translate(getMsg("shop.back-to-category")))) {
 					event.getWhoClicked().closeInventory();
 					gui.showCategories((Player) event.getWhoClicked());
 					event.setCancelled(true);

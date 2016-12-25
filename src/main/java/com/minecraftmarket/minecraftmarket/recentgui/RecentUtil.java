@@ -1,15 +1,14 @@
 package com.minecraftmarket.minecraftmarket.recentgui;
 
-import java.util.Arrays;
-
-import org.bukkit.ChatColor;
+import java.util.ArrayList;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.minecraftmarket.minecraftmarket.Api;
 import com.minecraftmarket.minecraftmarket.json.JSONArray;
 import com.minecraftmarket.minecraftmarket.json.JSONObject;
-import com.minecraftmarket.minecraftmarket.Api;
+import com.minecraftmarket.minecraftmarket.util.Chat;
 import com.minecraftmarket.minecraftmarket.util.Json;
 import com.minecraftmarket.minecraftmarket.util.Log;
 
@@ -42,21 +41,35 @@ public class RecentUtil {
 			String packageName = json.getJSONObject(num).getString("item");
 			String date = json.getJSONObject(num).getString("date");
 			int amount = json.getJSONObject(num).getInt("price");
-			String currency = " " + json.getJSONObject(num).getString("currency");
+			String currency = json.getJSONObject(num).getString("currency");
 			ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) 0, (byte) 3);
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
+			
 			meta.setOwner(user);
-			meta.setDisplayName(ChatColor.GOLD + "Username: " + ChatColor.GREEN + user);
-			meta.setLore(Arrays.asList("", ChatColor.GOLD + "Package: " + ChatColor.GREEN + packageName, "", ChatColor.GOLD + "Date: " + ChatColor.GREEN + date, "",
-							ChatColor.GOLD + "Amount: "	+ ChatColor.GREEN + amount + currency));
+			meta.setDisplayName(Chat.get().translate(Chat.get().getMsg("recent.item.displayName").replace("%name%", user)));
+			ArrayList<String> newLore = new ArrayList<>();
+			for(String s: Chat.get().getLanguage().getStringList("recent.item.lore")) {
+				newLore.add(Chat.get().translate(s)
+						.replace("%package%", packageName)
+						.replace("%name%", user)
+						.replace("%date%", date)
+						.replace("%price%", String.valueOf(amount))
+						.replace("%currency%", currency)
+						);
+			}
+			meta.setLore(newLore);
 			item.setItemMeta(meta);
 			return item;
 		} catch (Exception e) {
-			if (!e.getMessage().contains("not found")) {
+			if (!e.getMessage().contains("Not found")) {
 				Log.log(e);
 			}
 			return null;
 		}
 
+	}
+	
+	public String tgetMsg(String string) {
+		return Chat.get().getLanguage().getString(string);
 	}
 }

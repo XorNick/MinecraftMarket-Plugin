@@ -5,3 +5,4 @@ website: http://www.minecraftmarket.com
 commands:
     mm:
         description: MinecraftMarket main command
+        aliases: [minecraftmarket]

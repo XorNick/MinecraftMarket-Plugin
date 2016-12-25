@@ -32,6 +32,10 @@ public class PendingCommands {
 			pending.add(this);
 		}
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
 
 	public int getId() {
 		return id;

@@ -108,7 +108,10 @@ public class CommandExecutor extends BukkitRunnable {
 	@Override
 	public void run() {
 		Log.log("Executing \"/" + command + "\" on behalf of " + username);
-		Market.getPlugin().getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+		new BukkitRunnable() {
+			public void run() {
+				Market.getPlugin().getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+			}
+		}.runTask(Market.getPlugin());
 	}
-
 }

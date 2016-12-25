@@ -1,13 +1,7 @@
 package com.minecraftmarket.minecraftmarket.shop;
 
-import com.minecraftmarket.minecraftmarket.Api;
-import com.minecraftmarket.minecraftmarket.Market;
-import com.minecraftmarket.minecraftmarket.json.JSONArray;
-import com.minecraftmarket.minecraftmarket.json.JSONException;
-import com.minecraftmarket.minecraftmarket.json.JSONObject;
-import com.minecraftmarket.minecraftmarket.util.Chat;
-import com.minecraftmarket.minecraftmarket.util.Json;
-import com.minecraftmarket.minecraftmarket.util.Log;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,7 +11,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+import com.minecraftmarket.minecraftmarket.Api;
+import com.minecraftmarket.minecraftmarket.Market;
+import com.minecraftmarket.minecraftmarket.json.JSONArray;
+import com.minecraftmarket.minecraftmarket.json.JSONException;
+import com.minecraftmarket.minecraftmarket.json.JSONObject;
+import com.minecraftmarket.minecraftmarket.util.Chat;
+import com.minecraftmarket.minecraftmarket.util.Json;
+import com.minecraftmarket.minecraftmarket.util.Log;
 
 public class Shop {
 	static Shop instance;
@@ -36,7 +37,11 @@ public class Shop {
 	}
 
 	public void showCategories(Player player) {
+		if(Market.apiActive) {
 		if (guiHub != null) player.openInventory(guiHub);
+		} else {
+			player.sendMessage(Chat.get().translate(getMsg("messages.authAPI")));
+		}
 	}
 
 	public void createNewGui() {
@@ -59,7 +64,7 @@ public class Shop {
                             colorID = "&0";
                             Log.log("Could not retrieve color id from config.");
                         }
-                        Log.log(colorID);
+                        /*Log.log(colorID);*/
                         guiHub = createInventory(ChatColor.translateAlternateColorCodes('&', colorID + "Categories"), getInventorySize(categoryArray.length()));
 						for (int cate = 0; cate < categoryArray.length(); cate++) {
 							String name = getJsonString(categoryArray, cate, "name");
@@ -163,9 +168,19 @@ public class Shop {
 
 	private ItemStack createCategoryPage() {
 		ItemStack item = new ItemStack(Material.IRON_FENCE, 1);
+		if(Chat.get().getLanguage().isSet("shop.back-to-category-item")
+				&& Material.getMaterial(Chat.get().getLanguage().getString("shop.back-to-category-item").toUpperCase()) != null) {
+			item.setType(Material.valueOf(Chat.get().getLanguage().getString("shop.back-to-category-item")));
+		}
 		ItemMeta im = item.getItemMeta();
-		im.setDisplayName(ChatColor.GOLD + getMsg("shop.back-to-category"));
-		im.setLore(Arrays.asList("", getMsg("shop.back-to-category-desc")));
+		/*im.setDisplayName(ChatColor.GOLD + getMsg("shop.back-to-category"));*/
+		im.setDisplayName(Chat.get().translate(getMsg("shop.back-to-category")));
+		ArrayList<String> newLore = new ArrayList<>();
+		for(String s: Chat.get().getLanguage().getStringList("shop.back-to-category-desc")) {
+			newLore.add(Chat.get().translate(s));
+		}
+		
+		im.setLore(newLore);
 		item.setItemMeta(im);
 		return item;
 	}
