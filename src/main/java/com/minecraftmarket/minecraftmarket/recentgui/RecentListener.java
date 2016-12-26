@@ -10,7 +10,7 @@ public class RecentListener implements Listener {
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (event.getInventory().getName().equals(Chat.get().translate(Chat.get().getMsg("recent.inv-title")))) {
+		if (event.getInventory().getName().equals(Chat.get().getMsg("recent.inv-title"))) {
 			event.setCancelled(true);
 			return;
 		}

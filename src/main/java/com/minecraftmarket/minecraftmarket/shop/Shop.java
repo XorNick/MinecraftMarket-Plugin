@@ -40,7 +40,7 @@ public class Shop {
 		if(Market.apiActive) {
 		if (guiHub != null) player.openInventory(guiHub);
 		} else {
-			player.sendMessage(Chat.get().translate(getMsg("messages.authAPI")));
+			player.sendMessage(Chat.get().translate(getMsg("messages.invalid-key")));
 		}
 	}
 
@@ -226,7 +226,7 @@ public class Shop {
 	}
 	
 	private String getMsg(String string) {
-		return Chat.get().getLanguage().getString(string);
+		return Chat.get().translate(Chat.get().getLanguage().getString(string));
 	}
 
 	private Shop() {

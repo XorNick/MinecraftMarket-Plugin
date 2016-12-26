@@ -4,11 +4,12 @@
 #==== MinecraftMarket messages ====#
 messages:
   prefix: '&f[&2MinecraftMarket&f] '
-  no-permissions: 'you do not have access to that command.'
+  no-permissions: 'You do not have access to that command.'
   reload: 'Configuration reloaded.'
   check: 'Checking for new purchases..'
   signs: 'Updating signs..'
   url: 'Item URL: '
+  invalid-key: 'Current APIKey is invalid.'
 
   
 #==== Recent Donors ====#

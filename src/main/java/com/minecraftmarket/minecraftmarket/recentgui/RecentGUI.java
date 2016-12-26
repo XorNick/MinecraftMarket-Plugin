@@ -13,10 +13,18 @@ public class RecentGUI {
 	private Inventory inv;
 
 	public RecentGUI(Player player) {
-		this.player = player;
-		inv = Bukkit.createInventory(null, 18, Chat.get().translate(Chat.get().getMsg("recent.inv-title")));
+		this.setPlayer(player);
+		inv = Bukkit.createInventory(null, 18, Chat.get().getMsg("recent.inv-title"));
 		RecentTask task = new RecentTask(inv);
 		task.runTaskAsynchronously(Market.getPlugin());
 		player.openInventory(inv);
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }

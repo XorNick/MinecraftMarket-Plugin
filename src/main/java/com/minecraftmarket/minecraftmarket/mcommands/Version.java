@@ -14,7 +14,7 @@ public class Version extends MarketCommand {
 	@Override
 	public void run(CommandSender sender, String[] args) {
 		String v = Market.getPlugin().getDescription().getVersion();
-		sender.sendMessage(Chat.get().prefix + " Version " + v);
+		sender.sendMessage(Chat.get().prefix + "Version " + v);
 	}
 	
 	
