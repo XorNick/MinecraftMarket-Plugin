@@ -37,6 +37,6 @@ public abstract class MarketCommand {
 	public abstract void run(CommandSender sender, String[] args);
 
 	public String getMsg(String string) {
-		return Chat.get().getLanguage().getString(string);
+		return Chat.get().translate(Chat.get().getLanguage().getString(string));
 	}
 }

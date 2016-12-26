@@ -46,7 +46,7 @@ public class RecentUtil {
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
 			
 			meta.setOwner(user);
-			meta.setDisplayName(Chat.get().translate(Chat.get().getMsg("recent.item.displayName").replace("%name%", user)));
+			meta.setDisplayName(Chat.get().getMsg("recent.item.displayName").replace("%name%", user));
 			ArrayList<String> newLore = new ArrayList<>();
 			for(String s: Chat.get().getLanguage().getStringList("recent.item.lore")) {
 				newLore.add(Chat.get().translate(s)
@@ -69,7 +69,7 @@ public class RecentUtil {
 
 	}
 	
-	public String tgetMsg(String string) {
+	public String getMsg(String string) {
 		return Chat.get().getLanguage().getString(string);
 	}
 }

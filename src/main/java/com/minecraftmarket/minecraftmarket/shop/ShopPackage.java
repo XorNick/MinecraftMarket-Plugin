@@ -64,20 +64,20 @@ public class ShopPackage {
 
 	private void createLore() {
 		List<String> lore = Lists.newArrayList();
-		lore.add(Chat.get().getMsg("shop.item") + ChatColor.GREEN + name);
+		lore.add(Chat.get().getMsg("shop.item") + name);
 		lore.add("");
-		lore.add(Chat.get().getMsg("shop.category") + ChatColor.GREEN + category);
+		lore.add(Chat.get().getMsg("shop.category") + category);
 		lore.add("");
 		if (!description.equals("")) {
-			lore.add(ChatColor.GOLD + Chat.get().getMsg("shop.description"));
-			String[] DescSplit = ChatColor.translateAlternateColorCodes('&', description).split("\r\n");
+			lore.add(Chat.get().getMsg("shop.description"));
+			String[] DescSplit = Chat.get().translate(description).split("\r\n");
 			for (String str : DescSplit)
 				lore.add(str);
 			lore.add("");
 		}
-		lore.add(ChatColor.GOLD + Chat.get().getMsg("shop.price") + ChatColor.GREEN + "" + ChatColor.UNDERLINE + price + " " + currency);
+		lore.add(Chat.get().getMsg("shop.price") + price + " " + currency);
 		lore.add("");
-		lore.add(ChatColor.ITALIC + Chat.get().getMsg("shop.click-here"));
+		lore.add(Chat.get().getMsg("shop.click-here"));
 		meta.setLore(lore);
 	}
 

@@ -10,6 +10,7 @@ public class Api {
 
 	private static String APIKEY;
 	private static final String APIURL = "http://www.minecraftmarket.com/api/1.5/";
+	@SuppressWarnings("unused")
 	private static boolean auth;
 
 	public static void setApikey(String apiKey) {
@@ -64,5 +65,9 @@ public class Api {
 			Log.log(e);
 			return false;
 		}
+	}
+
+	public static void setAuth(boolean auth) {
+		Api.auth = auth;
 	}
 }

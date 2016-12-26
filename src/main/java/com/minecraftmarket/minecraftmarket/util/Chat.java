@@ -39,7 +39,7 @@ public class Chat {
 	}
 
 	public String getMsg(String string) {
-		return getLanguage().getString(string);
+		return translate(getLanguage().getString(string));
 	}
 
 	public static String center(String str) {

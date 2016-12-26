@@ -15,7 +15,7 @@ public class ShopCategory {
 	private Inventory inventory;
 
 	public ShopCategory(String name, int ID, int slot, Inventory inventory) {
-		this.name = name;
+		this.setName(name);
 		this.ID = ID;
 		this.slot = slot;
 		this.inventory = inventory;
@@ -68,6 +68,14 @@ public class ShopCategory {
 			}
 		}
 		return null;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
