@@ -47,7 +47,6 @@ public class Market extends JavaPlugin {
         plugin = this;
 		try {
 			new ExceptionListener() {
-
 				@Override
 				public void exceptionThrown(Exception e) {
 					Bukkit.broadcastMessage(e.getMessage());

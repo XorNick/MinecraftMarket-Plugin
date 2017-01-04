@@ -1,6 +1,7 @@
 package com.minecraftmarket.minecraftmarket.util;
 
 import java.io.File;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -33,19 +34,24 @@ public class Chat {
 	public void reloadLanguage() {
 		Settings.get().reloadLanguageConfig();
 	}
-	
+
 	public String translate(String string) {
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 
 	public String getMsg(String string) {
-		return translate(getLanguage().getString(string));
+		if(getLanguage().isSet(string)) {
+			return translate(getLanguage().getString(string));
+		} else {
+			Log.log(Level.SEVERE, "Could not find '" + string + "' in '" + langFile.getName() + "'.");
+			return null;
+		}
 	}
 
 	public static String center(String str) {
 		return StringUtils.stripEnd(StringUtils.center(str, 80), " ");
 	}
-	
+
 
 	public static Chat get() {
 		if (instance == null) instance = new Chat();

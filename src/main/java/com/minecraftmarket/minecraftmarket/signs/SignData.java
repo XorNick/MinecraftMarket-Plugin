@@ -1,19 +1,20 @@
 package com.minecraftmarket.minecraftmarket.signs;
 
-import com.google.common.collect.Lists;
-import com.minecraftmarket.minecraftmarket.Market;
-import com.minecraftmarket.minecraftmarket.json.JSONException;
-import com.minecraftmarket.minecraftmarket.util.Chat;
-import com.minecraftmarket.minecraftmarket.util.Settings;
+import java.util.List;
+
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 
-import java.util.List;
+import com.google.common.collect.Lists;
+import com.minecraftmarket.minecraftmarket.Market;
+import com.minecraftmarket.minecraftmarket.json.JSONException;
+import com.minecraftmarket.minecraftmarket.util.Chat;
+import com.minecraftmarket.minecraftmarket.util.Log;
+import com.minecraftmarket.minecraftmarket.util.Settings;
 
 public class SignData {
 
@@ -62,11 +63,11 @@ public class SignData {
 			this.date = Signs.getJsonArray().getJSONObject(number).getString("date");
 			this.date = date.split(" ")[0];
 
-            Bukkit.broadcastMessage("Found purchase of " + item + " from " + username + " on " + date);
+			Log.debug("Signs: Found purchase of " + item + " from " + username + " on " + date);
 
 			if (sign != null) {
 
-				sign.setLine(0, ChatColor.UNDERLINE + getMsg("signs.header"));
+				sign.setLine(0, Chat.get().translate(getMsg("signs.header")));
 				sign.setLine(1, username);
 				sign.setLine(2, item);
 				sign.setLine(3, date);
@@ -80,24 +81,24 @@ public class SignData {
 				updateHead();
 			}
 		} catch (JSONException e) {
+			Log.debug("Signs: " + Chat.get().translate("Awaiting Purchase: " + Market.getAwaitingPurchase()));
 
-            Bukkit.broadcastMessage("Awaiting Purchase: " + Market.getAwaitingPurchase());
-
-			sign.setLine(0, Market.getAwaitingPurchase());
+			sign.setLine(0, Chat.get().translate(Market.getAwaitingPurchase()));
 			sign.setLine(1, "");
-            sign.setLine(2, "");
-            sign.setLine(3, "");
-            Bukkit.getScheduler().scheduleSyncDelayedTask(Market.getPlugin(), new Runnable() {
-                public void run() {
-                    sign.update();
-                    //Just encase
-                    sign.update(true, true);
-                }
-            }, 20L);
-            Skull p = getSkull(block);
-            p.setOwner(Market.getHeadName());
-        }
-    }
+			sign.setLine(2, "");
+			sign.setLine(3, "");
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Market.getPlugin(), new Runnable() {
+				public void run() {
+					sign.update();
+					//Just encase
+					sign.update(true, true);
+				}
+			}, 20L);
+			Skull p = getSkull(block);
+			if(p != null)
+			p.setOwner(Market.getHeadName());
+		}
+	}
 
 	public boolean isSign() {
 		return this.block.getState() instanceof Sign;
