@@ -43,3 +43,8 @@ signs:
   no-permissions: You do not have access to create signs
   id-invalid: Can't update sign - ID on line 2 invalid.
   created: Sign created and updating..
+
+signPurchases:
+  first_line: '&7Sign Purchase'
+  second_line: '%name%'
+  third_line: '%price% %currency%'

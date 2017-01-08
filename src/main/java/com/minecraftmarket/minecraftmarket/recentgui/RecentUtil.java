@@ -44,7 +44,7 @@ public class RecentUtil {
 			String currency = json.getJSONObject(num).getString("currency");
 			ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) 0, (byte) 3);
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
-			
+
 			meta.setOwner(user);
 			meta.setDisplayName(Chat.get().getMsg("recent.item.displayName").replace("%name%", user));
 			ArrayList<String> newLore = new ArrayList<>();
@@ -61,14 +61,15 @@ public class RecentUtil {
 			item.setItemMeta(meta);
 			return item;
 		} catch (Exception e) {
-			if (!e.getMessage().contains("Not found")) {
-				Log.log(e);
+			if(Log.isDebugEnabled()) {
+				if (!e.getMessage().contains("Not found")) {
+					Log.log(e);
+				}
 			}
 			return null;
 		}
-
 	}
-	
+
 	public String getMsg(String string) {
 		return Chat.get().getLanguage().getString(string);
 	}

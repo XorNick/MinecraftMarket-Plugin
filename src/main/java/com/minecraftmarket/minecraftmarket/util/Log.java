@@ -46,6 +46,10 @@ public class Log {
 		}
 
 	}
+	
+	public static boolean isDebugEnabled() {
+		return debug;
+	}
 
 	public static void setDebugging(boolean debug) {
 		Log.debug = debug;

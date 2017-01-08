@@ -42,6 +42,18 @@ public class ShopPackage {
 		this.category = category;
 		this.meta = this.icon.getItemMeta();
 	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public String getPrice() {
+		return price;
+	}
+	
+	public String getCurrency() {
+		return currency;
+	}
 
 	public void create() {
 		try {

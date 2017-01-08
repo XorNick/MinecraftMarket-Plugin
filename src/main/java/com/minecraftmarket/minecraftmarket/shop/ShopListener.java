@@ -1,11 +1,12 @@
 package com.minecraftmarket.minecraftmarket.shop;
 
-import org.bukkit.ChatColor;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import com.minecraftmarket.minecraftmarket.signs.SignListener;
 import com.minecraftmarket.minecraftmarket.util.Chat;
 
 public class ShopListener implements Listener {
@@ -15,7 +16,7 @@ public class ShopListener implements Listener {
 	Chat chat = Chat.get();
 
 	public String getMsg(String string) {
-		return Chat.get().getLanguage().getString(string);
+		return Chat.get().getMsg(string);
 	}
 
 	@EventHandler
@@ -46,7 +47,21 @@ public class ShopListener implements Listener {
 				String[] id = name.split(": ");
 				int id1 = Integer.parseInt(id[1]);
 				String url = ShopPackage.getById(id1).getUrl();
-				player.sendMessage(chat.prefix + ChatColor.GOLD + getMsg("shop.item-url") + ChatColor.DARK_AQUA + "" + ChatColor.ITALIC + ChatColor.UNDERLINE + url);
+				if(SignListener.purchases.containsKey(event.getWhoClicked().getName())) {
+					event.setCancelled(true);
+					Sign sign = SignListener.purchases.get(event.getWhoClicked().getName());
+					String price = ShopPackage.getById(id1).getPrice();
+					String currency = ShopPackage.getById(id1).getCurrency();
+					sign.setLine(0, Chat.get().translate(replace(Chat.get().getMsg("signPurchases.first_line"), id1, price, currency)));
+					sign.setLine(1, Chat.get().translate(replace(Chat.get().getMsg("signPurchases.second_line"), id1, price, currency)));
+					sign.setLine(2, Chat.get().translate(replace(Chat.get().getMsg("signPurchases.third_line"), id1, price, currency)));
+					sign.setLine(3, id[1]);
+					sign.update();
+					SignListener.purchases.remove(event.getWhoClicked().getName());
+					event.getWhoClicked().closeInventory();
+					return;
+				}
+				player.sendMessage(chat.prefix + getMsg("shop.item-url") + url);
 				event.getWhoClicked().closeInventory();
 				event.setCancelled(true);
 				return;
@@ -60,6 +75,12 @@ public class ShopListener implements Listener {
 			
 		} catch (Exception e1) {
 		}
+	}
+
+	private String replace(String replace, int id, String price, String currency) {
+		return replace.replace("%name%", ShopPackage.getById(id).getName())
+				.replace("%price%", price)
+				.replace("%currency%", currency);
 	}
 
 }
