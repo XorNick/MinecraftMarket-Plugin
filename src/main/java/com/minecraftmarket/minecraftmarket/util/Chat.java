@@ -43,8 +43,8 @@ public class Chat {
 		if(getLanguage().isSet(string)) {
 			return translate(getLanguage().getString(string));
 		} else {
-			Log.log(Level.SEVERE, "Could not find '" + string + "' in '" + langFile.getName() + "'.");
-			return null;
+			Log.log(Level.SEVERE, "Could not find '" + string + "' in 'language.yml'.");
+			return "";
 		}
 	}
 
