@@ -1,6 +1,6 @@
 name: MinecraftMarket
 main: com.minecraftmarket.minecraftmarket.Market
-version: 2.1.5
+version: 2.1.7
 website: http://www.minecraftmarket.com
 commands:
     mm:

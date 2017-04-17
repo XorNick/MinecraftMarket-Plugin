@@ -33,7 +33,7 @@ public class ShopListener implements Listener {
 					return;
 				}
 			}
-			if (event.getInventory().getTitle().contains("Category: ")) {
+			if (event.getInventory().getTitle().startsWith("Category: ")) {
 				Player player = (Player) event.getWhoClicked();
 				String name = event.getCurrentItem().getItemMeta().getDisplayName();
 				
@@ -66,6 +66,8 @@ public class ShopListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
+			
+			
 			if (event.getInventory().getTitle().contains("Categories")) {
 				int num = ShopCategory.getCategoryBySlot(event.getSlot()).getID();
 				event.getWhoClicked().closeInventory();
