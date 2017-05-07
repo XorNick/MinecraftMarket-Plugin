@@ -1,8 +1,22 @@
-name: MinecraftMarket
-main: com.minecraftmarket.minecraftmarket.Market
-version: 2.1.7
-website: http://www.minecraftmarket.com
+name: ${project.name}
+version: ${project.version}
+main: com.minecraftmarket.minecraftmarket.MCMarket
+softdepend: [ProtocolLib]
+authors: [R4G3_BABY]
+description: ${project.description}
+website: ${project.url}
+
 commands:
-    mm:
-        description: MinecraftMarket main command
-        aliases: [minecraftmarket]
+  MinecraftMarket:
+    permission: minecraftmarket.use
+    description: Manage plugin functionalities
+    aliases: [mm]
+    usage: /<command> <args>
+
+permissions:
+  minecraftmarket.use:
+    description: Allows main command usage
+    default: op
+  minecraftmarket.signs:
+    description: Can break signs to remove
+    default: op

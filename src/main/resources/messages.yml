@@ -1,0 +1,22 @@
+# Check all the variables at *spigot page goes here ;?*
+prefix: "&7[&eMinecraftMarket&7]"
+
+# Ingame gui messages
+GUI:
+  CategoryTitle: "&6Categories"
+  CategoryName: "&6{category_name}"
+  CategoryLore: []
+  ItemTitle: "&6{category_name}"
+  ItemName: "&6{item_name}"
+  ItemLore:
+  - "&6Price: &7{item_price}{item_currency}"
+  - "&6Description:"
+  - "{item_desc}"
+  ItemUrl: "&7Buy it at {item_url}"
+
+# Signs layout
+SignsLayout:
+- "&9{donor_name}"
+- "&b{donor_item}"
+- "&e{donor_price}{donor_currency}"
+- "&f{donor_date}"
