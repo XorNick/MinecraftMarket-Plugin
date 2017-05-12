@@ -11,6 +11,8 @@ import com.minecraftmarket.minecraftmarket.Configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.Inventory.InventoryManager;
 import com.minecraftmarket.minecraftmarket.Listeners.ShopCmdListener;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
+import com.r4g3baby.pluginutils.Metrics.Metrics;
+import com.r4g3baby.pluginutils.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -24,7 +26,7 @@ public final class MCMarket extends JavaPlugin {
     private InventoryManager inventoryManager;
     private SignsTask signsTask;
 
-    @Override // TODO implement Metrics() and Updater()
+    @Override
     public void onEnable() {
         mainConfig = new MainConfig(this);
         messagesConfig = new MessagesConfig(this);
@@ -42,6 +44,11 @@ public final class MCMarket extends JavaPlugin {
         getCommand("MinecraftMarket").setExecutor(new MMCmd(this));
         getServer().getPluginManager().registerEvents(InventoryGUI.getListener(), this);
         getServer().getScheduler().runTaskTimerAsynchronously(this, new PurchasesTask(this), 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+        new Metrics(this);
+        new Updater(this, 29183, pluginURL -> {
+            getLogger().log(Level.WARNING, "New version available download at:");
+            getLogger().log(Level.WARNING, pluginURL);
+        });
     }
 
     @Override
