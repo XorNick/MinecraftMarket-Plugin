@@ -128,7 +128,7 @@ public class MMCmd implements CommandExecutor, TabCompleter {
         if (args.length != 0) {
             String arg0 = args[0].toLowerCase();
             if (args.length == 1) {
-                List<String> subCmds = Arrays.asList("apikey", "signs", "version", "author");
+                List<String> subCmds = Arrays.asList("apikey", "signs", "version");
                 for (String subCmd : subCmds) {
                     if (subCmd.startsWith(arg0)) {
                         matches.add(subCmd);
