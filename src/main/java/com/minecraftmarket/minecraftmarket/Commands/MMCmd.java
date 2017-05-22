@@ -110,6 +110,14 @@ public class MMCmd implements CommandExecutor, TabCompleter {
                 } else {
                     sender.sendMessage(messages.getPrefix() + " §cEnable the use of signs in the config.");
                 }
+            } else if (args[0].equalsIgnoreCase("check")) {
+                if (plugin.isAuthenticated()) {
+                    sender.sendMessage(messages.getPrefix() + " §aRunning purchases check..");
+                    plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getPurchasesTask().updatePurchases());
+                } else {
+                    sender.sendMessage(messages.getPrefix() + " §cInvalid APIKey! Get your APIKey from MinecraftMarket panel.");
+                    sender.sendMessage(messages.getPrefix() + " §cAnd use /MM apiKey <key> to change your key.");
+                }
             } else if (args[0].equalsIgnoreCase("version")) {
                 sender.sendMessage(messages.getPrefix() + " §7Current plugin version is §b" + plugin.getDescription().getVersion() + "§7.");
             } else {
@@ -128,7 +136,7 @@ public class MMCmd implements CommandExecutor, TabCompleter {
         if (args.length != 0) {
             String arg0 = args[0].toLowerCase();
             if (args.length == 1) {
-                List<String> subCmds = Arrays.asList("apikey", "signs", "version");
+                List<String> subCmds = Arrays.asList("apikey", "signs", "check", "version");
                 for (String subCmd : subCmds) {
                     if (subCmd.startsWith(arg0)) {
                         matches.add(subCmd);
@@ -150,7 +158,8 @@ public class MMCmd implements CommandExecutor, TabCompleter {
     private void sendHelp(CommandSender sender) {
         sender.sendMessage("§7§m================ §eMinecraftMarket Help §7§m================");
         sender.sendMessage("§6/MM apiKey <key> §8- §7Change APIKey");
-        sender.sendMessage("§6/MM signs <args> §8 - §7Manage recent donor signs");
+        sender.sendMessage("§6/MM signs <args> §8- §7Manage recent donor signs");
+        sender.sendMessage("§6/MM check §8- §7Manually check for new purchases");
         sender.sendMessage("§6/MM version §8- §7Shows plugin version");
         sender.sendMessage("§7§m===================================================");
     }

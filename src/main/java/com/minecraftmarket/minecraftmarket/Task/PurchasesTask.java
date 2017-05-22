@@ -18,6 +18,10 @@ public class PurchasesTask implements Runnable {
 
     @Override
     public void run() {
+        updatePurchases();
+    }
+
+    public void updatePurchases() {
         if (plugin.isAuthenticated()) {
             for (MCMApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
                 for (MCMApi.Command command : expiredPurchase.getCommands()) {
