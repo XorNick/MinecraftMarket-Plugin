@@ -64,7 +64,7 @@ public class MMCmd implements CommandExecutor, TabCompleter {
                                                     player.sendMessage(messages.getPrefix() + " §cThe block you're looking at isn't valid or is too far away.");
                                                 }
                                             } else {
-                                                player.sendMessage(messages.getPrefix() + "");
+                                                player.sendMessage(messages.getPrefix() + " §c<order> needs to be greater than 0.");
                                             }
                                         } else {
                                             player.sendMessage(messages.getPrefix() + " §c" + args[2] + " isn't a valid number.");
