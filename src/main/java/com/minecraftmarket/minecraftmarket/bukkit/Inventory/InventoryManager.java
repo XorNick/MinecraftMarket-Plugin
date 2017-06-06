@@ -1,11 +1,11 @@
-package com.minecraftmarket.minecraftmarket.Inventory;
+package com.minecraftmarket.minecraftmarket.bukkit.Inventory;
 
-import com.minecraftmarket.minecraftmarket.Api.MCMApi;
-import com.minecraftmarket.minecraftmarket.Configs.MessagesConfig;
-import com.minecraftmarket.minecraftmarket.MCMarket;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.MessagesConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.r4g3baby.pluginutils.Bukkit.Utils;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
 import com.r4g3baby.pluginutils.Items.ItemStackBuilder;
-import com.r4g3baby.pluginutils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 

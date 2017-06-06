@@ -1,7 +1,7 @@
-package com.minecraftmarket.minecraftmarket.Configs;
+package com.minecraftmarket.minecraftmarket.bukkit.Configs;
 
-import com.r4g3baby.pluginutils.Configs.ConfigFile;
-import com.r4g3baby.pluginutils.Utils;
+import com.r4g3baby.pluginutils.Bukkit.Utils;
+import com.r4g3baby.pluginutils.Configs.BukkitConfigFile;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public class SignsConfig extends ConfigFile {
+public class SignsConfig extends BukkitConfigFile {
     private final Map<Integer, Set<DonorSign>> donorSigns = new HashMap<>();
 
     public SignsConfig(JavaPlugin plugin) {

@@ -1,6 +1,6 @@
-package com.minecraftmarket.minecraftmarket.Listeners;
+package com.minecraftmarket.minecraftmarket.bukkit.Listeners;
 
-import com.minecraftmarket.minecraftmarket.MCMarket;
+import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;

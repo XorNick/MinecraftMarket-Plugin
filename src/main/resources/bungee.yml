@@ -1,0 +1,6 @@
+name: ${project.name}
+version: ${project.version}
+main: com.minecraftmarket.minecraftmarket.bungee.MCMarket
+authors: [R4G3_BABY]
+description: ${project.description}
+website: ${project.url}

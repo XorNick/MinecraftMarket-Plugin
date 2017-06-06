@@ -6,7 +6,7 @@
 
     <groupId>com.minecraftmarket</groupId>
     <artifactId>MinecraftMarket</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.2</version>
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
@@ -22,6 +22,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
             <id>r4g3baby-repo</id>
             <url>https://repo.r4g3baby.com/repository/maven-public/</url>
         </repository>
@@ -35,9 +39,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.12-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.r4g3baby</groupId>
             <artifactId>PluginUtils</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.6</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

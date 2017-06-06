@@ -1,0 +1,6 @@
+# Get your APIKey from the MinecraftMarket panel
+APIKey: randomstring
+# Time between purchases and donors checks in minutes
+CheckInterval: 5
+# Log errors no need to activate this
+Debug: false

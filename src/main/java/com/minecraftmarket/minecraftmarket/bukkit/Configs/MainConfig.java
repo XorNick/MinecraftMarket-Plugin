@@ -1,11 +1,11 @@
-package com.minecraftmarket.minecraftmarket.Configs;
+package com.minecraftmarket.minecraftmarket.bukkit.Configs;
 
-import com.r4g3baby.pluginutils.Configs.ConfigFile;
+import com.r4g3baby.pluginutils.Configs.BukkitConfigFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class MainConfig extends ConfigFile {
+public class MainConfig extends BukkitConfigFile {
     private final String apiKey;
     private final int checkInterval;
     private final List<String> shopCommands;
@@ -15,7 +15,7 @@ public class MainConfig extends ConfigFile {
     private final boolean debug;
 
     public MainConfig(JavaPlugin plugin) {
-        super(plugin, "config");
+        super(plugin, "bukkitConfig");
 
         apiKey = config.getString("APIKey");
         checkInterval = config.getInt("CheckInterval");

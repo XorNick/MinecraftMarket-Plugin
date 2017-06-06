@@ -1,10 +1,10 @@
-package com.minecraftmarket.minecraftmarket.Task;
+package com.minecraftmarket.minecraftmarket.bukkit.Task;
 
-import com.minecraftmarket.minecraftmarket.Api.MCMApi;
-import com.minecraftmarket.minecraftmarket.Configs.SignsConfig;
-import com.minecraftmarket.minecraftmarket.MCMarket;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.SignsConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.MCMApi;
 import com.r4g3baby.pluginutils.Items.SkullUtils;
-import com.r4g3baby.pluginutils.ProfileUtils;
+import com.r4g3baby.pluginutils.Mojang.ProfileUtils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;

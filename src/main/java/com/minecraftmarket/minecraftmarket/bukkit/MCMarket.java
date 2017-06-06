@@ -1,18 +1,18 @@
-package com.minecraftmarket.minecraftmarket;
+package com.minecraftmarket.minecraftmarket.bukkit;
 
-import com.minecraftmarket.minecraftmarket.Api.MCMApi;
-import com.minecraftmarket.minecraftmarket.Configs.MessagesConfig;
-import com.minecraftmarket.minecraftmarket.Configs.SignsConfig;
-import com.minecraftmarket.minecraftmarket.Listeners.SignsListener;
-import com.minecraftmarket.minecraftmarket.Task.PurchasesTask;
-import com.minecraftmarket.minecraftmarket.Task.SignsTask;
-import com.minecraftmarket.minecraftmarket.Commands.MMCmd;
-import com.minecraftmarket.minecraftmarket.Configs.MainConfig;
-import com.minecraftmarket.minecraftmarket.Inventory.InventoryManager;
-import com.minecraftmarket.minecraftmarket.Listeners.ShopCmdListener;
+import com.minecraftmarket.minecraftmarket.bukkit.Commands.MMCmd;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.MainConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.MessagesConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.SignsConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.Inventory.InventoryManager;
+import com.minecraftmarket.minecraftmarket.bukkit.Listeners.ShopCmdListener;
+import com.minecraftmarket.minecraftmarket.bukkit.Listeners.SignsListener;
+import com.minecraftmarket.minecraftmarket.bukkit.Task.PurchasesTask;
+import com.minecraftmarket.minecraftmarket.bukkit.Task.SignsTask;
+import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.r4g3baby.pluginutils.Bukkit.Updater;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
-import com.r4g3baby.pluginutils.Metrics.Metrics;
-import com.r4g3baby.pluginutils.Updater;
+import com.r4g3baby.pluginutils.Metrics.BukkitMetrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -50,7 +50,7 @@ public final class MCMarket extends JavaPlugin {
         purchasesTask = new PurchasesTask(this);
         getServer().getScheduler().runTaskTimerAsynchronously(this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
 
-        new Metrics(this);
+        new BukkitMetrics(this);
         new Updater(this, 29183, pluginURL -> {
             getLogger().log(Level.WARNING, "New version available download at:");
             getLogger().log(Level.WARNING, pluginURL);

@@ -1,12 +1,12 @@
-package com.minecraftmarket.minecraftmarket.Configs;
+package com.minecraftmarket.minecraftmarket.bukkit.Configs;
 
-import com.r4g3baby.pluginutils.Configs.ConfigFile;
-import com.r4g3baby.pluginutils.Utils;
+import com.r4g3baby.pluginutils.Bukkit.Utils;
+import com.r4g3baby.pluginutils.Configs.BukkitConfigFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class MessagesConfig extends ConfigFile {
+public class MessagesConfig extends BukkitConfigFile {
     private final String prefix;
     private final String guiCategoryTile;
     private final String guiCategoryName;

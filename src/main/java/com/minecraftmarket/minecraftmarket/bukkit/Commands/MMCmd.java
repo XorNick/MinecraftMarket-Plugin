@@ -1,12 +1,15 @@
-package com.minecraftmarket.minecraftmarket.Commands;
+package com.minecraftmarket.minecraftmarket.bukkit.Commands;
 
-import com.minecraftmarket.minecraftmarket.Configs.MessagesConfig;
-import com.minecraftmarket.minecraftmarket.MCMarket;
-import com.r4g3baby.pluginutils.Utils;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.MessagesConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.r4g3baby.pluginutils.Bukkit.Utils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.*;

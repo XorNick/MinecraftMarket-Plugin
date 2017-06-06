@@ -1,6 +1,6 @@
-package com.minecraftmarket.minecraftmarket.Listeners;
+package com.minecraftmarket.minecraftmarket.bukkit.Listeners;
 
-import com.minecraftmarket.minecraftmarket.MCMarket;
+import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;

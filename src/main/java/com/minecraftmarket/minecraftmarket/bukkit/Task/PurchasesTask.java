@@ -1,7 +1,7 @@
-package com.minecraftmarket.minecraftmarket.Task;
+package com.minecraftmarket.minecraftmarket.bukkit.Task;
 
-import com.minecraftmarket.minecraftmarket.Api.MCMApi;
-import com.minecraftmarket.minecraftmarket.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class PurchasesTask implements Runnable {
     private void runCommand(String user, MCMApi.Command command) {
         Player player = Bukkit.getPlayerExact(user);
         boolean shouldExecute = true;
-        if (command.isOnline() && player == null) {
+        if (command.isOnline() && (player == null || !player.isOnline())) {
             shouldExecute = false;
         }
         if (shouldExecute) {
