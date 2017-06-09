@@ -42,12 +42,13 @@ public class PurchasesTask implements Runnable {
             shouldExecute = false;
         }
         if (shouldExecute) {
-            plugin.getProxy().getScheduler().schedule(plugin, () -> plugin.getProxy().getScheduler().runAsync(plugin, () -> {
+            plugin.getProxy().getScheduler().schedule(plugin, () -> {
                 plugin.getProxy().getPluginManager().dispatchCommand(plugin.getProxy().getConsole(), command.getCommand());
                 if (command.isRepeat()) {
                     long period = command.getPeriod() > 0 ? 60 * 60 * command.getPeriod() : 1;
                     new BungeeRunnable() {
                         int executed = 0;
+
                         @Override
                         public void run() {
                             plugin.getProxy().getPluginManager().dispatchCommand(plugin.getProxy().getConsole(), command.getCommand());
@@ -60,7 +61,7 @@ public class PurchasesTask implements Runnable {
                     }.schedule(plugin, period, period, TimeUnit.SECONDS);
                 }
                 plugin.getApi().setExecuted(command.getId(), true);
-            }), command.getDelay() > 0 ? command.getDelay() : 1, TimeUnit.SECONDS);
+            }, command.getDelay() > 0 ? command.getDelay() : 1, TimeUnit.SECONDS);
         }
     }
 }

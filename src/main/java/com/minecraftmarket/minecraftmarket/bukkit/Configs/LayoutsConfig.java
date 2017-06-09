@@ -6,33 +6,25 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class MessagesConfig extends BukkitConfigFile {
-    private final String prefix;
+public class LayoutsConfig extends BukkitConfigFile {
     private final String guiCategoryTile;
     private final String guiCategoryName;
     private final List<String> guiCategoryLore;
     private final String guiItemTile;
     private final String guiItemName;
     private final List<String> guiItemLore;
-    private final String guiItemUrl;
     private final List<String> signsLayout;
 
-    public MessagesConfig(JavaPlugin plugin) {
-        super(plugin, "messages");
+    public LayoutsConfig(JavaPlugin plugin) {
+        super(plugin, "layouts");
 
-        prefix = Utils.color(config.getString("prefix"));
         guiCategoryTile = Utils.color(config.getString("GUI.CategoryTitle"));
         guiCategoryName = Utils.color(config.getString("GUI.CategoryName"));
         guiCategoryLore = Utils.colorList(config.getStringList("GUI.CategoryLore"));
         guiItemTile = Utils.color(config.getString("GUI.ItemTitle"));
         guiItemName = Utils.color(config.getString("GUI.ItemName"));
         guiItemLore = Utils.colorList(config.getStringList("GUI.ItemLore"));
-        guiItemUrl = Utils.color(config.getString("GUI.ItemUrl"));
         signsLayout = Utils.colorList(config.getStringList("SignsLayout"));
-    }
-
-    public String getPrefix() {
-        return prefix;
     }
 
     public String getGuiCategoryTile() {
@@ -57,10 +49,6 @@ public class MessagesConfig extends BukkitConfigFile {
 
     public List<String> getGuiItemLore() {
         return guiItemLore;
-    }
-
-    public String getGuiItemUrl() {
-        return guiItemUrl;
     }
 
     public List<String> getSignsLayout() {

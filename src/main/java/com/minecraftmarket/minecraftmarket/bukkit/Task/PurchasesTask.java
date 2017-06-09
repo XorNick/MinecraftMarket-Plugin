@@ -52,14 +52,14 @@ public class PurchasesTask implements Runnable {
                     }
                 }
                 if (canContinue) {
-                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand());
+                    plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand()));
                     if (command.isRepeat()) {
                         long period = command.getPeriod() > 0 ? 20 * 60 * 60 * command.getPeriod() : 1;
                         new BukkitRunnable() {
                             int executed = 0;
                             @Override
                             public void run() {
-                                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand());
+                                plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand()));
                                 executed++;
 
                                 if (executed >= command.getCycles()) {

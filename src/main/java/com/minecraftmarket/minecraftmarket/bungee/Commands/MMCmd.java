@@ -1,6 +1,7 @@
 package com.minecraftmarket.minecraftmarket.bungee.Commands;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.I18n;
 import com.r4g3baby.pluginutils.Bungee.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
@@ -25,25 +26,23 @@ public class MMCmd extends Command implements TabExecutor {
                 if (args.length > 1) {
                     plugin.setKey(args[1], true, authenticated -> {
                         if (authenticated) {
-                            sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §aKey changed and activated successfully!"));
+                            sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.keyChanged"))));
                         } else {
-                            sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §cInvalid APIKey! Get your APIKey from MinecraftMarket panel."));
-                            sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §cAnd use /MM apiKey <key> to change your key."));
+                            sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>"))));
                         }
                     });
                 } else {
-                    sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §cInvalid usage use§8: §7/MM apiKey <key>"));
+                    sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidUsage", "/MM apiKey <key>"))));
                 }
             } else if (args[0].equalsIgnoreCase("check")) {
                 if (plugin.isAuthenticated()) {
-                    sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §aRunning purchases check.."));
+                    sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.checkPurchases"))));
                     plugin.getProxy().getScheduler().runAsync(plugin, () -> plugin.getPurchasesTask().updatePurchases());
                 } else {
-                    sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §cInvalid APIKey! Get your APIKey from MinecraftMarket panel."));
-                    sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §cAnd use /MM apiKey <key> to change your key."));
+                    sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>"))));
                 }
             } else if (args[0].equalsIgnoreCase("version")) {
-                sender.sendMessage(Utils.toComponent("§7[§eMinecraftMarket§7] §7Current plugin version is §b" + plugin.getDescription().getVersion() + "§7."));
+                sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.currentVersion", plugin.getDescription().getVersion()))));
             } else {
                 sendHelp(sender);
             }

@@ -23,7 +23,7 @@
         </repository>
         <repository>
             <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
             <id>r4g3baby-repo</id>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.r4g3baby</groupId>
             <artifactId>PluginUtils</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

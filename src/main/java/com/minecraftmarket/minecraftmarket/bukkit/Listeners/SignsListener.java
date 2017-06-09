@@ -1,6 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bukkit.Listeners;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.I18n;
+import com.r4g3baby.pluginutils.Bukkit.Utils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -28,7 +30,7 @@ public class SignsListener implements Listener {
             e.setCancelled(true);
             if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                 if (plugin.getSignsConfig().removeDonorSign(e.getBlock())) {
-                    e.getPlayer().sendMessage(plugin.getMessagesConfig().getPrefix() + " §aSign removed. Updating signs..");
+                    e.getPlayer().sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signRem")));
                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                     e.getBlock().breakNaturally();
                 }
@@ -41,7 +43,7 @@ public class SignsListener implements Listener {
                         e.setCancelled(true);
                         if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                             if (plugin.getSignsConfig().removeDonorSign(block)) {
-                                e.getPlayer().sendMessage(plugin.getMessagesConfig().getPrefix() + " §aSign removed. Updating signs..");
+                                e.getPlayer().sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signRem")));
                                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                 block.breakNaturally();
                             }

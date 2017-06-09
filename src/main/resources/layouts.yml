@@ -1,7 +1,4 @@
-# Check all the variables at *spigot page goes here ;?*
-prefix: "&7[&eMinecraftMarket&7]"
-
-# Ingame gui messages
+# Ingame GUI layout
 GUI:
   CategoryTitle: "&6Categories"
   CategoryName: "&6{category_name}"
@@ -12,7 +9,6 @@ GUI:
   - "&6Price: &7{item_price}{item_currency}"
   - "&6Description:"
   - "{item_desc}"
-  ItemUrl: "&7Buy it at {item_url}"
 
 # Signs layout
 SignsLayout:

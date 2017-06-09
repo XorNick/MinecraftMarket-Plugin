@@ -2,5 +2,7 @@
 APIKey: randomstring
 # Time between purchases and donors checks in minutes
 CheckInterval: 5
+# Language to use on messages language files located at langs folder
+Lang: en
 # Log errors no need to activate this
 Debug: false

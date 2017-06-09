@@ -1,7 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bukkit.Inventory;
 
-import com.minecraftmarket.minecraftmarket.bukkit.Configs.MessagesConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.Configs.LayoutsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.I18n;
 import com.minecraftmarket.minecraftmarket.core.MCMApi;
 import com.r4g3baby.pluginutils.Bukkit.Utils;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
@@ -16,12 +17,12 @@ import java.util.Map;
 public class InventoryManager {
     private final Map<Long, InventoryGUI> inventories = new HashMap<>();
     private final MCMarket plugin;
-    private final MessagesConfig messagesConfig;
+    private final LayoutsConfig layoutsConfig;
     private InventoryGUI mainMenu;
 
     public InventoryManager(MCMarket plugin) {
         this.plugin = plugin;
-        this.messagesConfig = plugin.getMessagesConfig();
+        this.layoutsConfig = plugin.getLayoutsConfig();
         load();
     }
 
@@ -30,9 +31,9 @@ public class InventoryManager {
             try {
                 if (plugin.isAuthenticated()) {
                     List<MCMApi.Category> categories = plugin.getApi().getCategories();
-                    mainMenu = new InventoryGUI(messagesConfig.getGuiCategoryTile(), Utils.roundUp(categories.size(), 9), true);
+                    mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), Utils.roundUp(categories.size(), 9), true);
                     for (MCMApi.Category category : categories) {
-                        InventoryGUI invCat = new InventoryGUI(replaceVars(messagesConfig.getGuiItemTile(), category, null), Utils.roundUp(category.getItems().size(), 9), true);
+                        InventoryGUI invCat = new InventoryGUI(replaceVars(layoutsConfig.getGuiItemTile(), category, null), Utils.roundUp(category.getItems().size(), 9), true);
                         for (MCMApi.Item item : category.getItems()) {
                             ItemStackBuilder iconItem;
                             if (item.getIcon().contains(":")) {
@@ -45,14 +46,14 @@ public class InventoryManager {
                             } else {
                                 iconItem = new ItemStackBuilder(Material.matchMaterial(item.getIcon()));
                             }
-                            iconItem.withName(replaceVars(messagesConfig.getGuiItemName(), category, item));
-                            for (String lines : messagesConfig.getGuiItemLore()) {
+                            iconItem.withName(replaceVars(layoutsConfig.getGuiItemName(), category, item));
+                            for (String lines : layoutsConfig.getGuiItemLore()) {
                                 for (String line : replaceVars(lines, category, item).split("\r\n")) {
                                     iconItem.withLore(line);
                                 }
                             }
                             invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
-                                player.sendMessage(messagesConfig.getPrefix() + " " + replaceVars(messagesConfig.getGuiItemUrl(), category, item));
+                                player.sendMessage(Utils.color(replaceVars(I18n.tl("prefix") + " " + I18n.tl("gui.itemUrl"), category, item)));
                                 return true;
                             });
                         }
@@ -69,8 +70,8 @@ public class InventoryManager {
                         } else {
                             catItem = new ItemStackBuilder(Material.matchMaterial(category.getIcon()));
                         }
-                        catItem.withName(replaceVars(messagesConfig.getGuiCategoryName(), category, null));
-                        for (String lines : messagesConfig.getGuiCategoryLore()) {
+                        catItem.withName(replaceVars(layoutsConfig.getGuiCategoryName(), category, null));
+                        for (String lines : layoutsConfig.getGuiCategoryLore()) {
                             for (String line : replaceVars(lines, category, null).split("\r\n")) {
                                 catItem.withLore(line);
                             }
@@ -81,7 +82,7 @@ public class InventoryManager {
                         });
                     }
                 } else {
-                    mainMenu = new InventoryGUI(messagesConfig.getGuiCategoryTile(), 9, true);
+                    mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), 9, true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -93,7 +94,7 @@ public class InventoryManager {
         if (plugin.isAuthenticated()) {
             mainMenu.open(player);
         } else {
-            player.sendMessage(messagesConfig.getPrefix() + " §cCurrent APIKey is not authenticated.");
+            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.authKey")));
         }
     }
 

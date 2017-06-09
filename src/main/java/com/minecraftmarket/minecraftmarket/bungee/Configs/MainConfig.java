@@ -6,6 +6,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 public class MainConfig extends BungeeConfigFile {
     private final String apiKey;
     private final int checkInterval;
+    private final String lang;
     private final boolean debug;
 
     public MainConfig(Plugin plugin) {
@@ -13,6 +14,7 @@ public class MainConfig extends BungeeConfigFile {
 
         apiKey = config.getString("APIKey");
         checkInterval = config.getInt("CheckInterval");
+        lang = config.getString("Lang");
         debug = config.getBoolean("Debug");
     }
 
@@ -27,6 +29,10 @@ public class MainConfig extends BungeeConfigFile {
 
     public int getCheckInterval() {
         return checkInterval;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public boolean isDebug() {

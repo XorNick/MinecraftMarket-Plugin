@@ -1,7 +1,7 @@
 package com.minecraftmarket.minecraftmarket.bukkit.Commands;
 
-import com.minecraftmarket.minecraftmarket.bukkit.Configs.MessagesConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.core.I18n;
 import com.r4g3baby.pluginutils.Bukkit.Utils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,28 +16,25 @@ import java.util.*;
 
 public class MMCmd implements CommandExecutor, TabCompleter {
     private final MCMarket plugin;
-    private final MessagesConfig messages;
 
     public MMCmd(MCMarket plugin) {
         this.plugin = plugin;
-        this.messages = plugin.getMessagesConfig();
     }
 
-    @Override // TODO Add translation from messages.yml config
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("apiKey")) {
                 if (args.length > 1) {
                     plugin.setKey(args[1], true, authenticated -> {
                         if (authenticated) {
-                            sender.sendMessage(messages.getPrefix() + " §aKey changed and activated successfully!");
+                            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.keyChanged")));
                         } else {
-                            sender.sendMessage(messages.getPrefix() + " §cInvalid APIKey! Get your APIKey from MinecraftMarket panel.");
-                            sender.sendMessage(messages.getPrefix() + " §cAnd use /MM apiKey <key> to change your key.");
+                            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>")));
                         }
                     });
                 } else {
-                    sender.sendMessage(messages.getPrefix() + " §cInvalid usage use§8: §7/MM apiKey <key>");
+                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidUsage", "/MM apiKey <key>")));
                 }
             } else if (args[0].equalsIgnoreCase("signs")) {
                 if (plugin.getMainConfig().isUseSigns()) {
@@ -55,25 +52,25 @@ public class MMCmd implements CommandExecutor, TabCompleter {
                                                 if (block != null) {
                                                     if (block.getState() instanceof Sign) {
                                                         if (plugin.getSignsConfig().addDonorSign(Utils.getInt(args[2]), block)) {
-                                                            player.sendMessage(messages.getPrefix() + " §aSign added. Updating signs..");
+                                                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signAdd")));
                                                             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                                         } else {
-                                                            player.sendMessage(messages.getPrefix() + " §cFailed to add sign make sure it's not already added.");
+                                                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signAddFail")));
                                                         }
                                                     } else {
-                                                        player.sendMessage(messages.getPrefix() + " §cThe block you're looking at isn't valid or is too far away.");
+                                                        player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidBlock")));
                                                     }
                                                 } else {
-                                                    player.sendMessage(messages.getPrefix() + " §cThe block you're looking at isn't valid or is too far away.");
+                                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidBlock")));
                                                 }
                                             } else {
-                                                player.sendMessage(messages.getPrefix() + " §c<order> needs to be greater than 0.");
+                                                player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.greaterThan", "<order>", 0)));
                                             }
                                         } else {
-                                            player.sendMessage(messages.getPrefix() + " §c" + args[2] + " isn't a valid number.");
+                                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidNumber", args[2])));
                                         }
                                     } else {
-                                        player.sendMessage(messages.getPrefix() + " §cInvalid usage use§8: §7/MM signs add <order>");
+                                        player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidUsage", "/MM signs add <order>")));
                                     }
                                 } else if (args[1].equalsIgnoreCase("remove")) {
                                     Set<Material> blocks = new HashSet<>();
@@ -82,47 +79,45 @@ public class MMCmd implements CommandExecutor, TabCompleter {
                                     if (block != null) {
                                         if (block.getState() instanceof Sign) {
                                             if (plugin.getSignsConfig().removeDonorSign(block)) {
-                                                player.sendMessage(messages.getPrefix() + " §aSign removed. Updating signs..");
+                                                player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signRem")));
                                                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                                 block.breakNaturally();
                                             } else {
-                                                player.sendMessage(messages.getPrefix() + " §cFailed to remove sign make sure it has been added.");
+                                                player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signRemFail")));
                                             }
                                         } else {
-                                            player.sendMessage(messages.getPrefix() + " §cThe block you're looking at isn't valid or is too far away.");
+                                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidBlock")));
                                         }
                                     } else {
-                                        player.sendMessage(messages.getPrefix() + " §cThe block you're looking at isn't valid or is too far away.");
+                                        player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidBlock")));
                                     }
                                 } else if (args[1].equalsIgnoreCase("update")) {
-                                    player.sendMessage(messages.getPrefix() + " §aUpdating signs..");
+                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signUpdate")));
                                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                 } else {
-                                    player.sendMessage(messages.getPrefix() + " §cInvalid usage use§8: §7/MM signs <add|remove|update>");
+                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidUsage", "/MM signs <add|remove|update>")));
                                 }
                             } else {
-                                sender.sendMessage(messages.getPrefix() + " §cInvalid usage use§8: §7/MM signs <add|remove|update>");
+                                sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidUsage", "/MM signs <add|remove|update>")));
                             }
                         } else {
-                            sender.sendMessage(messages.getPrefix() + " §cSender must be a player!");
+                            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidSender")));
                         }
                     } else {
-                        sender.sendMessage(messages.getPrefix() + " §cInvalid APIKey! Get your APIKey from MinecraftMarket panel.");
-                        sender.sendMessage(messages.getPrefix() + " §cAnd use /MM apiKey <key> to change your key.");
+                        sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>")));
                     }
                 } else {
-                    sender.sendMessage(messages.getPrefix() + " §cEnable the use of signs in the config.");
+                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signDisabled")));
                 }
             } else if (args[0].equalsIgnoreCase("check")) {
                 if (plugin.isAuthenticated()) {
-                    sender.sendMessage(messages.getPrefix() + " §aRunning purchases check..");
+                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.checkPurchases")));
                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getPurchasesTask().updatePurchases());
                 } else {
-                    sender.sendMessage(messages.getPrefix() + " §cInvalid APIKey! Get your APIKey from MinecraftMarket panel.");
-                    sender.sendMessage(messages.getPrefix() + " §cAnd use /MM apiKey <key> to change your key.");
+                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>")));
                 }
             } else if (args[0].equalsIgnoreCase("version")) {
-                sender.sendMessage(messages.getPrefix() + " §7Current plugin version is §b" + plugin.getDescription().getVersion() + "§7.");
+                sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.currentVersion", plugin.getDescription().getVersion())));
             } else {
                 sendHelp(sender);
             }

@@ -12,6 +12,7 @@ public class MainConfig extends BukkitConfigFile {
     private final boolean useGUI;
     private final boolean useSigns;
     private final String defaultHeadSkin;
+    private final String lang;
     private final boolean debug;
 
     public MainConfig(JavaPlugin plugin) {
@@ -23,6 +24,7 @@ public class MainConfig extends BukkitConfigFile {
         useGUI = config.getBoolean("UseGUI");
         useSigns = config.getBoolean("UseSigns");
         defaultHeadSkin = config.getString("DefaultHeadSkin");
+        lang = config.getString("Lang");
         debug = config.getBoolean("Debug");
     }
 
@@ -53,6 +55,10 @@ public class MainConfig extends BukkitConfigFile {
 
     public String getDefaultHeadSkin() {
         return defaultHeadSkin;
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     public boolean isDebug() {

@@ -38,7 +38,7 @@ public class SignsTask implements Runnable {
                     for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
                         if (donorSign.getBlock().getState() instanceof Sign) {
                             Sign sign = (Sign) donorSign.getBlock().getState();
-                            List<String> lines = plugin.getMessagesConfig().getSignsLayout();
+                            List<String> lines = plugin.getLayoutsConfig().getSignsLayout();
                             if (lines.size() >= 1) {
                                 sign.setLine(0, replaceVars(lines.get(0), recentDonor));
                             }
