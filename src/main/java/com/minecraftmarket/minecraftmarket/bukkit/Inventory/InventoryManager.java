@@ -53,7 +53,7 @@ public class InventoryManager {
                                 }
                             }
                             invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
-                                player.sendMessage(Utils.color(replaceVars(I18n.tl("prefix") + " " + I18n.tl("gui.itemUrl"), category, item)));
+                                player.sendMessage(Utils.color(replaceVars(I18n.tl("prefix") + " " + I18n.tl("gui.itemUrl", "{item_url}"), category, item)));
                                 return true;
                             });
                         }
