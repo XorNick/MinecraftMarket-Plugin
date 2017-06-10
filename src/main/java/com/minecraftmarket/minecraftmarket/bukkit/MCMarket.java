@@ -128,14 +128,15 @@ public final class MCMarket extends JavaPlugin {
     }
 
     private File getLanguageFolder() {
-        File langFile = new File(getDataFolder(), "langs");
-        if (!langFile.exists()) {
-            for (String file : FileUtils.getJarResources(getClass().getProtectionDomain().getCodeSource())) {
-                if (file.startsWith("langs/") && file.endsWith(".properties")) {
-                    saveResource(file, true);
-                }
+        File langFolder = new File(getDataFolder(), "langs");
+        if (!langFolder.exists()) {
+            langFolder.mkdirs();
+        }
+        for (String file : FileUtils.getJarResources(getClass().getProtectionDomain().getCodeSource())) {
+            if (file.startsWith("langs/") && file.endsWith(".properties")) {
+                saveResource(file, false);
             }
         }
-        return langFile;
+        return langFolder;
     }
 }
