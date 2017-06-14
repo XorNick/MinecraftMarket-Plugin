@@ -28,64 +28,70 @@ public class InventoryManager {
 
     public void load() {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            try {
-                if (plugin.isAuthenticated()) {
-                    List<MCMApi.Category> categories = plugin.getApi().getCategories();
-                    mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), Utils.roundUp(categories.size(), 9), true);
-                    for (MCMApi.Category category : categories) {
-                        InventoryGUI invCat = new InventoryGUI(replaceVars(layoutsConfig.getGuiItemTile(), category, null), Utils.roundUp(category.getItems().size(), 9), true);
-                        for (MCMApi.Item item : category.getItems()) {
-                            ItemStackBuilder iconItem;
-                            if (item.getIcon().contains(":")) {
-                                String[] splitedIcon = item.getIcon().split(":");
-                                if (Utils.isInt(splitedIcon[0]) && Utils.isInt(splitedIcon[1])) {
-                                    iconItem = new ItemStackBuilder(Material.matchMaterial(splitedIcon[0])).withData(Utils.getInt(splitedIcon[1]));
-                                } else {
-                                    iconItem = new ItemStackBuilder(Material.POTATO_ITEM);
-                                }
-                            } else {
-                                iconItem = new ItemStackBuilder(Material.matchMaterial(item.getIcon()));
-                            }
-                            iconItem.withName(replaceVars(layoutsConfig.getGuiItemName(), category, item));
-                            for (String lines : layoutsConfig.getGuiItemLore()) {
-                                for (String line : replaceVars(lines, category, item).split("\r\n")) {
-                                    iconItem.withLore(line);
-                                }
-                            }
-                            invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
-                                player.sendMessage(Utils.color(replaceVars(I18n.tl("prefix") + " " + I18n.tl("gui.itemUrl", "{item_url}"), category, item)));
-                                return true;
-                            });
-                        }
-                        inventories.put(category.getId(), invCat);
-
-                        ItemStackBuilder catItem;
-                        if (category.getIcon().contains(":")) {
-                            String[] splitedIcon = category.getIcon().split(":");
+            if (plugin.isAuthenticated()) {
+                List<MCMApi.Category> categories = plugin.getApi().getCategories();
+                mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), Utils.roundUp(categories.size(), 9), true);
+                for (MCMApi.Category category : categories) {
+                    InventoryGUI invCat = new InventoryGUI(replaceVars(layoutsConfig.getGuiItemTile(), category, null), Utils.roundUp(category.getItems().size(), 9), true);
+                    for (MCMApi.Item item : category.getItems()) {
+                        ItemStackBuilder iconItem = null;
+                        if (item.getIcon().contains(":")) {
+                            String[] splitedIcon = item.getIcon().split(":");
                             if (Utils.isInt(splitedIcon[0]) && Utils.isInt(splitedIcon[1])) {
-                                catItem = new ItemStackBuilder(Material.matchMaterial(splitedIcon[0])).withData(Utils.getInt(splitedIcon[1]));
-                            } else {
-                                catItem = new ItemStackBuilder(Material.POTATO_ITEM);
+                                Material icon = Material.matchMaterial(splitedIcon[0]);
+                                if (icon != null) {
+                                    iconItem = new ItemStackBuilder(icon).withData(Utils.getInt(splitedIcon[1]));
+                                }
                             }
                         } else {
-                            catItem = new ItemStackBuilder(Material.matchMaterial(category.getIcon()));
-                        }
-                        catItem.withName(replaceVars(layoutsConfig.getGuiCategoryName(), category, null));
-                        for (String lines : layoutsConfig.getGuiCategoryLore()) {
-                            for (String line : replaceVars(lines, category, null).split("\r\n")) {
-                                catItem.withLore(line);
+                            Material icon = Material.matchMaterial(category.getIcon());
+                            if (icon != null) {
+                                iconItem = new ItemStackBuilder(icon);
                             }
                         }
-                        mainMenu.addItem(catItem.build(), (player, slot, item, clickType) -> {
-                            inventories.get(category.getId()).open((Player) player);
+                        if (iconItem == null) iconItem = new ItemStackBuilder(Material.CHEST);
+                        iconItem.withName(replaceVars(layoutsConfig.getGuiItemName(), category, item));
+                        for (String lines : layoutsConfig.getGuiItemLore()) {
+                            for (String line : replaceVars(lines, category, item).split("\r\n")) {
+                                iconItem.withLore(line);
+                            }
+                        }
+                        invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
+                            player.sendMessage(Utils.color(replaceVars(I18n.tl("prefix") + " " + I18n.tl("gui.itemUrl", "{item_url}"), category, item)));
                             return true;
                         });
                     }
-                } else {
-                    mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), 9, true);
+                    inventories.put(category.getId(), invCat);
+
+                    ItemStackBuilder catItem = null;
+                    if (category.getIcon().contains(":")) {
+                        String[] splitedIcon = category.getIcon().split(":");
+                        if (Utils.isInt(splitedIcon[0]) && Utils.isInt(splitedIcon[1])) {
+                            Material icon = Material.matchMaterial(splitedIcon[0]);
+                            if (icon != null) {
+                                catItem = new ItemStackBuilder(icon).withData(Utils.getInt(splitedIcon[1]));
+                            }
+                        }
+                    } else {
+                        Material icon = Material.matchMaterial(category.getIcon());
+                        if (icon != null) {
+                            catItem = new ItemStackBuilder(icon);
+                        }
+                    }
+                    if (catItem == null) catItem = new ItemStackBuilder(Material.ENDER_CHEST);
+                    catItem.withName(replaceVars(layoutsConfig.getGuiCategoryName(), category, null));
+                    for (String lines : layoutsConfig.getGuiCategoryLore()) {
+                        for (String line : replaceVars(lines, category, null).split("\r\n")) {
+                            catItem.withLore(line);
+                        }
+                    }
+                    mainMenu.addItem(catItem.build(), (player, slot, item, clickType) -> {
+                        inventories.get(category.getId()).open((Player) player);
+                        return true;
+                    });
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else {
+                mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), 9, true);
             }
         });
     }
