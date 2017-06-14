@@ -1,4 +1,4 @@
-package com.minecraftmarket.minecraftmarket.core;
+package com.minecraftmarket.minecraftmarket.bungee.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

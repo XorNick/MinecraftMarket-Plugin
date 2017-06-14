@@ -1,7 +1,7 @@
 package com.minecraftmarket.minecraftmarket.bungee.Task;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
-import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.minecraftmarket.minecraftmarket.bungee.api.MCMApi;
 import com.r4g3baby.pluginutils.Bungee.BungeeRunnable;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

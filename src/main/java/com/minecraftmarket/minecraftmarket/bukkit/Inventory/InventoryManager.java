@@ -2,9 +2,9 @@ package com.minecraftmarket.minecraftmarket.bukkit.Inventory;
 
 import com.minecraftmarket.minecraftmarket.bukkit.Configs.LayoutsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.core.I18n;
-import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import com.r4g3baby.pluginutils.Bukkit.Utils;
+import com.r4g3baby.pluginutils.I18n.I18n;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
 import com.r4g3baby.pluginutils.Items.ItemStackBuilder;
 import org.bukkit.Material;

@@ -9,10 +9,10 @@ import com.minecraftmarket.minecraftmarket.bukkit.Listeners.ShopCmdListener;
 import com.minecraftmarket.minecraftmarket.bukkit.Listeners.SignsListener;
 import com.minecraftmarket.minecraftmarket.bukkit.Task.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.Task.SignsTask;
-import com.minecraftmarket.minecraftmarket.core.I18n;
-import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import com.r4g3baby.pluginutils.Bukkit.Updater;
 import com.r4g3baby.pluginutils.File.FileUtils;
+import com.r4g3baby.pluginutils.I18n.I18n;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
 import com.r4g3baby.pluginutils.Metrics.BukkitMetrics;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -134,7 +134,10 @@ public final class MCMarket extends JavaPlugin {
         }
         for (String file : FileUtils.getJarResources(getClass().getProtectionDomain().getCodeSource())) {
             if (file.startsWith("langs/") && file.endsWith(".properties")) {
-                saveResource(file, false);
+                File langFile = new File(getDataFolder(), file);
+                if (!langFile.exists()) {
+                    saveResource(file, false);
+                }
             }
         }
         return langFolder;

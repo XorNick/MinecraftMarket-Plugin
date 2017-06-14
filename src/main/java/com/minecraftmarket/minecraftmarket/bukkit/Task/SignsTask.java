@@ -2,7 +2,7 @@ package com.minecraftmarket.minecraftmarket.bukkit.Task;
 
 import com.minecraftmarket.minecraftmarket.bukkit.Configs.SignsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import com.r4g3baby.pluginutils.Items.SkullUtils;
 import com.r4g3baby.pluginutils.Mojang.ProfileUtils;
 import org.bukkit.block.Block;

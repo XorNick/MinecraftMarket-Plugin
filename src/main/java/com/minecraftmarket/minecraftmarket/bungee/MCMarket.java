@@ -3,10 +3,10 @@ package com.minecraftmarket.minecraftmarket.bungee;
 import com.minecraftmarket.minecraftmarket.bungee.Commands.MMCmd;
 import com.minecraftmarket.minecraftmarket.bungee.Configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.bungee.Task.PurchasesTask;
-import com.minecraftmarket.minecraftmarket.core.I18n;
-import com.minecraftmarket.minecraftmarket.core.MCMApi;
+import com.minecraftmarket.minecraftmarket.bungee.api.MCMApi;
 import com.r4g3baby.pluginutils.Bungee.Updater;
 import com.r4g3baby.pluginutils.File.FileUtils;
+import com.r4g3baby.pluginutils.I18n.I18n;
 import com.r4g3baby.pluginutils.Metrics.BungeeMetrics;
 import net.md_5.bungee.api.plugin.Plugin;
 

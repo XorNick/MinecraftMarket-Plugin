@@ -1,7 +1,7 @@
 package com.minecraftmarket.minecraftmarket.bukkit.Task;
 
-import com.minecraftmarket.minecraftmarket.core.MCMApi;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

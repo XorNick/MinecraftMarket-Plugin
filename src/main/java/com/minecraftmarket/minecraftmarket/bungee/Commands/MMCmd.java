@@ -1,8 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bungee.Commands;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
-import com.minecraftmarket.minecraftmarket.core.I18n;
 import com.r4g3baby.pluginutils.Bungee.Utils;
+import com.r4g3baby.pluginutils.I18n.I18n;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;

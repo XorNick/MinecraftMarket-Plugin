@@ -1,8 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bukkit.Listeners;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.core.I18n;
 import com.r4g3baby.pluginutils.Bukkit.Utils;
+import com.r4g3baby.pluginutils.I18n.I18n;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
