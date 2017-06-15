@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public final class MCMarket extends Plugin {
     private I18n i18n;
