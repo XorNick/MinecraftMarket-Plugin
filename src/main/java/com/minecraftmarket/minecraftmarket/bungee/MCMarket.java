@@ -41,8 +41,8 @@ public final class MCMarket extends Plugin {
 
         new BungeeMetrics(this);
         new Updater(this, 29183, pluginURL -> {
-            getLogger().log(Level.WARNING, I18n.tl("newVersion"));
-            getLogger().log(Level.WARNING, pluginURL);
+            getLogger().warning(I18n.tl("newVersion"));
+            getLogger().warning(pluginURL);
         });
     }
 
@@ -60,7 +60,7 @@ public final class MCMarket extends Plugin {
             api = new MCMApi(apiKey, mainConfig.isDebug());
             authenticated = api.authAPI();
             if (!authenticated) {
-                getLogger().log(Level.SEVERE, I18n.tl("invalidKey", "/MM apiKey <key>"));
+                getLogger().warning(I18n.tl("invalidKey", "/MM apiKey <key>"));
             }
             if (response != null) {
                 response.done(authenticated);

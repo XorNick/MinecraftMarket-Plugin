@@ -1,5 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bukkit;
 
+import com.getsentry.raven.Raven;
+import com.getsentry.raven.RavenFactory;
+import com.getsentry.raven.dsn.InvalidDsnException;
 import com.minecraftmarket.minecraftmarket.bukkit.Commands.MMCmd;
 import com.minecraftmarket.minecraftmarket.bukkit.Configs.LayoutsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.Configs.MainConfig;
@@ -7,6 +10,7 @@ import com.minecraftmarket.minecraftmarket.bukkit.Configs.SignsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.Inventory.InventoryManager;
 import com.minecraftmarket.minecraftmarket.bukkit.Listeners.ShopCmdListener;
 import com.minecraftmarket.minecraftmarket.bukkit.Listeners.SignsListener;
+import com.minecraftmarket.minecraftmarket.bukkit.Sentry.BukkitSentryAppender;
 import com.minecraftmarket.minecraftmarket.bukkit.Task.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.Task.SignsTask;
 import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
@@ -15,10 +19,12 @@ import com.r4g3baby.pluginutils.File.FileUtils;
 import com.r4g3baby.pluginutils.I18n.I18n;
 import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
 import com.r4g3baby.pluginutils.Metrics.BukkitMetrics;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.logging.Level;
 
 public final class MCMarket extends JavaPlugin {
     private I18n i18n;
@@ -30,6 +36,7 @@ public final class MCMarket extends JavaPlugin {
     private InventoryManager inventoryManager;
     private SignsTask signsTask;
     private PurchasesTask purchasesTask;
+    private BukkitSentryAppender sentryAppender;
 
     @Override
     public void onEnable() {
@@ -60,10 +67,12 @@ public final class MCMarket extends JavaPlugin {
         purchasesTask = new PurchasesTask(this);
         getServer().getScheduler().runTaskTimerAsynchronously(this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
 
+        setUpSentry();
+
         new BukkitMetrics(this);
         new Updater(this, 29183, pluginURL -> {
-            getLogger().log(Level.WARNING, I18n.tl("newVersion"));
-            getLogger().log(Level.WARNING, pluginURL);
+            getLogger().warning(I18n.tl("newVersion"));
+            getLogger().warning(pluginURL);
         });
     }
 
@@ -71,6 +80,11 @@ public final class MCMarket extends JavaPlugin {
     public void onDisable() {
         getServer().getScheduler().cancelTasks(this);
         i18n.onDisable();
+
+        if (sentryAppender != null) {
+            Logger logger = (Logger)LogManager.getRootLogger();
+            logger.removeAppender(sentryAppender);
+        }
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
@@ -81,7 +95,7 @@ public final class MCMarket extends JavaPlugin {
             api = new MCMApi(apiKey, mainConfig.isDebug());
             authenticated = api.authAPI();
             if (!authenticated) {
-                getLogger().log(Level.SEVERE, I18n.tl("invalidKey", "/MM apiKey <key>"));
+                getLogger().warning(I18n.tl("invalidKey", "/MM apiKey <key>"));
             } else if (inventoryManager != null) {
                 inventoryManager.load();
             }
@@ -141,5 +155,21 @@ public final class MCMarket extends JavaPlugin {
             }
         }
         return langFolder;
+    }
+
+    private void setUpSentry() {
+        Raven raven;
+        try {
+            raven = RavenFactory.ravenInstance("http://05658170ebc24339b815641b8451b96a:fe7a6725a43548479538496d228d69d7@sentry.buckingham.io/8");
+        } catch (InvalidDsnException | IllegalArgumentException e) {
+            getLogger().info("Failed to setup sentry: " + ExceptionUtils.getStackTrace(e));
+            return;
+        }
+
+        Logger logger = (Logger) LogManager.getRootLogger();
+        sentryAppender = new BukkitSentryAppender(raven);
+
+        sentryAppender.start();
+        logger.addAppender(sentryAppender);
     }
 }
