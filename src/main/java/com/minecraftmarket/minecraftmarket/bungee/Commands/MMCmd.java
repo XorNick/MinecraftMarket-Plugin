@@ -75,6 +75,6 @@ public class MMCmd extends Command implements TabExecutor {
                 sender.sendMessage(Utils.toComponent(ChatColor.GOLD + "/MM " + subCmd.getCommand() + " " + subCmd.getArgs() + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + subCmd.getDescription()));
             }
         }
-        sender.sendMessage(Utils.toComponent(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "====================================================="));
+        sender.sendMessage(Utils.toComponent(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "==================================================="));
     }
 }

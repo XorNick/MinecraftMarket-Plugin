@@ -82,7 +82,7 @@ public final class MCMarket extends JavaPlugin {
         i18n.onDisable();
 
         if (sentryAppender != null) {
-            Logger logger = (Logger)LogManager.getRootLogger();
+            Logger logger = (Logger) LogManager.getRootLogger();
             logger.removeAppender(sentryAppender);
         }
     }

@@ -53,9 +53,9 @@ public class MMCmd implements CommandExecutor, TabCompleter {
             } else if (args.length == 2) {
                 String arg1 = args[1].toLowerCase();
                 for (Cmd subCmd : subCmds) {
-                    if (subCmd.getTabcomplete().size() > 0) {
+                    if (subCmd.getTabComplete().size() > 0) {
                         if (subCmd.getCommand().equalsIgnoreCase(arg0)) {
-                            for (String tabComplete : subCmd.getTabcomplete()) {
+                            for (String tabComplete : subCmd.getTabComplete()) {
                                 if (tabComplete.startsWith(arg1)) {
                                     matches.add(tabComplete);
                                 }
@@ -77,6 +77,6 @@ public class MMCmd implements CommandExecutor, TabCompleter {
                 sender.sendMessage(ChatColor.GOLD + "/MM " + subCmd.getCommand() + " " + subCmd.getArgs() + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + subCmd.getDescription());
             }
         }
-        sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "=====================================================");
+        sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "===================================================");
     }
 }

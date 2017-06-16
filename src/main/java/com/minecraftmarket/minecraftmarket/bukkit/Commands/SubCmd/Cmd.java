@@ -38,7 +38,7 @@ public abstract class Cmd {
         return args;
     }
 
-    public List<String> getTabcomplete() {
+    public List<String> getTabComplete() {
         return tabComplete;
     }
 
