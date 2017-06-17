@@ -11,6 +11,7 @@ import com.minecraftmarket.minecraftmarket.bukkit.Inventory.InventoryManager;
 import com.minecraftmarket.minecraftmarket.bukkit.Listeners.ShopCmdListener;
 import com.minecraftmarket.minecraftmarket.bukkit.Listeners.SignsListener;
 import com.minecraftmarket.minecraftmarket.bukkit.Sentry.BukkitSentryAppender;
+import com.minecraftmarket.minecraftmarket.bukkit.Sentry.editors.PluginInformation;
 import com.minecraftmarket.minecraftmarket.bukkit.Task.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.Task.SignsTask;
 import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
@@ -84,6 +85,7 @@ public final class MCMarket extends JavaPlugin {
         if (sentryAppender != null) {
             Logger logger = (Logger) LogManager.getRootLogger();
             logger.removeAppender(sentryAppender);
+            sentryAppender.shutdown();
         }
     }
 
@@ -168,6 +170,8 @@ public final class MCMarket extends JavaPlugin {
 
         Logger logger = (Logger) LogManager.getRootLogger();
         sentryAppender = new BukkitSentryAppender(raven);
+
+        sentryAppender.addEventEditor(new PluginInformation());
 
         sentryAppender.start();
         logger.addAppender(sentryAppender);
