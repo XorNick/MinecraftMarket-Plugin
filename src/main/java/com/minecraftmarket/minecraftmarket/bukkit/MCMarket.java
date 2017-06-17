@@ -172,6 +172,9 @@ public final class MCMarket extends JavaPlugin {
 
         sentryAppender.addEventEditor(new PluginInformation());
 
+        sentryAppender.setServerName(getServer().getServerName());
+        sentryAppender.setRelease(getDescription().getVersion());
+
         sentryAppender.start();
         logger.addAppender(sentryAppender);
     }
