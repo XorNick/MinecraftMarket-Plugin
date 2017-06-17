@@ -13,7 +13,7 @@ public class PluginInformation extends EventEditor {
     @Override
     public void processEvent(EventBuilder builder, LogEvent event) {
         SortedMap<String, String> pluginVersions = new TreeMap<>();
-        for(Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             pluginVersions.put(plugin.getName(), plugin.getDescription().getVersion());
         }
         builder.withExtra("Plugins", pluginVersions);

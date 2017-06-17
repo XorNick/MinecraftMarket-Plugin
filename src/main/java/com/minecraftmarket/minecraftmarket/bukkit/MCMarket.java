@@ -80,13 +80,12 @@ public final class MCMarket extends JavaPlugin {
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelTasks(this);
-        i18n.onDisable();
-
         if (sentryAppender != null) {
             Logger logger = (Logger) LogManager.getRootLogger();
             logger.removeAppender(sentryAppender);
             sentryAppender.shutdown();
         }
+        i18n.onDisable();
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
