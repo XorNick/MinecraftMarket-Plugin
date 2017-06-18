@@ -6,7 +6,7 @@
 
     <groupId>com.minecraftmarket</groupId>
     <artifactId>MinecraftMarket</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
@@ -60,9 +60,43 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.25</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <!-- Copy the jar file to a test server, activate by using -DcopyResult="/path/to/test/server" -->
+        <profile>
+            <id>test-locally</id>
+            <activation>
+                <property>
+                    <name>copyResult</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.8</version>
+                        <configuration>
+                            <target>
+                                <copy file="./target/${project.build.finalName}.jar" tofile="${copyResult}\${project.build.finalName}.jar"/>
+                            </target>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -88,6 +122,15 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <relocations>
+                        <!-- Relocate Sentry -->
+                        <relocation>
+                            <pattern>com.getsentry</pattern>
+                            <shadedPattern>com.minecraftmarket.minecraftmarket.shaded.sentry</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
             </plugin>
         </plugins>
         <resources>

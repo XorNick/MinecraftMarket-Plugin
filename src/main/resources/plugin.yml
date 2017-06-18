@@ -2,7 +2,7 @@ name: ${project.name}
 version: ${project.version}
 main: com.minecraftmarket.minecraftmarket.bukkit.MCMarket
 softdepend: [ProtocolLib] # TODO support tab complete for GUI cmds if ProtocolLib is enabled and maybe npc for signs
-authors: [R4G3_BABY]
+authors: [R4G3_BABY, NLThijs48]
 description: ${project.description}
 website: ${project.url}
 

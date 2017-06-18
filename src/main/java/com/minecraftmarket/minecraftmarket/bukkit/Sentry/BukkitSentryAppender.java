@@ -8,39 +8,43 @@ import com.getsentry.raven.event.interfaces.MessageInterface;
 import com.getsentry.raven.event.interfaces.SentryException;
 import com.getsentry.raven.log4j2.SentryAppender;
 import com.minecraftmarket.minecraftmarket.bukkit.Sentry.editors.EventEditor;
+import com.minecraftmarket.minecraftmarket.bukkit.Sentry.editors.PluginInformation;
+import com.minecraftmarket.minecraftmarket.bukkit.Sentry.editors.ServerInformation;
+import com.minecraftmarket.minecraftmarket.bukkit.Sentry.editors.StackInformation;
 import com.r4g3baby.pluginutils.Bukkit.Utils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
-import org.bukkit.Bukkit;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Deque;
+import java.util.List;
+import java.util.Map;
 
 public class BukkitSentryAppender extends SentryAppender {
-    private Set<EventEditor> eventEditors = new HashSet<>();
+    private final List<EventEditor> eventEditors;
 
     public BukkitSentryAppender(Raven raven) {
         super(raven);
+
+        eventEditors = Arrays.asList(
+                new StackInformation(),
+                new ServerInformation(),
+                new PluginInformation()
+        );
     }
 
-    public void shutdown() {
-        for (EventEditor editor : eventEditors) {
-            editor.shutdown();
-        }
-    }
-
-    public void addEventEditor(EventEditor eventEditor) {
-        eventEditors.add(eventEditor);
+    @Override
+    public String getName() {
+        return "MinecraftMarketAppender";
     }
 
     @Override
     protected Event buildEvent(LogEvent event) {
         Message eventMessage = event.getMessage();
         EventBuilder eventBuilder = new EventBuilder()
-                .withTimestamp(new Date(getTimeStamp(event)))
+                .withTimestamp(new Date(SentryReporter.getTimeStamp(event)))
                 .withMessage(eventMessage.getFormattedMessage())
                 .withLogger(event.getLoggerName())
                 .withLevel(levelToEventLevel(event.getLevel()))
@@ -58,7 +62,7 @@ public class BukkitSentryAppender extends SentryAppender {
             eventBuilder.withEnvironment(environment.trim());
         }
 
-        if (eventMessage.getFormattedMessage() != null && !eventMessage.getFormattedMessage().equals(eventMessage.getFormat())) {
+        if (eventMessage.getFormat() != null && eventMessage.getFormattedMessage() != null && !eventMessage.getFormattedMessage().equals(eventMessage.getFormat())) {
             eventBuilder.withSentryInterface(new MessageInterface(
                     eventMessage.getFormat(),
                     formatMessageParameters(eventMessage.getParameters()),
@@ -112,28 +116,11 @@ public class BukkitSentryAppender extends SentryAppender {
         }
 
         raven.runBuilderHelpers(eventBuilder);
-
         for (EventEditor eventEditor : eventEditors) {
-            try {
-                eventEditor.processEvent(eventBuilder, event);
-            } catch (Exception e) {
-                Bukkit.getLogger().severe("EventEditor " + eventEditor.getClass().getName() + " failed: " + ExceptionUtils.getStackTrace(e));
-            }
+            eventEditor.processEvent(eventBuilder, event);
         }
 
         return eventBuilder.build();
-    }
-
-    private long getTimeStamp(LogEvent event) {
-        if (Utils.isForVersion("1.7", "1.8", "1.9", "1.10", "1.11")) {
-            try {
-                Method method = event.getClass().getMethod("getMillis");
-                return (long) method.invoke(event);
-            } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                return Calendar.getInstance().getTimeInMillis();
-            }
-        }
-        return event.getTimeMillis();
     }
 
     private Event.Level levelToEventLevel(Level level) {
