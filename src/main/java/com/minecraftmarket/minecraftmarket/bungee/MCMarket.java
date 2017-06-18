@@ -1,13 +1,13 @@
 package com.minecraftmarket.minecraftmarket.bungee;
 
-import com.minecraftmarket.minecraftmarket.bungee.Commands.MMCmd;
-import com.minecraftmarket.minecraftmarket.bungee.Configs.MainConfig;
-import com.minecraftmarket.minecraftmarket.bungee.Task.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bungee.api.MCMApi;
-import com.r4g3baby.pluginutils.Bungee.Updater;
-import com.r4g3baby.pluginutils.File.FileUtils;
-import com.r4g3baby.pluginutils.I18n.I18n;
-import com.r4g3baby.pluginutils.Metrics.BungeeMetrics;
+import com.minecraftmarket.minecraftmarket.bungee.commands.MMCmd;
+import com.minecraftmarket.minecraftmarket.bungee.configs.MainConfig;
+import com.minecraftmarket.minecraftmarket.bungee.tasks.PurchasesTask;
+import com.r4g3baby.pluginutils.bungee.Updater;
+import com.r4g3baby.pluginutils.file.FileUtils;
+import com.r4g3baby.pluginutils.i18n.I18n;
+import com.r4g3baby.pluginutils.metrics.BungeeMetrics;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;

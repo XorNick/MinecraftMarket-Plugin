@@ -1,21 +1,21 @@
 package com.minecraftmarket.minecraftmarket.bukkit;
 
-import com.minecraftmarket.minecraftmarket.bukkit.Commands.MMCmd;
-import com.minecraftmarket.minecraftmarket.bukkit.Configs.LayoutsConfig;
-import com.minecraftmarket.minecraftmarket.bukkit.Configs.MainConfig;
-import com.minecraftmarket.minecraftmarket.bukkit.Configs.SignsConfig;
-import com.minecraftmarket.minecraftmarket.bukkit.Inventory.InventoryManager;
-import com.minecraftmarket.minecraftmarket.bukkit.Listeners.ShopCmdListener;
-import com.minecraftmarket.minecraftmarket.bukkit.Listeners.SignsListener;
-import com.minecraftmarket.minecraftmarket.bukkit.Sentry.SentryReporter;
-import com.minecraftmarket.minecraftmarket.bukkit.Task.PurchasesTask;
-import com.minecraftmarket.minecraftmarket.bukkit.Task.SignsTask;
 import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
-import com.r4g3baby.pluginutils.Bukkit.Updater;
-import com.r4g3baby.pluginutils.File.FileUtils;
-import com.r4g3baby.pluginutils.I18n.I18n;
-import com.r4g3baby.pluginutils.Inventory.InventoryGUI;
-import com.r4g3baby.pluginutils.Metrics.BukkitMetrics;
+import com.minecraftmarket.minecraftmarket.bukkit.commands.MMCmd;
+import com.minecraftmarket.minecraftmarket.bukkit.configs.LayoutsConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.configs.MainConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.configs.SignsConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.inventory.InventoryManager;
+import com.minecraftmarket.minecraftmarket.bukkit.listeners.ShopCmdListener;
+import com.minecraftmarket.minecraftmarket.bukkit.listeners.SignsListener;
+import com.minecraftmarket.minecraftmarket.bukkit.sentry.SentryReporter;
+import com.minecraftmarket.minecraftmarket.bukkit.tasks.PurchasesTask;
+import com.minecraftmarket.minecraftmarket.bukkit.tasks.SignsTask;
+import com.r4g3baby.pluginutils.bukkit.Updater;
+import com.r4g3baby.pluginutils.file.FileUtils;
+import com.r4g3baby.pluginutils.i18n.I18n;
+import com.r4g3baby.pluginutils.inventory.InventoryGUI;
+import com.r4g3baby.pluginutils.metrics.BukkitMetrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
