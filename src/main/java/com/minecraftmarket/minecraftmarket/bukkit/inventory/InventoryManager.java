@@ -57,7 +57,7 @@ public class InventoryManager {
                             }
                         }
                         invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
-                            player.sendMessage(Utils.color(replaceVars(I18n.tl("prefix") + " " + I18n.tl("gui.itemUrl", "{item_url}"), category, item)));
+                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("gui_item_url", item.getUrl())));
                             return true;
                         });
                     }
@@ -100,7 +100,7 @@ public class InventoryManager {
         if (plugin.isAuthenticated()) {
             mainMenu.open(player);
         } else {
-            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.authKey")));
+            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
         }
     }
 

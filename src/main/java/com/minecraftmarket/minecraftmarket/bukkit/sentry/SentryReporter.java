@@ -9,7 +9,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,7 +76,7 @@ public class SentryReporter {
      * @return The server name
      */
     public String getServerName() {
-        String serverName = Bukkit.getServerName();
+        String serverName = plugin.getServer().getServerName();
 
         // Server name can never be null/empty, this will cause Raven to lookup the hostname and kills the server somehow
         if (Utils.isNullOrEmpty(serverName)) {

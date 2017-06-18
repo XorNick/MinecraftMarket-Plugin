@@ -16,10 +16,10 @@ public class Check extends Cmd {
     @Override
     public void run(CommandSender sender, String[] args) {
         if (plugin.isAuthenticated()) {
-            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.checkPurchases")));
+            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_check_purchases")));
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getPurchasesTask().updatePurchases());
         } else {
-            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>")));
+            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
         }
     }
 }

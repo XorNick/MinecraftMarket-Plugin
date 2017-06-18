@@ -15,6 +15,6 @@ public class Version extends Cmd {
 
     @Override
     public void run(CommandSender sender, String[] args) {
-        sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.currentVersion", plugin.getDescription().getVersion())));
+        sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_current_version", plugin.getDescription().getVersion())));
     }
 }

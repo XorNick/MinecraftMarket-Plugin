@@ -18,13 +18,13 @@ public class ApiKey extends Cmd {
         if (args.length > 0) {
             plugin.setKey(args[0], true, authenticated -> {
                 if (authenticated) {
-                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.keyChanged")));
+                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_key_changed")));
                 } else {
-                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidKey", "/MM apiKey <key>")));
+                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_key", "/MM apiKey <key>")));
                 }
             });
         } else {
-            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.invalidUsage", "/MM apiKey <key>")));
+            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM apiKey <key>")));
         }
     }
 }

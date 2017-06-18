@@ -68,7 +68,7 @@ public final class MCMarket extends JavaPlugin {
 
         new BukkitMetrics(this);
         new Updater(this, 29183, pluginURL -> {
-            getLogger().warning(I18n.tl("newVersion"));
+            getLogger().warning(I18n.tl("new_version"));
             getLogger().warning(pluginURL);
         });
     }
@@ -88,7 +88,7 @@ public final class MCMarket extends JavaPlugin {
             api = new MCMApi(apiKey, mainConfig.isDebug());
             authenticated = api.authAPI();
             if (!authenticated) {
-                getLogger().warning(I18n.tl("invalidKey", "/MM apiKey <key>"));
+                getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
             } else if (inventoryManager != null) {
                 inventoryManager.load();
             }

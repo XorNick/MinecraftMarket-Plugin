@@ -30,7 +30,7 @@ public class SignsListener implements Listener {
             e.setCancelled(true);
             if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                 if (plugin.getSignsConfig().removeDonorSign(e.getBlock())) {
-                    e.getPlayer().sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signRem")));
+                    e.getPlayer().sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                     e.getBlock().breakNaturally();
                 }
@@ -43,7 +43,7 @@ public class SignsListener implements Listener {
                         e.setCancelled(true);
                         if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                             if (plugin.getSignsConfig().removeDonorSign(block)) {
-                                e.getPlayer().sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd.signRem")));
+                                e.getPlayer().sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
                                 plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                 block.breakNaturally();
                             }
