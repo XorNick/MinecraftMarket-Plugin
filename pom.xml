@@ -130,6 +130,12 @@
                             <shadedPattern>com.minecraftmarket.minecraftmarket.shaded.sentry</shadedPattern>
                         </relocation>
                     </relocations>
+                    <artifactSet>
+                        <excludes>
+                            <!-- Already in spigot -->
+                            <exclude>org.apache.logging.log4j</exclude>
+                        </excludes>
+                    </artifactSet>
                 </configuration>
             </plugin>
         </plugins>
