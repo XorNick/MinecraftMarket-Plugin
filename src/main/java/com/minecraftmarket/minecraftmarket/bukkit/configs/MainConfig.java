@@ -11,6 +11,7 @@ public class MainConfig extends BukkitConfigFile {
     private final List<String> shopCommands;
     private final boolean useGUI;
     private final boolean useSigns;
+    private final String dateFormat;
     private final String defaultHeadSkin;
     private final String lang;
     private final boolean debug;
@@ -23,6 +24,7 @@ public class MainConfig extends BukkitConfigFile {
         shopCommands = config.getStringList("ShopCommands");
         useGUI = config.getBoolean("UseGUI");
         useSigns = config.getBoolean("UseSigns");
+        dateFormat = config.getString("DateFormat");
         defaultHeadSkin = config.getString("DefaultHeadSkin");
         lang = config.getString("Lang");
         debug = config.getBoolean("Debug");
@@ -51,6 +53,10 @@ public class MainConfig extends BukkitConfigFile {
 
     public boolean isUseSigns() {
         return useSigns;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
     }
 
     public String getDefaultHeadSkin() {

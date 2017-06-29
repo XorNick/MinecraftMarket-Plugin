@@ -12,15 +12,22 @@ import org.bukkit.block.Skull;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class SignsTask implements Runnable {
     private final MCMarket plugin;
+    private final DateFormat mcmDateFormat;
+    private final DateFormat dateFormat;
 
     public SignsTask(MCMarket plugin) {
         this.plugin = plugin;
+        this.mcmDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.dateFormat = new SimpleDateFormat(plugin.getMainConfig().getDateFormat());
     }
 
     @Override
@@ -91,12 +98,16 @@ public class SignsTask implements Runnable {
     }
 
     private String replaceVars(String msg, MCMApi.RecentDonor recentDonor) {
-        msg = msg.replace("{donor_id}", "" + recentDonor.getId());
-        msg = msg.replace("{donor_name}", recentDonor.getUser());
-        msg = msg.replace("{donor_item}", recentDonor.getItem());
-        msg = msg.replace("{donor_price}", recentDonor.getPrice());
-        msg = msg.replace("{donor_currency}", recentDonor.getCurrency());
-        msg = msg.replace("{donor_date}", recentDonor.getDate());
+        msg = msg.replace("{donor_id}", "" + recentDonor.getId())
+                .replace("{donor_name}", recentDonor.getUser())
+                .replace("{donor_item}", recentDonor.getItem())
+                .replace("{donor_price}", recentDonor.getPrice())
+                .replace("{donor_currency}", recentDonor.getCurrency());
+        try {
+            msg = msg.replace("{donor_date}", dateFormat.format(mcmDateFormat.parse(recentDonor.getDate())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return msg;
     }
 }

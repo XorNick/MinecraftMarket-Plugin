@@ -106,18 +106,18 @@ public class InventoryManager {
 
     private String replaceVars(String msg, MCMApi.Category category, MCMApi.Item item) {
         if (category != null) {
-            msg = msg.replace("{category_id}", "" + category.getId());
-            msg = msg.replace("{category_name}", category.getName());
+            msg = msg.replace("{category_id}", "" + category.getId())
+                    .replace("{category_name}", category.getName());
         }
         if (item != null) {
-            msg = msg.replace("{item_id}", "" + item.getId());
-            msg = msg.replace("{item_name}", item.getName());
-            msg = msg.replace("{item_desc}", item.getDescription());
-            msg = msg.replace("{item_url}", item.getUrl());
-            msg = msg.replace("{item_price}", item.getPrice());
-            msg = msg.replace("{item_currency}", item.getCurrency());
-            msg = msg.replace("{item_category}", item.getCategory());
-            msg = msg.replace("{item_categoryid}", "" + item.getCategoryID());
+            msg = msg.replace("{item_id}", "" + item.getId())
+                    .replace("{item_name}", item.getName())
+                    .replace("{item_desc}", item.getDescription())
+                    .replace("{item_url}", item.getUrl())
+                    .replace("{item_price}", item.getPrice())
+                    .replace("{item_currency}", item.getCurrency())
+                    .replace("{item_category}", item.getCategory())
+                    .replace("{item_categoryid}", "" + item.getCategoryID());
         }
         return msg;
     }
