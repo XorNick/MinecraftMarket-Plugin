@@ -40,12 +40,12 @@ public class SignsTask implements Runnable {
             List<MCMApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
             Map<Integer, Set<SignsConfig.DonorSign>> donorSigns = plugin.getSignsConfig().getDonorSigns();
             for (Integer key : donorSigns.keySet()) {
-                if (key <= recentDonors.size()) {
-                    MCMApi.RecentDonor recentDonor = recentDonors.get(key - 1);
-                    for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
-                        if (donorSign.getBlock().getState() instanceof Sign) {
-                            Sign sign = (Sign) donorSign.getBlock().getState();
-                            List<String> lines = plugin.getLayoutsConfig().getSignsLayout();
+                for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
+                    if (donorSign.getBlock().getState() instanceof Sign) {
+                        Sign sign = (Sign) donorSign.getBlock().getState();
+                        if (key <= recentDonors.size()) {
+                            MCMApi.RecentDonor recentDonor = recentDonors.get(key - 1);
+                            List<String> lines = plugin.getLayoutsConfig().getActiveSignsLayout();
                             if (lines.size() >= 1) {
                                 sign.setLine(0, replaceVars(lines.get(0), recentDonor));
                             }
@@ -78,11 +78,33 @@ public class SignsTask implements Runnable {
                                     });
                                 }
                             }
-                            plugin.getServer().getScheduler().runTask(plugin, () -> {
-                                sign.update();
-                                sign.update(true, true);
-                            });
+                        } else {
+                            List<String> lines = plugin.getLayoutsConfig().getWaitingSignsLayout();
+                            if (lines.size() >= 1) {
+                                sign.setLine(0, lines.get(0));
+                            }
+                            if (lines.size() >= 2) {
+                                sign.setLine(1, lines.get(1));
+                            }
+                            if (lines.size() >= 3) {
+                                sign.setLine(2, lines.get(2));
+                            }
+                            if (lines.size() >= 4) {
+                                sign.setLine(3, lines.get(3));
+                            }
+
+                            Block attached = getAttachedBlock(donorSign.getBlock());
+                            if (attached != null) {
+                                Block up = attached.getRelative(BlockFace.UP);
+                                if (up != null && up.getState() instanceof Skull) {
+                                    SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), "Steve", up);
+                                }
+                            }
                         }
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            sign.update();
+                            sign.update(true, true);
+                        });
                     }
                 }
             }

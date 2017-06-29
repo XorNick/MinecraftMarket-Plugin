@@ -12,7 +12,13 @@ GUI:
 
 # Signs layout
 SignsLayout:
-- "&9{donor_name}"
-- "&b{donor_item}"
-- "&e{donor_price}{donor_currency}"
-- "&f{donor_date}"
+  Active:
+  - "&9{donor_name}"
+  - "&b{donor_item}"
+  - "&e{donor_price}{donor_currency}"
+  - "&f{donor_date}"
+  Waiting:
+  - "&cWaiting for $"
+  - ""
+  - ""
+  - ""

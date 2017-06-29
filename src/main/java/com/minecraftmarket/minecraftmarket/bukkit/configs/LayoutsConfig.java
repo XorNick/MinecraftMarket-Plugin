@@ -13,7 +13,8 @@ public class LayoutsConfig extends BukkitConfigFile {
     private final String guiItemTile;
     private final String guiItemName;
     private final List<String> guiItemLore;
-    private final List<String> signsLayout;
+    private final List<String> activeSignsLayout;
+    private final List<String> waitingSignsLayout;
 
     public LayoutsConfig(JavaPlugin plugin) {
         super(plugin, "layouts");
@@ -24,7 +25,8 @@ public class LayoutsConfig extends BukkitConfigFile {
         guiItemTile = Utils.color(config.getString("GUI.ItemTitle"));
         guiItemName = Utils.color(config.getString("GUI.ItemName"));
         guiItemLore = Utils.colorList(config.getStringList("GUI.ItemLore"));
-        signsLayout = Utils.colorList(config.getStringList("SignsLayout"));
+        activeSignsLayout = Utils.colorList(config.getStringList("SignsLayout.Active"));
+        waitingSignsLayout = Utils.colorList(config.getStringList("SignsLayout.Waiting"));
     }
 
     public String getGuiCategoryTile() {
@@ -51,7 +53,11 @@ public class LayoutsConfig extends BukkitConfigFile {
         return guiItemLore;
     }
 
-    public List<String> getSignsLayout() {
-        return signsLayout;
+    public List<String> getActiveSignsLayout() {
+        return activeSignsLayout;
+    }
+
+    public List<String> getWaitingSignsLayout() {
+        return waitingSignsLayout;
     }
 }
