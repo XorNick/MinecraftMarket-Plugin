@@ -30,8 +30,10 @@ public class MMCmd extends Command implements TabExecutor {
             for (Cmd subCmd : subCmds) {
                 if (subCmd.getCommand().equalsIgnoreCase(args[0])) {
                     subCmd.run(sender, subCmdArgs.toArray(new String[subCmdArgs.size()]));
+                    return;
                 }
             }
+            sendHelp(sender);
         } else {
             sendHelp(sender);
         }
