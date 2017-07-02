@@ -3,8 +3,10 @@ package com.minecraftmarket.minecraftmarket.bungee.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -210,7 +212,7 @@ public class MCMApi {
         }
     }
 
-    private Object makeRequest(String url) throws Exception {
+    private Object makeRequest(String url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL + API_KEY + url).openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");

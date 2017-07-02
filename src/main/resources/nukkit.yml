@@ -1,8 +1,7 @@
 name: ${project.name}
 version: ${project.version}
-main: com.minecraftmarket.minecraftmarket.bukkit.MCMarket
-softdepend: [ProtocolLib] # TODO support tab complete for GUI cmds if ProtocolLib is enabled and maybe npc for signs
-authors: [R4G3_BABY, NLThijs48]
+api: [1.0.0]
+main: com.minecraftmarket.minecraftmarket.nukkit.MCMarket
 description: ${project.description}
 website: ${project.url}
 
@@ -11,7 +10,7 @@ commands:
     permission: minecraftmarket.use
     description: Manage plugin functionalities
     aliases: [mm]
-    usage: /<command> <args>
+    usage: /mm <args>
 
 permissions:
   minecraftmarket.use:

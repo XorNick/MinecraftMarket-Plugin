@@ -1,8 +1,8 @@
-package com.minecraftmarket.minecraftmarket.bukkit.api;
+package com.minecraftmarket.minecraftmarket.nukkit.api;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MCMApi {
+    private final JsonParser PARSER = new JsonParser();
     private final String BASE_URL = "https://minecraftmarket.com/api/1.5/";
     private final String API_KEY;
     private final boolean DEBUG;
@@ -27,10 +28,10 @@ public class MCMApi {
 
     public boolean authAPI() {
         try {
-            JSONObject response = (JSONObject) makeRequest("/auth");
-            JSONArray results = (JSONArray) response.get("result");
-            JSONObject result = (JSONObject) results.get(0);
-            String status = (String) result.get("status");
+            JsonObject response = (JsonObject) makeRequest("/auth");
+            JsonArray results = (JsonArray) response.get("result");
+            JsonObject result = (JsonObject) results.get(0);
+            String status = result.get("status").getAsString();
             if (status.equals("ok")) {
                 return true;
             }
@@ -45,22 +46,22 @@ public class MCMApi {
     public List<Category> getCategories() {
         List<Category> categories = new ArrayList<>();
         try {
-            JSONObject response = (JSONObject) makeRequest("/gui");
-            String status = (String) response.get("status");
+            JsonObject response = (JsonObject) makeRequest("/gui");
+            String status = response.get("status").getAsString();
             if (status.equals("ok")) {
                 Map<Long, List<Item>> items = new HashMap<>();
-                JSONArray itemsArray = (JSONArray) response.get("result");
+                JsonArray itemsArray = (JsonArray) response.get("result");
                 for (Object itemObj : itemsArray) {
-                    JSONObject item = (JSONObject) itemObj;
-                    long id = (long) item.get("id");
-                    String name = (String) item.get("name");
-                    String icon = (String) item.get("iconid");
-                    String description = (String) item.get("description");
-                    String url = (String) item.get("url");
-                    String price = (String) item.get("price");
-                    String currency = (String) item.get("currency");
-                    String category = (String) item.get("category");
-                    long categoryID = (long) item.get("categoryid");
+                    JsonObject item = (JsonObject) itemObj;
+                    long id = item.get("id").getAsLong();
+                    String name = item.get("name").getAsString();
+                    String icon = item.get("iconid").getAsString();
+                    String description = item.get("description").getAsString();
+                    String url = item.get("url").getAsString();
+                    String price = item.get("price").getAsString();
+                    String currency = item.get("currency").getAsString();
+                    String category = item.get("category").getAsString();
+                    long categoryID = item.get("categoryid").getAsLong();
                     if (items.containsKey(categoryID)) {
                         items.get(categoryID).add(new Item(id, name, icon, description, url, price, currency, category, categoryID));
                     } else {
@@ -70,13 +71,13 @@ public class MCMApi {
                     }
                 }
 
-                JSONArray categoriesArray = (JSONArray) response.get("categories");
+                JsonArray categoriesArray = (JsonArray) response.get("categories");
                 for (Object categoryObj : categoriesArray) {
-                    JSONObject category = (JSONObject) categoryObj;
-                    long id = (long) category.get("id");
-                    String name = (String) category.get("name");
-                    String icon = (String) category.get("iconid");
-                    long order = (long) category.get("order");
+                    JsonObject category = (JsonObject) categoryObj;
+                    long id = category.get("id").getAsLong();
+                    String name = category.get("name").getAsString();
+                    String icon = category.get("iconid").getAsString();
+                    long order = category.get("order").getAsLong();
                     List<Item> categoryItems;
                     if (items.containsKey(id)) {
                         categoryItems = items.get(id);
@@ -98,16 +99,16 @@ public class MCMApi {
     public List<RecentDonor> getRecentDonors() {
         List<RecentDonor> recentDonors = new ArrayList<>();
         try {
-            JSONObject response = (JSONObject) makeRequest("/recentdonor");
-            JSONArray recentDonorsArray = (JSONArray) response.get("result");
+            JsonObject response = (JsonObject) makeRequest("/recentdonor");
+            JsonArray recentDonorsArray = (JsonArray) response.get("result");
             for (Object recentDonorObj : recentDonorsArray) {
-                JSONObject recentDonor = (JSONObject) recentDonorObj;
-                long id = (long) recentDonor.get("id");
-                String user = (String) recentDonor.get("username");
-                String item = (String) recentDonor.get("item");
-                String price = String.valueOf(recentDonor.get("price"));
-                String currency = (String) recentDonor.get("currency");
-                String date = (String) recentDonor.get("date");
+                JsonObject recentDonor = (JsonObject) recentDonorObj;
+                long id = recentDonor.get("id").getAsLong();
+                String user = recentDonor.get("username").getAsString();
+                String item = recentDonor.get("item").getAsString();
+                String price = String.valueOf(recentDonor.get("price").getAsLong());
+                String currency = recentDonor.get("currency").getAsString();
+                String date = recentDonor.get("date").getAsString();
                 recentDonors.add(new RecentDonor(id, user, item, price, currency, date));
             }
         } catch (Exception e) {
@@ -121,27 +122,27 @@ public class MCMApi {
     public List<PendingPurchase> getPendingPurchases() {
         List<PendingPurchase> pendingPurchases = new ArrayList<>();
         try {
-            JSONObject response = (JSONObject) makeRequest("/pending");
-            String status = (String) response.get("status");
+            JsonObject response = (JsonObject) makeRequest("/pending");
+            String status = response.get("status").getAsString();
             if (status.equals("ok")) {
-                JSONArray pendingPurchasesArray = (JSONArray) response.get("result");
+                JsonArray pendingPurchasesArray = (JsonArray) response.get("result");
                 for (Object pendingPurchaseObj : pendingPurchasesArray) {
-                    JSONObject pendingPurchase = (JSONObject) pendingPurchaseObj;
-                    long purchaseId = (long) pendingPurchase.get("id");
-                    String purchaseUser = (String) pendingPurchase.get("username");
-                    JSONArray purchaseCommands = (JSONArray) pendingPurchase.get("commands");
+                    JsonObject pendingPurchase = (JsonObject) pendingPurchaseObj;
+                    long purchaseId = pendingPurchase.get("id").getAsLong();
+                    String purchaseUser = pendingPurchase.get("username").getAsString();
+                    JsonArray purchaseCommands = (JsonArray) pendingPurchase.get("commands");
 
                     List<Command> pendingCommands = new ArrayList<>();
                     for (Object purchaseCommandObj : purchaseCommands) {
-                        JSONObject purchaseCommand = (JSONObject) purchaseCommandObj;
-                        long id = (long) purchaseCommand.get("id");
-                        String command = (String) purchaseCommand.get("command");
-                        long delay = (long) purchaseCommand.get("delay");
-                        boolean online = (long) purchaseCommand.get("online") >= 2;
-                        long slots = (long) purchaseCommand.get("slots");
-                        boolean repeat = purchaseCommand.get("repeat").equals("True");
-                        long period = (long) purchaseCommand.get("repeatperiod");
-                        long cycles = (long) purchaseCommand.get("repeatcycles");
+                        JsonObject purchaseCommand = (JsonObject) purchaseCommandObj;
+                        long id = purchaseCommand.get("id").getAsLong();
+                        String command = purchaseCommand.get("command").getAsString();
+                        long delay = purchaseCommand.get("delay").getAsLong();
+                        boolean online = purchaseCommand.get("online").getAsLong() >= 2;
+                        long slots = purchaseCommand.get("slots").getAsLong();
+                        boolean repeat = purchaseCommand.get("repeat").getAsString().equals("True");
+                        long period = purchaseCommand.get("repeatperiod").getAsLong();
+                        long cycles = purchaseCommand.get("repeatcycles").getAsLong();
                         pendingCommands.add(new Command(id, command, delay, online, slots, repeat, period, cycles));
                     }
 
@@ -159,27 +160,27 @@ public class MCMApi {
     public List<ExpiredPurchase> getExpiredPurchases() {
         List<ExpiredPurchase> expiredPurchases = new ArrayList<>();
         try {
-            JSONObject response = (JSONObject) makeRequest("/expiry");
-            String status = (String) response.get("status");
+            JsonObject response = (JsonObject) makeRequest("/expiry");
+            String status = response.get("status").getAsString();
             if (status.equals("ok")) {
-                JSONArray expiredPurchasesArray = (JSONArray) response.get("result");
+                JsonArray expiredPurchasesArray = (JsonArray) response.get("result");
                 for (Object expiredPurchaseObj : expiredPurchasesArray) {
-                    JSONObject expiredPurchase = (JSONObject) expiredPurchaseObj;
-                    long purchaseId = (long) expiredPurchase.get("id");
-                    String purchaseUser = (String) expiredPurchase.get("username");
-                    JSONArray purchaseCommands = (JSONArray) expiredPurchase.get("commands");
+                    JsonObject expiredPurchase = (JsonObject) expiredPurchaseObj;
+                    long purchaseId = expiredPurchase.get("id").getAsLong();
+                    String purchaseUser = expiredPurchase.get("username").getAsString();
+                    JsonArray purchaseCommands = (JsonArray) expiredPurchase.get("commands");
 
                     List<Command> expiredCommands = new ArrayList<>();
                     for (Object purchaseCommandObj : purchaseCommands) {
-                        JSONObject purchaseCommand = (JSONObject) purchaseCommandObj;
-                        long id = (long) purchaseCommand.get("id");
-                        String command = (String) purchaseCommand.get("command");
-                        long delay = (long) purchaseCommand.get("delay");
-                        boolean online = (long) purchaseCommand.get("online") >= 2;
-                        long slots = (long) purchaseCommand.get("slots");
-                        boolean repeat = purchaseCommand.get("repeat").equals("True");
-                        long period = (long) purchaseCommand.get("repeatperiod");
-                        long cycles = (long) purchaseCommand.get("repeatcycles");
+                        JsonObject purchaseCommand = (JsonObject) purchaseCommandObj;
+                        long id = purchaseCommand.get("id").getAsLong();
+                        String command = purchaseCommand.get("command").getAsString();
+                        long delay = purchaseCommand.get("delay").getAsLong();
+                        boolean online = purchaseCommand.get("online").getAsLong() >= 2;
+                        long slots = purchaseCommand.get("slots").getAsLong();
+                        boolean repeat = purchaseCommand.get("repeat").getAsString().equals("True");
+                        long period = purchaseCommand.get("repeatperiod").getAsLong();
+                        long cycles = purchaseCommand.get("repeatcycles").getAsLong();
                         expiredCommands.add(new Command(id, command, delay, online, slots, repeat, period, cycles));
                     }
 
@@ -196,8 +197,8 @@ public class MCMApi {
 
     public void setExecuted(long itemID, boolean repeatOnError) {
         try {
-            JSONObject response = (JSONObject) makeRequest(String.format("/executed/%s", itemID));
-            String status = (String) response.get("status");
+            JsonObject response = (JsonObject) makeRequest(String.format("/executed/%s", itemID));
+            String status = response.get("status").getAsString();
             if (!status.equals("ok") && repeatOnError) {
                 setExecuted(itemID, false);
             }
@@ -211,7 +212,7 @@ public class MCMApi {
         }
     }
 
-    private Object makeRequest(String url) throws IOException, ParseException {
+    private Object makeRequest(String url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL + API_KEY + url).openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
@@ -219,7 +220,7 @@ public class MCMApi {
         conn.setConnectTimeout(3000);
         conn.setReadTimeout(3000);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        return JSONValue.parseWithException(bufferedReader);
+        return PARSER.parse(bufferedReader);
     }
 
     public class Category {

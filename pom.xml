@@ -26,6 +26,10 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>regularbox</id>
+            <url>http://ci.regularbox.com/plugin/repository/everything/</url>
+        </repository>
+        <repository>
             <id>r4g3baby-repo</id>
             <url>https://repo.r4g3baby.com/repository/maven-public/</url>
         </repository>
@@ -45,9 +49,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>cn.nukkit</groupId>
+            <artifactId>nukkit</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.r4g3baby</groupId>
             <artifactId>PluginUtils</artifactId>
-            <version>1.0.8</version>
+            <version>1.1.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
