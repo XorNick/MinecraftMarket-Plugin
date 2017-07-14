@@ -4,11 +4,12 @@ import com.getsentry.raven.Raven;
 import com.getsentry.raven.RavenFactory;
 import com.getsentry.raven.dsn.InvalidDsnException;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.r4g3baby.pluginutils.bukkit.Utils;
+import com.minecraftmarket.minecraftmarket.common.utils.Utils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
+import org.bukkit.Bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -110,7 +111,7 @@ public class SentryReporter {
      * @return Timestamp of the LogEvent
      */
     public static long getTimeStamp(LogEvent event) {
-        if (Utils.isForVersion("1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11")) {
+        if (isForVersion("1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11")) {
             try {
                 Method method = event.getClass().getMethod("getMillis");
                 return (long) method.invoke(event);
@@ -119,5 +120,15 @@ public class SentryReporter {
             }
         }
         return event.getTimeMillis();
+    }
+
+    private static boolean isForVersion(String... versions) {
+        String bVersion = Bukkit.getBukkitVersion();
+        for (String version : versions) {
+            if (bVersion.equals(version) || bVersion.startsWith(version + ".") || bVersion.startsWith(version + "-")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

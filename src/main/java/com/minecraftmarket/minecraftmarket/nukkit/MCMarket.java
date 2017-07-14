@@ -5,16 +5,17 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.TextFormat;
-import com.minecraftmarket.minecraftmarket.nukkit.api.MCMApi;
+import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import com.minecraftmarket.minecraftmarket.nukkit.commands.ApiKey;
 import com.minecraftmarket.minecraftmarket.nukkit.commands.Check;
 import com.minecraftmarket.minecraftmarket.nukkit.commands.Cmd;
 import com.minecraftmarket.minecraftmarket.nukkit.commands.Version;
 import com.minecraftmarket.minecraftmarket.nukkit.configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.nukkit.tasks.PurchasesTask;
-import com.r4g3baby.pluginutils.file.FileUtils;
-import com.r4g3baby.pluginutils.i18n.I18n;
-import com.r4g3baby.pluginutils.nukkit.SpigotUpdater;
+import com.minecraftmarket.minecraftmarket.nukkit.utils.updater.Updater;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public final class MCMarket extends PluginBase {
         purchasesTask = new PurchasesTask(this);
         getServer().getScheduler().scheduleRepeatingTask(this, purchasesTask, 20 * 60 * mainConfig.getCheckInterval(), true);
 
-        new SpigotUpdater(this, 29183, pluginURL -> {
+        new Updater(this, 29183, pluginURL -> {
             getLogger().warning(I18n.tl("new_version"));
             getLogger().warning(pluginURL);
         });
@@ -89,8 +90,8 @@ public final class MCMarket extends PluginBase {
         getServer().getScheduler().scheduleAsyncTask(this, new AsyncTask() {
             @Override
             public void onRun() {
-                api = new MCMApi(apiKey, mainConfig.isDebug());
-                authenticated = api.authAPI();
+                api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+                authenticated = api.getMarketApi().authAPI();
                 if (!authenticated) {
                     getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
                 }
@@ -101,8 +102,8 @@ public final class MCMarket extends PluginBase {
         });
     }
 
-    public MCMApi getApi() {
-        return api;
+    public MCMarketApi getApi() {
+        return api.getMarketApi();
     }
 
     public boolean isAuthenticated() {

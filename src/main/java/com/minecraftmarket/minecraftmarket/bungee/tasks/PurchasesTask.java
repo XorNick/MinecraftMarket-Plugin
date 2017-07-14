@@ -1,8 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bungee.tasks;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
-import com.minecraftmarket.minecraftmarket.bungee.api.MCMApi;
-import com.r4g3baby.pluginutils.bungee.BungeeRunnable;
+import com.minecraftmarket.minecraftmarket.bungee.utils.BungeeRunnable;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.concurrent.TimeUnit;
@@ -21,21 +21,21 @@ public class PurchasesTask implements Runnable {
 
     public void updatePurchases() {
         if (plugin.isAuthenticated()) {
-            for (MCMApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
-                for (MCMApi.Command command : expiredPurchase.getCommands()) {
+            for (MCMarketApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
+                for (MCMarketApi.Command command : expiredPurchase.getCommands()) {
                     runCommand(expiredPurchase.getUser(), command);
                 }
             }
 
-            for (MCMApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
-                for (MCMApi.Command command : pendingPurchase.getCommands()) {
+            for (MCMarketApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
+                for (MCMarketApi.Command command : pendingPurchase.getCommands()) {
                     runCommand(pendingPurchase.getUser(), command);
                 }
             }
         }
     }
 
-    private void runCommand(String user, MCMApi.Command command) {
+    private void runCommand(String user, MCMarketApi.Command command) {
         ProxiedPlayer player = plugin.getProxy().getPlayer(user);
         boolean shouldExecute = true;
         if (command.isOnline() && (player == null || !player.isConnected())) {

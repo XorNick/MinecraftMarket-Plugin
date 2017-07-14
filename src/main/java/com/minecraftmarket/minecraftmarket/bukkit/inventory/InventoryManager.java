@@ -1,12 +1,13 @@
 package com.minecraftmarket.minecraftmarket.bukkit.inventory;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.LayoutsConfig;
-import com.r4g3baby.pluginutils.bukkit.Utils;
-import com.r4g3baby.pluginutils.i18n.I18n;
-import com.r4g3baby.pluginutils.inventory.InventoryGUI;
-import com.r4g3baby.pluginutils.items.ItemStackBuilder;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.inventories.InventoryGUI;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.items.ItemStackBuilder;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -29,11 +30,11 @@ public class InventoryManager {
     public void load() {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             if (plugin.isAuthenticated()) {
-                List<MCMApi.Category> categories = plugin.getApi().getCategories();
+                List<MCMarketApi.Category> categories = plugin.getApi().getCategories();
                 mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), Utils.roundUp(categories.size(), 9), true);
-                for (MCMApi.Category category : categories) {
+                for (MCMarketApi.Category category : categories) {
                     InventoryGUI invCat = new InventoryGUI(replaceVars(layoutsConfig.getGuiItemTile(), category, null), Utils.roundUp(category.getItems().size(), 9), true);
-                    for (MCMApi.Item item : category.getItems()) {
+                    for (MCMarketApi.Item item : category.getItems()) {
                         ItemStackBuilder iconItem = null;
                         if (item.getIcon().contains(":")) {
                             String[] splitedIcon = item.getIcon().split(":");
@@ -57,7 +58,7 @@ public class InventoryManager {
                             }
                         }
                         invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
-                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("gui_item_url", item.getUrl())));
+                            player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("gui_item_url", item.getUrl())));
                             return true;
                         });
                     }
@@ -100,11 +101,11 @@ public class InventoryManager {
         if (plugin.isAuthenticated()) {
             mainMenu.open(player);
         } else {
-            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
+            player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
         }
     }
 
-    private String replaceVars(String msg, MCMApi.Category category, MCMApi.Item item) {
+    private String replaceVars(String msg, MCMarketApi.Category category, MCMarketApi.Item item) {
         if (category != null) {
             msg = msg.replace("{category_id}", "" + category.getId())
                     .replace("{category_name}", category.getName());

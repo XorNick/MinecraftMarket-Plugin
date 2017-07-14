@@ -6,8 +6,8 @@ import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.item.Item;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.scheduler.NukkitRunnable;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.nukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.nukkit.api.MCMApi;
 
 public class PurchasesTask extends AsyncTask {
     private final MCMarket plugin;
@@ -23,21 +23,21 @@ public class PurchasesTask extends AsyncTask {
 
     public void updatePurchases() {
         if (plugin.isAuthenticated()) {
-            for (MCMApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
-                for (MCMApi.Command command : expiredPurchase.getCommands()) {
+            for (MCMarketApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
+                for (MCMarketApi.Command command : expiredPurchase.getCommands()) {
                     runCommand(expiredPurchase.getUser(), command);
                 }
             }
 
-            for (MCMApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
-                for (MCMApi.Command command : pendingPurchase.getCommands()) {
+            for (MCMarketApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
+                for (MCMarketApi.Command command : pendingPurchase.getCommands()) {
                     runCommand(pendingPurchase.getUser(), command);
                 }
             }
         }
     }
 
-    private void runCommand(String user, MCMApi.Command command) {
+    private void runCommand(String user, MCMarketApi.Command command) {
         Player player = Server.getInstance().getPlayerExact(user);
         boolean shouldExecute = true;
         if (command.isOnline() && (player == null || !player.isOnline())) {

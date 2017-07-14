@@ -1,13 +1,14 @@
 package com.minecraftmarket.minecraftmarket.bungee;
 
-import com.minecraftmarket.minecraftmarket.bungee.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.bungee.commands.MMCmd;
 import com.minecraftmarket.minecraftmarket.bungee.configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.bungee.tasks.PurchasesTask;
-import com.r4g3baby.pluginutils.bungee.Updater;
-import com.r4g3baby.pluginutils.file.FileUtils;
-import com.r4g3baby.pluginutils.i18n.I18n;
-import com.r4g3baby.pluginutils.metrics.BungeeMetrics;
+import com.minecraftmarket.minecraftmarket.bungee.utils.metrics.Metrics;
+import com.minecraftmarket.minecraftmarket.bungee.utils.updater.Updater;
+import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
@@ -38,7 +39,7 @@ public final class MCMarket extends Plugin {
         purchasesTask = new PurchasesTask(this);
         getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
 
-        new BungeeMetrics(this);
+        new Metrics(this);
         new Updater(this, 29183, pluginURL -> {
             getLogger().warning(I18n.tl("new_version"));
             getLogger().warning(pluginURL);
@@ -56,8 +57,8 @@ public final class MCMarket extends Plugin {
             mainConfig.setApiKey(apiKey);
         }
         getProxy().getScheduler().runAsync(this, () -> {
-            api = new MCMApi(apiKey, mainConfig.isDebug());
-            authenticated = api.authAPI();
+            api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+            authenticated = api.getMarketApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
             }
@@ -67,8 +68,8 @@ public final class MCMarket extends Plugin {
         });
     }
 
-    public MCMApi getApi() {
-        return api;
+    public MCMarketApi getApi() {
+        return api.getMarketApi();
     }
 
     public boolean isAuthenticated() {

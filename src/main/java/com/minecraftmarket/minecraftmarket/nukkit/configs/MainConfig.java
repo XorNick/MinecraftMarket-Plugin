@@ -1,9 +1,9 @@
 package com.minecraftmarket.minecraftmarket.nukkit.configs;
 
 import cn.nukkit.plugin.PluginBase;
-import com.r4g3baby.pluginutils.configs.NukkitConfigFile;
+import com.minecraftmarket.minecraftmarket.nukkit.utils.config.ConfigFile;
 
-public class MainConfig extends NukkitConfigFile {
+public class MainConfig extends ConfigFile {
     private final String apiKey;
     private final int checkInterval;
     private final String lang;

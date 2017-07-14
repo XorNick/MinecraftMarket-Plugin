@@ -1,10 +1,10 @@
 package com.minecraftmarket.minecraftmarket.bukkit.tasks;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.SignsConfig;
-import com.r4g3baby.pluginutils.items.SkullUtils;
-import com.r4g3baby.pluginutils.mojang.ProfileUtils;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.items.SkullUtils;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.mojang.ProfileUtils;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -37,14 +37,14 @@ public class SignsTask implements Runnable {
 
     public void updateSigns() {
         if (plugin.isAuthenticated()) {
-            List<MCMApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
+            List<MCMarketApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
             Map<Integer, Set<SignsConfig.DonorSign>> donorSigns = plugin.getSignsConfig().getDonorSigns();
             for (Integer key : donorSigns.keySet()) {
                 for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
                     if (donorSign.getBlock().getState() instanceof Sign) {
                         Sign sign = (Sign) donorSign.getBlock().getState();
                         if (key <= recentDonors.size()) {
-                            MCMApi.RecentDonor recentDonor = recentDonors.get(key - 1);
+                            MCMarketApi.RecentDonor recentDonor = recentDonors.get(key - 1);
                             List<String> lines = plugin.getLayoutsConfig().getActiveSignsLayout();
                             if (lines.size() >= 1) {
                                 sign.setLine(0, replaceVars(lines.get(0), recentDonor));
@@ -119,7 +119,7 @@ public class SignsTask implements Runnable {
         return null;
     }
 
-    private String replaceVars(String msg, MCMApi.RecentDonor recentDonor) {
+    private String replaceVars(String msg, MCMarketApi.RecentDonor recentDonor) {
         msg = msg.replace("{donor_id}", "" + recentDonor.getId())
                 .replace("{donor_name}", recentDonor.getUser())
                 .replace("{donor_item}", recentDonor.getItem())

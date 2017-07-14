@@ -1,9 +1,9 @@
 package com.minecraftmarket.minecraftmarket.bungee.configs;
 
-import com.r4g3baby.pluginutils.configs.BungeeConfigFile;
+import com.minecraftmarket.minecraftmarket.bungee.utils.config.ConfigFile;
 import net.md_5.bungee.api.plugin.Plugin;
 
-public class MainConfig extends BungeeConfigFile {
+public class MainConfig extends ConfigFile {
     private final String apiKey;
     private final int checkInterval;
     private final String lang;

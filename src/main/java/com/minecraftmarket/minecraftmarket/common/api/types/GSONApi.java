@@ -1,34 +1,26 @@
-package com.minecraftmarket.minecraftmarket.nukkit.api;
+package com.minecraftmarket.minecraftmarket.common.api.types;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.json.simple.parser.ParseException;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MCMApi {
+public class GSONApi extends MCMarketApi {
     private final JsonParser PARSER = new JsonParser();
-    private final String BASE_URL = "https://minecraftmarket.com/api/1.5/";
-    private final String API_KEY;
-    private final boolean DEBUG;
 
-    public MCMApi(String apiKey, boolean debug) {
-        API_KEY = apiKey;
-        DEBUG = debug;
+    public GSONApi(String key, boolean debug) {
+        super(key, debug);
     }
 
+    @Override
     public boolean authAPI() {
         try {
-            JsonObject response = (JsonObject) makeRequest("/auth");
+            JsonObject response = (JsonObject) PARSER.parse(makeRequest("/auth"));
             JsonArray results = (JsonArray) response.get("result");
             JsonObject result = (JsonObject) results.get(0);
             String status = result.get("status").getAsString();
@@ -43,10 +35,11 @@ public class MCMApi {
         return false;
     }
 
+    @Override
     public List<Category> getCategories() {
         List<Category> categories = new ArrayList<>();
         try {
-            JsonObject response = (JsonObject) makeRequest("/gui");
+            JsonObject response = (JsonObject) PARSER.parse(makeRequest("/gui"));
             String status = response.get("status").getAsString();
             if (status.equals("ok")) {
                 Map<Long, List<Item>> items = new HashMap<>();
@@ -96,10 +89,11 @@ public class MCMApi {
         return categories;
     }
 
+    @Override
     public List<RecentDonor> getRecentDonors() {
         List<RecentDonor> recentDonors = new ArrayList<>();
         try {
-            JsonObject response = (JsonObject) makeRequest("/recentdonor");
+            JsonObject response = (JsonObject) PARSER.parse(makeRequest("/recentdonor"));
             JsonArray recentDonorsArray = (JsonArray) response.get("result");
             for (Object recentDonorObj : recentDonorsArray) {
                 JsonObject recentDonor = (JsonObject) recentDonorObj;
@@ -119,10 +113,11 @@ public class MCMApi {
         return recentDonors;
     }
 
+    @Override
     public List<PendingPurchase> getPendingPurchases() {
         List<PendingPurchase> pendingPurchases = new ArrayList<>();
         try {
-            JsonObject response = (JsonObject) makeRequest("/pending");
+            JsonObject response = (JsonObject) PARSER.parse(makeRequest("/pending"));
             String status = response.get("status").getAsString();
             if (status.equals("ok")) {
                 JsonArray pendingPurchasesArray = (JsonArray) response.get("result");
@@ -157,10 +152,11 @@ public class MCMApi {
         return pendingPurchases;
     }
 
+    @Override
     public List<ExpiredPurchase> getExpiredPurchases() {
         List<ExpiredPurchase> expiredPurchases = new ArrayList<>();
         try {
-            JsonObject response = (JsonObject) makeRequest("/expiry");
+            JsonObject response = (JsonObject) PARSER.parse(makeRequest("/expiry"));
             String status = response.get("status").getAsString();
             if (status.equals("ok")) {
                 JsonArray expiredPurchasesArray = (JsonArray) response.get("result");
@@ -195,9 +191,10 @@ public class MCMApi {
         return expiredPurchases;
     }
 
+    @Override
     public void setExecuted(long itemID, boolean repeatOnError) {
         try {
-            JsonObject response = (JsonObject) makeRequest(String.format("/executed/%s", itemID));
+            JsonObject response = (JsonObject) PARSER.parse(makeRequest(String.format("/executed/%s", itemID)));
             String status = response.get("status").getAsString();
             if (!status.equals("ok") && repeatOnError) {
                 setExecuted(itemID, false);
@@ -209,257 +206,6 @@ public class MCMApi {
             if (DEBUG) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private Object makeRequest(String url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(BASE_URL + API_KEY + url).openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setUseCaches(false);
-        conn.setConnectTimeout(3000);
-        conn.setReadTimeout(3000);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        return PARSER.parse(bufferedReader);
-    }
-
-    public class Category {
-        private final long id;
-        private final String name;
-        private final String icon;
-        private final long order;
-        private final List<Item> items;
-
-        Category(long id, String name, String icon, long order, List<Item> items) {
-            this.id = id;
-            this.name = name;
-            this.icon = icon;
-            this.order = order;
-            this.items = items;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getIcon() {
-            return icon;
-        }
-
-        public long getOrder() {
-            return order;
-        }
-
-        public List<Item> getItems() {
-            return items;
-        }
-    }
-
-    public class Item {
-        private final long id;
-        private final String name;
-        private final String icon;
-        private final String description;
-        private final String url;
-        private final String price;
-        private final String currency;
-        private final String category;
-        private final long categoryID;
-
-        Item(long id, String name, String icon, String description, String url, String price, String currency, String category, long categoryID) {
-            this.id = id;
-            this.name = name;
-            this.icon = icon;
-            this.description = description;
-            this.url = url;
-            this.price = price;
-            this.currency = currency;
-            this.category = category;
-            this.categoryID = categoryID;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getIcon() {
-            return icon;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public String getPrice() {
-            return price;
-        }
-
-        public String getCurrency() {
-            return currency;
-        }
-
-        public String getCategory() {
-            return category;
-        }
-
-        public long getCategoryID() {
-            return categoryID;
-        }
-    }
-
-    public class RecentDonor {
-        private final long id;
-        private final String user;
-        private final String item;
-        private final String price;
-        private final String currency;
-        private final String date;
-
-        RecentDonor(long id, String user, String item, String price, String currency, String date) {
-            this.id = id;
-            this.user = user;
-            this.item = item;
-            this.price = price;
-            this.currency = currency;
-            this.date = date;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getUser() {
-            return user;
-        }
-
-        public String getItem() {
-            return item;
-        }
-
-        public String getPrice() {
-            return price;
-        }
-
-        public String getCurrency() {
-            return currency;
-        }
-
-        public String getDate() {
-            return date;
-        }
-    }
-
-    public class PendingPurchase {
-        private final long id;
-        private final String user;
-        private final List<Command> commands;
-
-        PendingPurchase(long id, String user, List<Command> commands) {
-            this.id = id;
-            this.user = user;
-            this.commands = commands;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getUser() {
-            return user;
-        }
-
-        public List<Command> getCommands() {
-            return commands;
-        }
-    }
-
-    public class ExpiredPurchase {
-        private final long id;
-        private final String user;
-        private final List<Command> commands;
-
-        ExpiredPurchase(long id, String user, List<Command> commands) {
-            this.id = id;
-            this.user = user;
-            this.commands = commands;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getUser() {
-            return user;
-        }
-
-        public List<Command> getCommands() {
-            return commands;
-        }
-    }
-
-    public class Command {
-        private final long id;
-        private final String command;
-        private final long delay;
-        private final boolean online;
-        private final long slots;
-        private final boolean repeat;
-        private final long period;
-        private final long cycles;
-
-        Command(long id, String command, long delay, boolean online, long slots, boolean repeat, long period, long cycles) {
-            this.id = id;
-            this.command = command;
-            this.delay = delay;
-            this.online = online;
-            this.slots = slots;
-            this.repeat = repeat;
-            this.period = period;
-            this.cycles = cycles;
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public String getCommand() {
-            return command;
-        }
-
-        public long getDelay() {
-            return delay;
-        }
-
-        public boolean isOnline() {
-            return online;
-        }
-
-        public long getSlots() {
-            return slots;
-        }
-
-        public boolean isRepeat() {
-            return repeat;
-        }
-
-        public long getPeriod() {
-            return period;
-        }
-
-        public long getCycles() {
-            return cycles;
         }
     }
 }

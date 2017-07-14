@@ -1,8 +1,8 @@
 package com.minecraftmarket.minecraftmarket.bukkit.commands.subcmds;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.r4g3baby.pluginutils.bukkit.Utils;
-import com.r4g3baby.pluginutils.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
 import org.bukkit.command.CommandSender;
 
 public class Version extends Cmd {
@@ -15,6 +15,6 @@ public class Version extends Cmd {
 
     @Override
     public void run(CommandSender sender, String[] args) {
-        sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_current_version", plugin.getDescription().getVersion())));
+        sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_current_version", plugin.getDescription().getVersion())));
     }
 }

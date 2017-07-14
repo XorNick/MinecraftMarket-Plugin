@@ -1,8 +1,11 @@
 package com.minecraftmarket.minecraftmarket.bungee.commands;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
-import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.*;
-import com.r4g3baby.pluginutils.bungee.Utils;
+import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.ApiKey;
+import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.Check;
+import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.Cmd;
+import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.Version;
+import com.minecraftmarket.minecraftmarket.bungee.utils.chat.Chat;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
@@ -69,14 +72,14 @@ public class MMCmd extends Command implements TabExecutor {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage(Utils.toComponent(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "================ " + ChatColor.YELLOW + "MinecraftMarket Help " + ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "================"));
+        sender.sendMessage(Chat.toComponent(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "================ " + ChatColor.YELLOW + "MinecraftMarket Help " + ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "================"));
         for (Cmd subCmd : subCmds) {
             if (subCmd.getArgs().isEmpty()) {
-                sender.sendMessage(Utils.toComponent(ChatColor.GOLD + "/MM " + subCmd.getCommand() + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + subCmd.getDescription()));
+                sender.sendMessage(Chat.toComponent(ChatColor.GOLD + "/MM " + subCmd.getCommand() + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + subCmd.getDescription()));
             } else {
-                sender.sendMessage(Utils.toComponent(ChatColor.GOLD + "/MM " + subCmd.getCommand() + " " + subCmd.getArgs() + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + subCmd.getDescription()));
+                sender.sendMessage(Chat.toComponent(ChatColor.GOLD + "/MM " + subCmd.getCommand() + " " + subCmd.getArgs() + ChatColor.DARK_GRAY + " - " + ChatColor.GRAY + subCmd.getDescription()));
             }
         }
-        sender.sendMessage(Utils.toComponent(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "==================================================="));
+        sender.sendMessage(Chat.toComponent(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "==================================================="));
     }
 }

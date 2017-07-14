@@ -6,7 +6,7 @@
 
     <groupId>com.minecraftmarket</groupId>
     <artifactId>MinecraftMarket</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.3</version>
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
@@ -30,8 +30,8 @@
             <url>http://ci.regularbox.com/plugin/repository/everything/</url>
         </repository>
         <repository>
-            <id>r4g3baby-repo</id>
-            <url>https://repo.r4g3baby.com/repository/maven-public/</url>
+            <id>mojang</id>
+            <url>https://libraries.minecraft.net</url>
         </repository>
     </repositories>
 
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.11.2-R0.1-SNAPSHOT</version>
+            <version>1.12-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -55,12 +55,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.r4g3baby</groupId>
-            <artifactId>PluginUtils</artifactId>
-            <version>1.1.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.getsentry.raven</groupId>
             <artifactId>raven-log4j2</artifactId>
             <version>8.0.3</version>
@@ -71,6 +65,12 @@
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.25</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.17</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

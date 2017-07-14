@@ -1,7 +1,7 @@
 package com.minecraftmarket.minecraftmarket.bukkit.tasks;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,21 +23,21 @@ public class PurchasesTask implements Runnable {
 
     public void updatePurchases() {
         if (plugin.isAuthenticated()) {
-            for (MCMApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
-                for (MCMApi.Command command : expiredPurchase.getCommands()) {
+            for (MCMarketApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
+                for (MCMarketApi.Command command : expiredPurchase.getCommands()) {
                     runCommand(expiredPurchase.getUser(), command);
                 }
             }
 
-            for (MCMApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
-                for (MCMApi.Command command : pendingPurchase.getCommands()) {
+            for (MCMarketApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
+                for (MCMarketApi.Command command : pendingPurchase.getCommands()) {
                     runCommand(pendingPurchase.getUser(), command);
                 }
             }
         }
     }
 
-    private void runCommand(String user, MCMApi.Command command) {
+    private void runCommand(String user, MCMarketApi.Command command) {
         Player player = Bukkit.getPlayerExact(user);
         boolean shouldExecute = true;
         if (command.isOnline() && (player == null || !player.isOnline())) {

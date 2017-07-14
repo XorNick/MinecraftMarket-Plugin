@@ -1,8 +1,9 @@
 package com.minecraftmarket.minecraftmarket.bukkit.commands.subcmds;
 
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.r4g3baby.pluginutils.bukkit.Utils;
-import com.r4g3baby.pluginutils.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -36,60 +37,60 @@ public class Signs extends Cmd {
                                         if (block != null) {
                                             if (block.getState() instanceof Sign) {
                                                 if (plugin.getSignsConfig().addDonorSign(Utils.getInt(args[1]), block)) {
-                                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add")));
+                                                    player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add")));
                                                     plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                                 } else {
-                                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add_fail")));
+                                                    player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add_fail")));
                                                 }
                                             } else {
-                                                player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
+                                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
                                             }
                                         } else {
-                                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
+                                            player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
                                         }
                                     } else {
-                                        player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_greater_than", "<order>", 0)));
+                                        player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_greater_than", "<order>", 0)));
                                     }
                                 } else {
-                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_number", args[1])));
+                                    player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_number", args[1])));
                                 }
                             } else {
-                                player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM signs add <order>")));
+                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM signs add <order>")));
                             }
                         } else if (args[0].equalsIgnoreCase("remove")) {
                             Block block = getTargetBlock(player);
                             if (block != null) {
                                 if (block.getState() instanceof Sign) {
                                     if (plugin.getSignsConfig().removeDonorSign(block)) {
-                                        player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
+                                        player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
                                         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                                         block.breakNaturally();
                                     } else {
-                                        player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem_fail")));
+                                        player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem_fail")));
                                     }
                                 } else {
-                                    player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
+                                    player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
                                 }
                             } else {
-                                player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
+                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_block")));
                             }
                         } else if (args[0].equalsIgnoreCase("update")) {
-                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_update")));
+                            player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_update")));
                             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> plugin.getSignsTask().updateSigns());
                         } else {
-                            player.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM signs <add|remove|update>")));
+                            player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM signs <add|remove|update>")));
                         }
                     } else {
-                        sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM signs <add|remove|update>")));
+                        sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM signs <add|remove|update>")));
                     }
                 } else {
-                    sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_sender")));
+                    sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_sender")));
                 }
             } else {
-                sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
+                sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
             }
         } else {
-            sender.sendMessage(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_disabled")));
+            sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_disabled")));
         }
     }
 

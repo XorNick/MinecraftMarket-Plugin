@@ -1,8 +1,9 @@
 package com.minecraftmarket.minecraftmarket.bungee.commands.subcmds;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
-import com.r4g3baby.pluginutils.bungee.Utils;
-import com.r4g3baby.pluginutils.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.bungee.utils.chat.Chat;
+import com.minecraftmarket.minecraftmarket.bungee.utils.chat.Colors;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
 import net.md_5.bungee.api.CommandSender;
 
 public class ApiKey extends Cmd {
@@ -18,13 +19,13 @@ public class ApiKey extends Cmd {
         if (args.length > 0) {
             plugin.setKey(args[0], true, authenticated -> {
                 if (authenticated) {
-                    sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_key_changed"))));
+                    sender.sendMessage(Chat.toComponent(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_key_changed"))));
                 } else {
-                    sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_key", "/MM apiKey <key>"))));
+                    sender.sendMessage(Chat.toComponent(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_key", "/MM apiKey <key>"))));
                 }
             });
         } else {
-            sender.sendMessage(Utils.toComponent(Utils.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM apiKey <key>"))));
+            sender.sendMessage(Chat.toComponent(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_usage", "/MM apiKey <key>"))));
         }
     }
 }

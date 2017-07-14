@@ -1,6 +1,5 @@
 package com.minecraftmarket.minecraftmarket.bukkit;
 
-import com.minecraftmarket.minecraftmarket.bukkit.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.bukkit.commands.MMCmd;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.LayoutsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.MainConfig;
@@ -11,11 +10,13 @@ import com.minecraftmarket.minecraftmarket.bukkit.listeners.SignsListener;
 import com.minecraftmarket.minecraftmarket.bukkit.sentry.SentryReporter;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.SignsTask;
-import com.r4g3baby.pluginutils.bukkit.Updater;
-import com.r4g3baby.pluginutils.file.FileUtils;
-import com.r4g3baby.pluginutils.i18n.I18n;
-import com.r4g3baby.pluginutils.inventory.InventoryGUI;
-import com.r4g3baby.pluginutils.metrics.BukkitMetrics;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.inventories.InventoryGUI;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.metrics.Metrics;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.updater.Updater;
+import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
+import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
+import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -66,7 +67,7 @@ public final class MCMarket extends JavaPlugin {
         purchasesTask = new PurchasesTask(this);
         getServer().getScheduler().runTaskTimerAsynchronously(this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
 
-        new BukkitMetrics(this);
+        new Metrics(this);
         new Updater(this, 29183, pluginURL -> {
             getLogger().warning(I18n.tl("new_version"));
             getLogger().warning(pluginURL);
@@ -85,8 +86,8 @@ public final class MCMarket extends JavaPlugin {
             mainConfig.setApiKey(apiKey);
         }
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            api = new MCMApi(apiKey, mainConfig.isDebug());
-            authenticated = api.authAPI();
+            api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON);
+            authenticated = api.getMarketApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
             } else if (inventoryManager != null) {
@@ -110,8 +111,8 @@ public final class MCMarket extends JavaPlugin {
         return signsConfig;
     }
 
-    public MCMApi getApi() {
-        return api;
+    public MCMarketApi getApi() {
+        return api.getMarketApi();
     }
 
     public boolean isAuthenticated() {

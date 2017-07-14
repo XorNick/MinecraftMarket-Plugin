@@ -1,12 +1,12 @@
 package com.minecraftmarket.minecraftmarket.bukkit.configs;
 
-import com.r4g3baby.pluginutils.bukkit.Utils;
-import com.r4g3baby.pluginutils.configs.BukkitConfigFile;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.config.ConfigFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class LayoutsConfig extends BukkitConfigFile {
+public class LayoutsConfig extends ConfigFile {
     private final String guiCategoryTile;
     private final String guiCategoryName;
     private final List<String> guiCategoryLore;
@@ -19,14 +19,14 @@ public class LayoutsConfig extends BukkitConfigFile {
     public LayoutsConfig(JavaPlugin plugin) {
         super(plugin, "layouts");
 
-        guiCategoryTile = Utils.color(config.getString("GUI.CategoryTitle"));
-        guiCategoryName = Utils.color(config.getString("GUI.CategoryName"));
-        guiCategoryLore = Utils.colorList(config.getStringList("GUI.CategoryLore"));
-        guiItemTile = Utils.color(config.getString("GUI.ItemTitle"));
-        guiItemName = Utils.color(config.getString("GUI.ItemName"));
-        guiItemLore = Utils.colorList(config.getStringList("GUI.ItemLore"));
-        activeSignsLayout = Utils.colorList(config.getStringList("SignsLayout.Active"));
-        waitingSignsLayout = Utils.colorList(config.getStringList("SignsLayout.Waiting"));
+        guiCategoryTile = Colors.color(config.getString("GUI.CategoryTitle"));
+        guiCategoryName = Colors.color(config.getString("GUI.CategoryName"));
+        guiCategoryLore = Colors.colorList(config.getStringList("GUI.CategoryLore"));
+        guiItemTile = Colors.color(config.getString("GUI.ItemTitle"));
+        guiItemName = Colors.color(config.getString("GUI.ItemName"));
+        guiItemLore = Colors.colorList(config.getStringList("GUI.ItemLore"));
+        activeSignsLayout = Colors.colorList(config.getStringList("SignsLayout.Active"));
+        waitingSignsLayout = Colors.colorList(config.getStringList("SignsLayout.Waiting"));
     }
 
     public String getGuiCategoryTile() {

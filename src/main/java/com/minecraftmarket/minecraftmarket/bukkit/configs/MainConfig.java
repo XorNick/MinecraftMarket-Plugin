@@ -1,11 +1,11 @@
 package com.minecraftmarket.minecraftmarket.bukkit.configs;
 
-import com.r4g3baby.pluginutils.configs.BukkitConfigFile;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.config.ConfigFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class MainConfig extends BukkitConfigFile {
+public class MainConfig extends ConfigFile {
     private final String apiKey;
     private final int checkInterval;
     private final List<String> shopCommands;

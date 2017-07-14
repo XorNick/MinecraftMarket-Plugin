@@ -11,7 +11,7 @@ import com.minecraftmarket.minecraftmarket.bukkit.sentry.editors.EventEditor;
 import com.minecraftmarket.minecraftmarket.bukkit.sentry.editors.PluginInformation;
 import com.minecraftmarket.minecraftmarket.bukkit.sentry.editors.ServerInformation;
 import com.minecraftmarket.minecraftmarket.bukkit.sentry.editors.StackInformation;
-import com.r4g3baby.pluginutils.bukkit.Utils;
+import com.minecraftmarket.minecraftmarket.common.utils.Utils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
