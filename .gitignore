@@ -5,6 +5,3 @@
 # maven
 /target
 /dependency-reduced-pom.xml
-
-# compiled jar
-/MinecraftMarket.jar

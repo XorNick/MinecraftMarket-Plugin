@@ -26,8 +26,8 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>regularbox</id>
-            <url>http://ci.regularbox.com/plugin/repository/everything/</url>
+            <id>nukkit-repo</id>
+            <url>https://circleci.com/gh/Nukkit/Nukkit/tree/master</url>
         </repository>
         <repository>
             <id>mojang</id>
