@@ -45,8 +45,6 @@ public final class MCMarket extends JavaPlugin {
 
         reloadConfigs();
 
-        setKey(mainConfig.getApiKey(), false, null);
-
         if (mainConfig.isUseGUI()) {
             inventoryManager = new InventoryManager(this);
             getServer().getPluginManager().registerEvents(new ShopCmdListener(this), this);
@@ -83,6 +81,8 @@ public final class MCMarket extends JavaPlugin {
         signsConfig = new SignsConfig(this);
 
         i18n.updateLocale(mainConfig.getLang());
+
+        setKey(mainConfig.getApiKey(), false, null);
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
@@ -94,7 +94,8 @@ public final class MCMarket extends JavaPlugin {
             authenticated = api.getMarketApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
-            } else if (inventoryManager != null) {
+            }
+            if (inventoryManager != null) {
                 inventoryManager.load();
             }
             if (response != null) {
