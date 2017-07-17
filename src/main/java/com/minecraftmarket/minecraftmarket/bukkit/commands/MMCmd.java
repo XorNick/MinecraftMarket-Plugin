@@ -19,6 +19,7 @@ public class MMCmd implements CommandExecutor, TabCompleter {
         subCmds.add(new ApiKey(plugin));
         subCmds.add(new Signs(plugin));
         subCmds.add(new Check(plugin));
+        subCmds.add(new Reload(plugin));
         subCmds.add(new Version(plugin));
     }
 
