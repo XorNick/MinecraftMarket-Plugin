@@ -43,11 +43,7 @@ public final class MCMarket extends JavaPlugin {
         i18n = new I18n(getLanguageFolder(), getLogger());
         i18n.onEnable();
 
-        mainConfig = new MainConfig(this);
-        layoutsConfig = new LayoutsConfig(this);
-        signsConfig = new SignsConfig(this);
-
-        i18n.updateLocale(mainConfig.getLang());
+        reloadConfigs();
 
         setKey(mainConfig.getApiKey(), false, null);
 
@@ -79,6 +75,14 @@ public final class MCMarket extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
         i18n.onDisable();
         sentryReporter.stop();
+    }
+
+    public void reloadConfigs() {
+        mainConfig = new MainConfig(this);
+        layoutsConfig = new LayoutsConfig(this);
+        signsConfig = new SignsConfig(this);
+
+        i18n.updateLocale(mainConfig.getLang());
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {

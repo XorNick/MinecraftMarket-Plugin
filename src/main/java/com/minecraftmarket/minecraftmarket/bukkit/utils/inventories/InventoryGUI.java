@@ -28,8 +28,8 @@ public class InventoryGUI {
     }
 
     public InventoryGUI(String name, int size, boolean cancelClick) {
-        if (size <= 0) {
-            return;
+        if (size < 9) {
+            size = 9;
         }
         this.inventory = Bukkit.createInventory(null, size, Colors.color(name));
         this.cancelClick = cancelClick;

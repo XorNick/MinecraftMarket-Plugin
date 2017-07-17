@@ -58,6 +58,7 @@ public class InventoryManager {
                             }
                         }
                         invCat.addItem(iconItem.build(), (player, slot, itemStack, clickType) -> {
+                            player.closeInventory();
                             player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("gui_item_url", item.getUrl())));
                             return true;
                         });
