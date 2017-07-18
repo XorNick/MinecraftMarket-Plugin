@@ -11,12 +11,13 @@ import com.minecraftmarket.minecraftmarket.bukkit.sentry.SentryReporter;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.SignsTask;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.inventories.InventoryGUI;
-import com.minecraftmarket.minecraftmarket.bukkit.utils.metrics.Metrics;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.updater.Updater;
 import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.metrics.BukkitMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -43,46 +44,57 @@ public final class MCMarket extends JavaPlugin {
         i18n = new I18n(getLanguageFolder(), getLogger());
         i18n.onEnable();
 
-        reloadConfigs();
+        reloadConfigs(null);
 
-        if (mainConfig.isUseGUI()) {
-            inventoryManager = new InventoryManager(this);
-            getServer().getPluginManager().registerEvents(new ShopCmdListener(this), this);
-            getServer().getPluginManager().registerEvents(InventoryGUI.getListener(), this);
-        }
-
-        if (mainConfig.isUseSigns()) {
-            signsTask = new SignsTask(this);
-            getServer().getScheduler().runTaskTimerAsynchronously(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
-            getServer().getPluginManager().registerEvents(new SignsListener(this), this);
-        }
         getCommand("MinecraftMarket").setExecutor(new MMCmd(this));
 
-        purchasesTask = new PurchasesTask(this);
-        getServer().getScheduler().runTaskTimerAsynchronously(this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
-
-        new Metrics(this);
-        new Updater(this, 29183, pluginURL -> {
-            getLogger().warning(I18n.tl("new_version"));
-            getLogger().warning(pluginURL);
+        new BukkitMetrics(this);
+        new Updater(this, 44031, pluginURL -> {
+            getLogger().info(I18n.tl("new_version"));
+            getLogger().info(pluginURL);
         });
     }
 
     @Override
     public void onDisable() {
+        HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTasks(this);
         i18n.onDisable();
         sentryReporter.stop();
     }
 
-    public void reloadConfigs() {
+    public void reloadConfigs(Response<Boolean> response) {
         mainConfig = new MainConfig(this);
         layoutsConfig = new LayoutsConfig(this);
         signsConfig = new SignsConfig(this);
 
         i18n.updateLocale(mainConfig.getLang());
 
-        setKey(mainConfig.getApiKey(), false, null);
+        HandlerList.unregisterAll(this);
+        getServer().getScheduler().cancelTasks(this);
+
+        setKey(mainConfig.getApiKey(), false, response);
+
+        if (mainConfig.isUseGUI()) {
+            if (inventoryManager == null) {
+                inventoryManager = new InventoryManager(this);
+            }
+            getServer().getPluginManager().registerEvents(new ShopCmdListener(this), this);
+            getServer().getPluginManager().registerEvents(InventoryGUI.getListener(), this);
+        }
+
+        if (mainConfig.isUseSigns()) {
+            if (signsTask == null) {
+                signsTask = new SignsTask(this);
+            }
+            getServer().getScheduler().runTaskTimerAsynchronously(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+            getServer().getPluginManager().registerEvents(new SignsListener(this), this);
+        }
+
+        if (purchasesTask == null) {
+            purchasesTask = new PurchasesTask(this);
+        }
+        getServer().getScheduler().runTaskTimerAsynchronously(this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {

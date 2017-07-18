@@ -3,11 +3,11 @@ package com.minecraftmarket.minecraftmarket.bungee;
 import com.minecraftmarket.minecraftmarket.bungee.commands.MMCmd;
 import com.minecraftmarket.minecraftmarket.bungee.configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.bungee.tasks.PurchasesTask;
-import com.minecraftmarket.minecraftmarket.bungee.utils.metrics.Metrics;
 import com.minecraftmarket.minecraftmarket.bungee.utils.updater.Updater;
 import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.metrics.BungeeMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -28,21 +28,14 @@ public final class MCMarket extends Plugin {
         i18n = new I18n(getLanguageFolder(), getLogger());
         i18n.onEnable();
 
-        mainConfig = new MainConfig(this);
-
-        i18n.updateLocale(mainConfig.getLang());
-
-        setKey(mainConfig.getApiKey(), false, null);
+        reloadConfigs(null);
 
         getProxy().getPluginManager().registerCommand(this, new MMCmd(this));
 
-        purchasesTask = new PurchasesTask(this);
-        getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
-
-        new Metrics(this);
-        new Updater(this, 29183, pluginURL -> {
-            getLogger().warning(I18n.tl("new_version"));
-            getLogger().warning(pluginURL);
+        new BungeeMetrics(this);
+        new Updater(this, 44031, pluginURL -> {
+            getLogger().info(I18n.tl("new_version"));
+            getLogger().info(pluginURL);
         });
     }
 
@@ -50,6 +43,21 @@ public final class MCMarket extends Plugin {
     public void onDisable() {
         getProxy().getScheduler().cancel(this);
         i18n.onDisable();
+    }
+
+    public void reloadConfigs(Response<Boolean> response) {
+        mainConfig = new MainConfig(this);
+
+        i18n.updateLocale(mainConfig.getLang());
+
+        getProxy().getScheduler().cancel(this);
+
+        setKey(mainConfig.getApiKey(), false, response);
+
+        if (purchasesTask == null) {
+            purchasesTask = new PurchasesTask(this);
+        }
+        getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {

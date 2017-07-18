@@ -8,11 +8,9 @@ import cn.nukkit.utils.TextFormat;
 import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.metrics.NukkitMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
-import com.minecraftmarket.minecraftmarket.nukkit.commands.ApiKey;
-import com.minecraftmarket.minecraftmarket.nukkit.commands.Check;
-import com.minecraftmarket.minecraftmarket.nukkit.commands.Cmd;
-import com.minecraftmarket.minecraftmarket.nukkit.commands.Version;
+import com.minecraftmarket.minecraftmarket.nukkit.commands.*;
 import com.minecraftmarket.minecraftmarket.nukkit.configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.nukkit.tasks.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.nukkit.utils.updater.Updater;
@@ -35,22 +33,17 @@ public final class MCMarket extends PluginBase {
         i18n = new I18n(getLanguageFolder(), null);
         i18n.onEnable();
 
-        mainConfig = new MainConfig(this);
-
-        i18n.updateLocale(mainConfig.getLang());
-
-        setKey(mainConfig.getApiKey(), false, null);
+        reloadConfigs(null);
 
         subCmds.add(new ApiKey(this));
         subCmds.add(new Check(this));
+        subCmds.add(new Reload(this));
         subCmds.add(new Version(this));
 
-        purchasesTask = new PurchasesTask(this);
-        getServer().getScheduler().scheduleRepeatingTask(this, purchasesTask, 20 * 60 * mainConfig.getCheckInterval(), true);
-
-        new Updater(this, 29183, pluginURL -> {
-            getLogger().warning(I18n.tl("new_version"));
-            getLogger().warning(pluginURL);
+        new NukkitMetrics(this);
+        new Updater(this, 44031, pluginURL -> {
+            getLogger().info(I18n.tl("new_version"));
+            getLogger().info(pluginURL);
         });
     }
 
@@ -81,6 +74,21 @@ public final class MCMarket extends PluginBase {
             }
         }
         return false;
+    }
+
+    public void reloadConfigs(Response<Boolean> response) {
+        mainConfig = new MainConfig(this);
+
+        i18n.updateLocale(mainConfig.getLang());
+
+        getServer().getScheduler().cancelTask(this);
+
+        setKey(mainConfig.getApiKey(), false, response);
+
+        if (purchasesTask == null) {
+            purchasesTask = new PurchasesTask(this);
+        }
+        getServer().getScheduler().scheduleRepeatingTask(this, purchasesTask, 20 * 60 * mainConfig.getCheckInterval(), true);
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {

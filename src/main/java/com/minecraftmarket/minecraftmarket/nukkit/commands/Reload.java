@@ -1,9 +1,9 @@
-package com.minecraftmarket.minecraftmarket.bukkit.commands.subcmds;
+package com.minecraftmarket.minecraftmarket.nukkit.commands;
 
-import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
+import cn.nukkit.command.CommandSender;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
-import org.bukkit.command.CommandSender;
+import com.minecraftmarket.minecraftmarket.nukkit.MCMarket;
+import com.minecraftmarket.minecraftmarket.nukkit.utils.chat.Colors;
 
 public class Reload extends Cmd {
     private final MCMarket plugin;

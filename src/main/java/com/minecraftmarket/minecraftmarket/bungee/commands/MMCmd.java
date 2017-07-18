@@ -1,10 +1,7 @@
 package com.minecraftmarket.minecraftmarket.bungee.commands;
 
 import com.minecraftmarket.minecraftmarket.bungee.MCMarket;
-import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.ApiKey;
-import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.Check;
-import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.Cmd;
-import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.Version;
+import com.minecraftmarket.minecraftmarket.bungee.commands.subcmds.*;
 import com.minecraftmarket.minecraftmarket.bungee.utils.chat.Chat;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -22,6 +19,7 @@ public class MMCmd extends Command implements TabExecutor {
         super("MinecraftMarket", "minecraftmarket.use", "MM");
         subCmds.add(new ApiKey(plugin));
         subCmds.add(new Check(plugin));
+        subCmds.add(new Reload(plugin));
         subCmds.add(new Version(plugin));
     }
 
