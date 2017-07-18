@@ -41,9 +41,9 @@ public final class MCMarket extends PluginBase {
         subCmds.add(new Version(this));
 
         new NukkitMetrics(this);
-        new Updater(this, 29183, pluginURL -> {
-            getLogger().warning(I18n.tl("new_version"));
-            getLogger().warning(pluginURL);
+        new Updater(this, 44031, pluginURL -> {
+            getLogger().info(I18n.tl("new_version"));
+            getLogger().info(pluginURL);
         });
     }
 
