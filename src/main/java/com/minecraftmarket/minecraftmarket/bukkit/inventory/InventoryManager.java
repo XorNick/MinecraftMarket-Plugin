@@ -18,17 +18,16 @@ import java.util.Map;
 public class InventoryManager {
     private final Map<Long, InventoryGUI> inventories = new HashMap<>();
     private final MCMarket plugin;
-    private final LayoutsConfig layoutsConfig;
     private InventoryGUI mainMenu;
 
     public InventoryManager(MCMarket plugin) {
         this.plugin = plugin;
-        this.layoutsConfig = plugin.getLayoutsConfig();
         load();
     }
 
     public void load() {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            LayoutsConfig layoutsConfig = plugin.getLayoutsConfig();
             if (plugin.isAuthenticated()) {
                 List<MCMarketApi.Category> categories = plugin.getApi().getCategories();
                 mainMenu = new InventoryGUI(layoutsConfig.getGuiCategoryTile(), Utils.roundUp(categories.size(), 9), true);

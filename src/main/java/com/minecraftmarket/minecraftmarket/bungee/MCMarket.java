@@ -28,16 +28,9 @@ public final class MCMarket extends Plugin {
         i18n = new I18n(getLanguageFolder(), getLogger());
         i18n.onEnable();
 
-        mainConfig = new MainConfig(this);
-
-        i18n.updateLocale(mainConfig.getLang());
-
-        setKey(mainConfig.getApiKey(), false, null);
+        reloadConfigs(null);
 
         getProxy().getPluginManager().registerCommand(this, new MMCmd(this));
-
-        purchasesTask = new PurchasesTask(this);
-        getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
 
         new Metrics(this);
         new Updater(this, 29183, pluginURL -> {
@@ -50,6 +43,21 @@ public final class MCMarket extends Plugin {
     public void onDisable() {
         getProxy().getScheduler().cancel(this);
         i18n.onDisable();
+    }
+
+    public void reloadConfigs(Response<Boolean> response) {
+        mainConfig = new MainConfig(this);
+
+        i18n.updateLocale(mainConfig.getLang());
+
+        getProxy().getScheduler().cancel(this);
+
+        setKey(mainConfig.getApiKey(), false, response);
+
+        if (purchasesTask == null) {
+            purchasesTask = new PurchasesTask(this);
+        }
+        getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
