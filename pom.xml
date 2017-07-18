@@ -6,7 +6,7 @@
 
     <groupId>com.minecraftmarket</groupId>
     <artifactId>MinecraftMarket</artifactId>
-    <version>3.2.6</version>
+    <version>3.2.7</version>
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
@@ -27,11 +27,11 @@
         </repository>
         <repository>
             <id>nukkit-repo</id>
-            <url>https://circleci.com/gh/Nukkit/Nukkit/tree/master</url>
+            <url>http://ci.regularbox.com/plugin/repository/everything/</url>
         </repository>
         <repository>
-            <id>mojang</id>
-            <url>https://libraries.minecraft.net</url>
+            <id>mojang-repo</id>
+            <url>https://libraries.minecraft.net/</url>
         </repository>
     </repositories>
 
@@ -53,6 +53,12 @@
             <artifactId>nukkit</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.tinfoiled.mcpe.leveldb</groupId>
+                    <artifactId>leveldb</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.getsentry.raven</groupId>
