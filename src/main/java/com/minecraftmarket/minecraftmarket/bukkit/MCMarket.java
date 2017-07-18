@@ -11,11 +11,11 @@ import com.minecraftmarket.minecraftmarket.bukkit.sentry.SentryReporter;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.SignsTask;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.inventories.InventoryGUI;
-import com.minecraftmarket.minecraftmarket.bukkit.utils.metrics.Metrics;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.updater.Updater;
 import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.metrics.BukkitMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,7 +48,7 @@ public final class MCMarket extends JavaPlugin {
 
         getCommand("MinecraftMarket").setExecutor(new MMCmd(this));
 
-        new Metrics(this);
+        new BukkitMetrics(this);
         new Updater(this, 29183, pluginURL -> {
             getLogger().warning(I18n.tl("new_version"));
             getLogger().warning(pluginURL);

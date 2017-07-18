@@ -8,6 +8,7 @@ import cn.nukkit.utils.TextFormat;
 import com.minecraftmarket.minecraftmarket.common.api.MCMApi;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
+import com.minecraftmarket.minecraftmarket.common.metrics.NukkitMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import com.minecraftmarket.minecraftmarket.nukkit.commands.*;
 import com.minecraftmarket.minecraftmarket.nukkit.configs.MainConfig;
@@ -39,6 +40,7 @@ public final class MCMarket extends PluginBase {
         subCmds.add(new Reload(this));
         subCmds.add(new Version(this));
 
+        new NukkitMetrics(this);
         new Updater(this, 29183, pluginURL -> {
             getLogger().warning(I18n.tl("new_version"));
             getLogger().warning(pluginURL);
