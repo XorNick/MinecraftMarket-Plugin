@@ -143,7 +143,7 @@ public final class MCMarket extends PluginBase {
         if (!langFolder.exists()) {
             langFolder.mkdirs();
         }
-        for (String file : FileUtils.getJarResources(getClass().getProtectionDomain().getCodeSource())) {
+        for (String file : FileUtils.getJarResources(getClass())) {
             if (file.startsWith("langs/") && file.endsWith(".properties")) {
                 File langFile = new File(getDataFolder(), file);
                 if (!langFile.exists()) {
