@@ -2,7 +2,6 @@ package com.minecraftmarket.minecraftmarket.common.metrics;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -18,9 +17,8 @@ import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 public class BungeeMetrics {
-    public static final int B_STATS_VERSION = 1;
+    private static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
-    private static boolean enabled;
     private static String serverUUID;
     private static boolean logFailedRequests;
     private final Plugin plugin;
@@ -28,6 +26,7 @@ public class BungeeMetrics {
     public BungeeMetrics(Plugin plugin) {
         this.plugin = plugin;
 
+        boolean enabled;
         try {
             Path configPath = plugin.getDataFolder().toPath().getParent().resolve("bStats");
             configPath.toFile().mkdirs();

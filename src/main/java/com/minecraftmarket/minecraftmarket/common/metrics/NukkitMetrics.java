@@ -1,9 +1,6 @@
 package com.minecraftmarket.minecraftmarket.common.metrics;
 
-import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.plugin.service.RegisteredServiceProvider;
-import cn.nukkit.plugin.service.ServicePriority;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.LogLevel;
 import com.google.gson.JsonArray;
@@ -14,7 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +18,7 @@ import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
 public class NukkitMetrics {
-    public static final int B_STATS_VERSION = 1;
+    private static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
     private static String serverUUID;
     private static boolean logFailedRequests;
@@ -46,19 +42,7 @@ public class NukkitMetrics {
         serverUUID = config.getString("serverUuid");
         logFailedRequests = config.getBoolean("logFailedRequests", false);
         if (config.getBoolean("enabled", true)) {
-            boolean found = false;
-            for (Class<?> service : Server.getInstance().getServiceManager().getKnownService()) {
-                try {
-                    service.getField("B_STATS_VERSION");
-                    found = true;
-                    break;
-                } catch (NoSuchFieldException ignored) {
-                }
-            }
-            Server.getInstance().getServiceManager().register(NukkitMetrics.class, this, plugin, ServicePriority.NORMAL);
-            if (!found) {
-                startSubmitting();
-            }
+            startSubmitting();
         }
     }
 
@@ -71,40 +55,16 @@ public class NukkitMetrics {
                     timer.cancel();
                     return;
                 }
-                Server.getInstance().getScheduler().scheduleTask(plugin, () -> submitData());
+                plugin.getServer().getScheduler().scheduleTask(plugin, () -> submitData());
             }
         }, 1000 * 60 * 5, 1000 * 60 * 30);
-    }
-
-    public JsonObject getPluginData() {
-        JsonObject data = new JsonObject();
-
-        String pluginName = plugin.getDescription().getName();
-        String pluginVersion = plugin.getDescription().getVersion();
-
-        data.addProperty("pluginName", pluginName);
-        data.addProperty("pluginVersion", pluginVersion);
-        data.add("customCharts", new JsonArray());
-
-        return data;
     }
 
     private void submitData() {
         final JsonObject data = getServerData();
 
-        JsonArray pluginData = new JsonArray();
-        for (Class<?> service : Server.getInstance().getServiceManager().getKnownService()) {
-            try {
-                service.getField("B_STATS_VERSION");
-                try {
-                    RegisteredServiceProvider<?> provider = Server.getInstance().getServiceManager().getProvider(service);
-                    pluginData.add((JsonObject) provider.getService().getMethod("getPluginData").invoke(provider.getProvider()));
-                } catch (NullPointerException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
-                }
-            } catch (NoSuchFieldException ignored) {
-            }
-        }
-
+        final JsonArray pluginData = new JsonArray();
+        pluginData.add(getPluginData());
         data.add("plugins", pluginData);
 
         new Thread(() -> {
@@ -119,9 +79,9 @@ public class NukkitMetrics {
     }
 
     private JsonObject getServerData() {
-        int playerAmount = Server.getInstance().getOnlinePlayers().size();
+        int playerAmount = plugin.getServer().getOnlinePlayers().size();
         int onlineMode = 1;
-        String nukkitVersion = Server.getInstance().getVersion();
+        String nukkitVersion = plugin.getServer().getVersion();
 
         String javaVersion = System.getProperty("java.version");
         String osName = System.getProperty("os.name");
@@ -141,6 +101,19 @@ public class NukkitMetrics {
         data.addProperty("osArch", osArch);
         data.addProperty("osVersion", osVersion);
         data.addProperty("coreCount", coreCount);
+
+        return data;
+    }
+
+    private JsonObject getPluginData() {
+        JsonObject data = new JsonObject();
+
+        String pluginName = plugin.getDescription().getName();
+        String pluginVersion = plugin.getDescription().getVersion();
+
+        data.addProperty("pluginName", pluginName);
+        data.addProperty("pluginVersion", pluginVersion);
+        data.add("customCharts", new JsonArray());
 
         return data;
     }
