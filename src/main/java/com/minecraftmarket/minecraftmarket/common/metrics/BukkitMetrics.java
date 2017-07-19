@@ -1,10 +1,7 @@
 package com.minecraftmarket.minecraftmarket.common.metrics;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,7 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collection;
@@ -25,7 +21,7 @@ import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
 public class BukkitMetrics {
-    public static final int B_STATS_VERSION = 1;
+    private static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
     private static String serverUUID;
     private static boolean logFailedRequests;
@@ -58,19 +54,7 @@ public class BukkitMetrics {
         serverUUID = config.getString("serverUuid");
         logFailedRequests = config.getBoolean("logFailedRequests", false);
         if (config.getBoolean("enabled", true)) {
-            boolean found = false;
-            for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
-                try {
-                    service.getField("B_STATS_VERSION");
-                    found = true;
-                    break;
-                } catch (NoSuchFieldException ignored) {
-                }
-            }
-            Bukkit.getServicesManager().register(BukkitMetrics.class, this, plugin, ServicePriority.Normal);
-            if (!found) {
-                startSubmitting();
-            }
+            startSubmitting();
         }
     }
 
@@ -83,41 +67,16 @@ public class BukkitMetrics {
                     timer.cancel();
                     return;
                 }
-                Bukkit.getScheduler().runTask(plugin, () -> submitData());
+                plugin.getServer().getScheduler().runTask(plugin, () -> submitData());
             }
         }, 1000 * 60 * 5, 1000 * 60 * 30);
-    }
-
-    public JSONObject getPluginData() {
-        JSONObject data = new JSONObject();
-
-        String pluginName = plugin.getDescription().getName();
-        String pluginVersion = plugin.getDescription().getVersion();
-
-        data.put("pluginName", pluginName);
-        data.put("pluginVersion", pluginVersion);
-        data.put("customCharts", new JSONArray());
-
-        return data;
     }
 
     private void submitData() {
         final JSONObject data = getServerData();
 
-        JSONArray pluginData = new JSONArray();
-        for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
-            try {
-                service.getField("B_STATS_VERSION");
-                for (RegisteredServiceProvider<?> provider : Bukkit.getServicesManager().getRegistrations(service)) {
-                    try {
-                        pluginData.add(provider.getService().getMethod("getPluginData").invoke(provider.getProvider()));
-                    } catch (NullPointerException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
-                    }
-                }
-            } catch (NoSuchFieldException ignored) {
-            }
-        }
-
+        final JSONArray pluginData = new JSONArray();
+        pluginData.add(getPluginData());
         data.put("plugins", pluginData);
 
         new Thread(() -> {
@@ -135,12 +94,12 @@ public class BukkitMetrics {
         int playerAmount;
         try {
             Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
-            playerAmount = onlinePlayersMethod.getReturnType().equals(Collection.class) ? ((Collection<?>) onlinePlayersMethod.invoke(Bukkit.getServer())).size() : ((Player[]) onlinePlayersMethod.invoke(Bukkit.getServer())).length;
+            playerAmount = onlinePlayersMethod.getReturnType().equals(Collection.class) ? ((Collection<?>) onlinePlayersMethod.invoke(plugin.getServer())).size() : ((Player[]) onlinePlayersMethod.invoke(plugin.getServer())).length;
         } catch (Exception e) {
-            playerAmount = Bukkit.getOnlinePlayers().size();
+            playerAmount = plugin.getServer().getOnlinePlayers().size();
         }
-        int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
-        String bukkitVersion = Bukkit.getVersion();
+        int onlineMode = plugin.getServer().getOnlineMode() ? 1 : 0;
+        String bukkitVersion = plugin.getServer().getVersion();
         bukkitVersion = bukkitVersion.substring(bukkitVersion.indexOf("MC: ") + 4, bukkitVersion.length() - 1);
 
         String javaVersion = System.getProperty("java.version");
@@ -161,6 +120,19 @@ public class BukkitMetrics {
         data.put("osArch", osArch);
         data.put("osVersion", osVersion);
         data.put("coreCount", coreCount);
+
+        return data;
+    }
+
+    private JSONObject getPluginData() {
+        JSONObject data = new JSONObject();
+
+        String pluginName = plugin.getDescription().getName();
+        String pluginVersion = plugin.getDescription().getVersion();
+
+        data.put("pluginName", pluginName);
+        data.put("pluginVersion", pluginVersion);
+        data.put("customCharts", new JSONArray());
 
         return data;
     }

@@ -2,53 +2,69 @@ package com.minecraftmarket.minecraftmarket.common.metrics;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
+import com.google.inject.Inject;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.scheduler.Scheduler;
+import org.spongepowered.api.scheduler.Task;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
-public class BungeeMetrics {
+public class SpongeMetrics {
     private static final int B_STATS_VERSION = 1;
     private static final String URL = "https://bStats.org/submitData/bukkit";
     private static String serverUUID;
     private static boolean logFailedRequests;
-    private final Plugin plugin;
+    private PluginContainer plugin;
 
-    public BungeeMetrics(Plugin plugin) {
+    @Inject
+    public SpongeMetrics(PluginContainer plugin, @ConfigDir(sharedRoot = true) Path configDir) {
         this.plugin = plugin;
 
         boolean enabled;
         try {
-            Path configPath = plugin.getDataFolder().toPath().getParent().resolve("bStats");
+            Path configPath = configDir.resolve("bStats");
             configPath.toFile().mkdirs();
-            File configFile = new File(configPath.toFile(), "config.yml");
+            File configFile = new File(configPath.toFile(), "config.conf");
+            HoconConfigurationLoader configurationLoader = HoconConfigurationLoader.builder().setFile(configFile).build();
+            CommentedConfigurationNode node;
             if (!configFile.exists()) {
-                writeFile(configFile,
-                        "#bStats collects some data for plugin authors like how many servers are using their plugins.",
-                        "#To honor their work, you should not disable it.",
-                        "#This has nearly no effect on the server performance!",
-                        "#Check out https://bStats.org/ to learn more :)",
-                        "enabled: true",
-                        "serverUuid: \"" + UUID.randomUUID().toString() + "\"",
-                        "logFailedRequests: false");
+                configFile.createNewFile();
+                node = configurationLoader.load();
+
+                node.getNode("enabled").setValue(true);
+                node.getNode("serverUuid").setValue(UUID.randomUUID().toString());
+                node.getNode("logFailedRequests").setValue(false);
+                node.getNode("enabled").setComment(
+                        "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
+                                "To honor their work, you should not disable it.\n" +
+                                "This has nearly no effect on the server performance!\n" +
+                                "Check out https://bStats.org/ to learn more :)"
+                );
+
+                configurationLoader.save(node);
+            } else {
+                node = configurationLoader.load();
             }
 
-            Configuration configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-
-            enabled = configuration.getBoolean("enabled", true);
-            serverUUID = configuration.getString("serverUuid");
-            logFailedRequests = configuration.getBoolean("logFailedRequests", false);
+            enabled = node.getNode("enabled").getBoolean(true);
+            serverUUID = node.getNode("serverUuid").getString();
+            logFailedRequests = node.getNode("logFailedRequests").getBoolean(false);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to load bStats config!", e);
+            plugin.getLogger().warn("Failed to load bStats config!", e);
             return;
         }
 
@@ -58,7 +74,20 @@ public class BungeeMetrics {
     }
 
     private void startSubmitting() {
-        plugin.getProxy().getScheduler().schedule(plugin, this::submitData, 2, 30, TimeUnit.MINUTES);
+        final Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (!Sponge.getPluginManager().isLoaded(plugin.getId())) {
+                    timer.cancel();
+                    return;
+                }
+
+                Scheduler scheduler = Sponge.getScheduler();
+                Task.Builder taskBuilder = scheduler.createTaskBuilder();
+                taskBuilder.execute(() -> submitData()).submit(plugin);
+            }
+        }, 1000 * 60 * 5, 1000 * 60 * 30);
     }
 
     private void submitData() {
@@ -72,21 +101,15 @@ public class BungeeMetrics {
             sendData(data);
         } catch (Exception e) {
             if (logFailedRequests) {
-                plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats!", e);
+                plugin.getLogger().warn("Could not submit plugin stats!", e);
             }
         }
     }
 
     private JsonObject getServerData() {
-        int playerAmount = plugin.getProxy().getOnlineCount();
-        int onlineMode = plugin.getProxy().getConfig().isOnlineMode() ? 1 : 0;
-        String bungeecordVersion = plugin.getProxy().getVersion();
-        if (bungeecordVersion.contains(":")) {
-            String[] split = bungeecordVersion.split(":");
-            if (split.length == 5) {
-                bungeecordVersion = split[2].split("-")[0];
-            }
-        }
+        int playerAmount = Sponge.getServer().getOnlinePlayers().size();
+        int onlineMode = Sponge.getServer().getOnlineMode() ? 1 : 0;
+        String spongeVersion = Sponge.getGame().getPlatform().getMinecraftVersion().getName();
 
         String javaVersion = System.getProperty("java.version");
         String osName = System.getProperty("os.name");
@@ -99,7 +122,7 @@ public class BungeeMetrics {
 
         data.addProperty("playerAmount", playerAmount);
         data.addProperty("onlineMode", onlineMode);
-        data.addProperty("bukkitVersion", "Bungee v" + bungeecordVersion);
+        data.addProperty("bukkitVersion", "Sponge v" + spongeVersion);
 
         data.addProperty("javaVersion", javaVersion);
         data.addProperty("osName", osName);
@@ -113,8 +136,8 @@ public class BungeeMetrics {
     private JsonObject getPluginData() {
         JsonObject data = new JsonObject();
 
-        String pluginName = plugin.getDescription().getName();
-        String pluginVersion = plugin.getDescription().getVersion();
+        String pluginName = plugin.getName();
+        String pluginVersion = plugin.getVersion().orElse("unknown");
 
         data.addProperty("pluginName", pluginName);
         data.addProperty("pluginVersion", pluginVersion);
@@ -158,20 +181,5 @@ public class BungeeMetrics {
         gzip.write(str.getBytes("UTF-8"));
         gzip.close();
         return outputStream.toByteArray();
-    }
-
-    private void writeFile(File file, String... lines) throws IOException {
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        try (
-                FileWriter fileWriter = new FileWriter(file);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)
-        ) {
-            for (String line : lines) {
-                bufferedWriter.write(line);
-                bufferedWriter.newLine();
-            }
-        }
     }
 }

@@ -9,7 +9,7 @@ public class ApiKey extends Cmd {
     private final MCMarket plugin;
 
     public ApiKey(MCMarket plugin) {
-        super("apiKey", "Change APIKey", "<key>");
+        super("apikey", "Change APIKey", "<key>");
         this.plugin = plugin;
     }
 
@@ -20,7 +20,7 @@ public class ApiKey extends Cmd {
                 if (authenticated) {
                     sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_key_changed")));
                 } else {
-                    sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_key", "/MM apiKey <key>")));
+                    sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("api_auth_failed")));
                 }
             });
         } else {

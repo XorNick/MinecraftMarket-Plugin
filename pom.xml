@@ -6,7 +6,7 @@
 
     <groupId>com.minecraftmarket</groupId>
     <artifactId>MinecraftMarket</artifactId>
-    <version>3.2.7</version>
+    <version>3.3.0</version>
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <url>https://minecraftmarket.com</url>
+    <url>https://www.minecraftmarket.com</url>
 
     <repositories>
         <repository>
@@ -28,6 +28,10 @@
         <repository>
             <id>nukkit-repo</id>
             <url>http://ci.regularbox.com/plugin/repository/everything/</url>
+        </repository>
+        <repository>
+            <id>sponge-repo</id>
+            <url>https://repo.spongepowered.org/maven/</url>
         </repository>
         <repository>
             <id>mojang-repo</id>
@@ -59,6 +63,12 @@
                     <artifactId>leveldb</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.getsentry.raven</groupId>

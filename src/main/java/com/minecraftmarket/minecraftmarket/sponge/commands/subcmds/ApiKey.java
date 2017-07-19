@@ -1,9 +1,9 @@
-package com.minecraftmarket.minecraftmarket.bukkit.commands.subcmds;
+package com.minecraftmarket.minecraftmarket.sponge.commands.subcmds;
 
-import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
-import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
 import com.minecraftmarket.minecraftmarket.common.i18n.I18n;
-import org.bukkit.command.CommandSender;
+import com.minecraftmarket.minecraftmarket.sponge.MCMarket;
+import com.minecraftmarket.minecraftmarket.sponge.utils.chat.Colors;
+import org.spongepowered.api.command.CommandSource;
 
 public class ApiKey extends Cmd {
     private final MCMarket plugin;
@@ -14,7 +14,7 @@ public class ApiKey extends Cmd {
     }
 
     @Override
-    public void run(CommandSender sender, String[] args) {
+    public void run(CommandSource sender, String[] args) {
         if (args.length > 0) {
             plugin.setKey(args[0], true, authenticated -> {
                 if (authenticated) {

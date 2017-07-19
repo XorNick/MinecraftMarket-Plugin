@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.List;
 
 public abstract class MCMarketApi {
-    private final String BASE_URL = "https://minecraftmarket.com/api/1.5/";
+    private final String BASE_URL = "https://www.minecraftmarket.com/api/1.5/";
     private final String API_KEY;
     protected final boolean DEBUG;
 
