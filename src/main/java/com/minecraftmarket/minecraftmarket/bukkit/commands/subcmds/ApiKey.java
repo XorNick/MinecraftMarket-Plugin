@@ -20,7 +20,7 @@ public class ApiKey extends Cmd {
                 if (authenticated) {
                     sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_key_changed")));
                 } else {
-                    sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_invalid_key", "/MM apiKey <key>")));
+                    sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("api_auth_failed")));
                 }
             });
         } else {
