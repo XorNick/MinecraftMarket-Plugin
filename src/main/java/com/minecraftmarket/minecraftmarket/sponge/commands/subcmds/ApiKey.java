@@ -9,7 +9,7 @@ public class ApiKey extends Cmd {
     private final MCMarket plugin;
 
     public ApiKey(MCMarket plugin) {
-        super("apiKey", "Change APIKey", "<key>");
+        super("apikey", "Change APIKey", "<key>");
         this.plugin = plugin;
     }
 
