@@ -2,6 +2,7 @@ package com.minecraftmarket.minecraftmarket.nukkit;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.event.HandlerList;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.TextFormat;
@@ -49,6 +50,7 @@ public final class MCMarket extends PluginBase {
 
     @Override
     public void onDisable() {
+        HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTask(this);
         i18n.onDisable();
     }
@@ -81,6 +83,7 @@ public final class MCMarket extends PluginBase {
 
         i18n.updateLocale(mainConfig.getLang());
 
+        HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTask(this);
 
         setKey(mainConfig.getApiKey(), false, response);
