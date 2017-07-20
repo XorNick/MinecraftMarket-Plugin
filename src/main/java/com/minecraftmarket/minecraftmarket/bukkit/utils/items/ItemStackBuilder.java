@@ -1,14 +1,11 @@
 package com.minecraftmarket.minecraftmarket.bukkit.utils.items;
 
 import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,28 +98,6 @@ public class ItemStackBuilder {
     public ItemStackBuilder clearEnchantments() {
         for (Enchantment enchantment : itemStack.getEnchantments().keySet()) {
             itemStack.removeEnchantment(enchantment);
-        }
-        return this;
-    }
-
-    public ItemStackBuilder withOwner(String owner) {
-        if (itemStack.getItemMeta() instanceof SkullMeta) {
-            SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-            meta.setOwner(owner);
-            itemStack.setItemMeta(meta);
-        } else {
-            throw new IllegalArgumentException("withOwner is only applicable for player skulls!");
-        }
-        return this;
-    }
-
-    public ItemStackBuilder withColor(Color color) {
-        if (itemStack.getItemMeta() instanceof LeatherArmorMeta) {
-            LeatherArmorMeta meta = (LeatherArmorMeta) itemStack.getItemMeta();
-            meta.setColor(color);
-            itemStack.setItemMeta(meta);
-        } else {
-            throw new IllegalArgumentException("withColor is only applicable for leather armor!");
         }
         return this;
     }

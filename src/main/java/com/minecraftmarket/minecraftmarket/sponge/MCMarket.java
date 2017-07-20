@@ -75,8 +75,8 @@ public final class MCMarket {
         Sponge.getCommandManager().register(this, mainCMD, "minecraftmarket", "mm");
 
         new Updater(Sponge.getPluginManager().fromInstance(this).orElse(null), 44031, pluginURL -> {
-            logger.info(I18n.tl("new_version"));
-            logger.info(pluginURL);
+            logger.warn(I18n.tl("new_version"));
+            logger.warn(pluginURL);
         });
     }
 
