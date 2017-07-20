@@ -1,7 +1,5 @@
 package com.minecraftmarket.minecraftmarket.common.utils;
 
-import com.sun.javafx.PlatformUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,22 +30,32 @@ public class FileUtils {
     }
 
     private static URL getLocation(Class<?> c) {
-        if (c == null) return null;
+        if (c == null) {
+            return null;
+        }
 
         try {
             URL codeSourceLocation = c.getProtectionDomain().getCodeSource().getLocation();
-            if (codeSourceLocation != null) return codeSourceLocation;
+            if (codeSourceLocation != null) {
+                return codeSourceLocation;
+            }
         } catch (SecurityException | NullPointerException ignored) {
         }
         URL classResource = c.getResource(c.getSimpleName() + ".class");
-        if (classResource == null) return null;
+        if (classResource == null) {
+            return null;
+        }
 
         String url = classResource.toString();
         String suffix = c.getCanonicalName().replace('.', '/') + ".class";
-        if (!url.endsWith(suffix)) return null;
+        if (!url.endsWith(suffix)) {
+            return null;
+        }
 
         String path = url.substring(0, url.length() - suffix.length());
-        if (path.startsWith("jar:")) path = path.substring(4, path.length() - 2);
+        if (path.startsWith("jar:")) {
+            path = path.substring(4, path.length() - 2);
+        }
 
         try {
             return new URL(path);
@@ -64,7 +72,7 @@ public class FileUtils {
             path = path.substring(4, index);
         }
         try {
-            if (PlatformUtil.isWindows() && path.matches("file:[A-Za-z]:.*")) {
+            if (System.getProperty("os.name").startsWith("Windows") && path.matches("file:[A-Za-z]:.*")) {
                 path = "file:/" + path.substring(5);
             }
             return new File(new URL(path).toURI());
