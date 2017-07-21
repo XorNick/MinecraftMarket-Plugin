@@ -31,16 +31,12 @@ public class SignsListener implements Listener {
         if (plugin.getMainConfig().isUseSigns()) {
             if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                 List<String> lines = Arrays.asList(e.getLines());
-                if (lines.size() > 1) {
-                    if (lines.get(0).equals("[RecentDonor]")) {
-                        if (Utils.isInt(lines.get(1))) {
-                            int order = Utils.getInt(lines.get(1));
-                            if (order > 0) {
-                                if (plugin.getSignsConfig().addDonorSign(order, e.getBlock())) {
-                                    e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add")));
-                                    plugin.getSignsTask().updateSigns();
-                                }
-                            }
+                if (lines.size() > 1 && lines.get(0).equals("[RecentDonor]") && Utils.isInt(lines.get(1))) {
+                    int order = Utils.getInt(lines.get(1));
+                    if (order > 0) {
+                        if (plugin.getSignsConfig().addDonorSign(order, e.getBlock())) {
+                            e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add")));
+                            plugin.getSignsTask().updateSigns();
                         }
                     }
                 }
@@ -51,11 +47,9 @@ public class SignsListener implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
         if (plugin.getSignsConfig().getDonorSignFor(e.getBlock()) != null) {
-            e.setCancelled(true);
             if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                 if (plugin.getSignsConfig().removeDonorSign(e.getBlock())) {
                     e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
-                    e.getBlock().breakNaturally();
                     plugin.getSignsTask().updateSigns();
                 }
             }
@@ -64,11 +58,9 @@ public class SignsListener implements Listener {
                 Block block = e.getBlock().getRelative(blockFace);
                 if (block != null && block.getState() instanceof Sign && Objects.equals(getAttachedBlock(block), e.getBlock())) {
                     if (plugin.getSignsConfig().getDonorSignFor(block) != null) {
-                        e.setCancelled(true);
                         if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
                             if (plugin.getSignsConfig().removeDonorSign(block)) {
                                 e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
-                                block.breakNaturally();
                                 plugin.getSignsTask().updateSigns();
                             }
                         }

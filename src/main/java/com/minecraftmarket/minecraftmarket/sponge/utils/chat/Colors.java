@@ -54,6 +54,14 @@ public class Colors {
         return builder.build();
     }
 
+    public static List<Text> colorList(List<String> list) {
+        List<Text> newList = new ArrayList<>();
+        for (String msg : list) {
+            newList.add(color(msg));
+        }
+        return newList;
+    }
+
     private static void addFormats(Text.Builder builder, TextColor color, List<TextStyle> styles, String s) {
         if (color != null) {
             if (styles.size() == 0) {

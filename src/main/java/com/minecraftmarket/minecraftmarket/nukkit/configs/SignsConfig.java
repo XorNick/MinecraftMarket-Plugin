@@ -22,9 +22,11 @@ public class SignsConfig extends ConfigFile {
             if (Utils.isInt(key)) {
                 Set<DonorSign> signs = new HashSet<>();
                 for (Location loc : stringsToLocArray(config.getStringList(key))) {
-                    BlockEntity block = loc.getLevel().getBlockEntity(loc);
-                    if (block != null && block instanceof BlockEntitySign) {
-                        signs.add(new DonorSign(Utils.getInt(key), block.getBlock()));
+                    if (loc != null) {
+                        BlockEntity block = loc.getLevel().getBlockEntity(loc);
+                        if (block != null && block instanceof BlockEntitySign) {
+                            signs.add(new DonorSign(Utils.getInt(key), block.getBlock()));
+                        }
                     }
                 }
                 donorSigns.put(Utils.getInt(key), signs);
@@ -51,7 +53,11 @@ public class SignsConfig extends ConfigFile {
             for (DonorSign ds : signs) {
                 locs.add(locToString(ds.getBlock().getLocation()));
             }
-            config.set(String.valueOf(key), locs);
+            if (locs.size() > 0) {
+                config.set(String.valueOf(key), locs);
+            } else {
+                config.set(String.valueOf(key), null);
+            }
             saveConfig();
             return true;
         }
@@ -67,7 +73,11 @@ public class SignsConfig extends ConfigFile {
             for (DonorSign ds : signs) {
                 locs.add(locToString(ds.getBlock().getLocation()));
             }
-            config.set(String.valueOf(donorSign.getKey()), locs);
+            if (locs.size() > 0) {
+                config.set(String.valueOf(donorSign.getKey()), locs);
+            } else {
+                config.set(String.valueOf(donorSign.getKey()), null);
+            }
             saveConfig();
             return true;
         }
@@ -110,12 +120,12 @@ public class SignsConfig extends ConfigFile {
     }
 
     private String locToString(Location loc) {
-        return loc.getLevel().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch();
+        return loc.getLevel().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
     }
 
     private Location stringToLoc(String str) {
         String[] a = str.split(",");
-        if (a.length < 6) {
+        if (a.length < 4) {
             return null;
         }
 
@@ -127,10 +137,8 @@ public class SignsConfig extends ConfigFile {
         double x = Double.parseDouble(a[1]);
         double y = Double.parseDouble(a[2]);
         double z = Double.parseDouble(a[3]);
-        float yaw = Float.parseFloat(a[4]);
-        float pitch = Float.parseFloat(a[5]);
 
-        return new Location(x, y, z, yaw, pitch, w);
+        return new Location(x, y, z, w);
     }
 
     private List<Location> stringsToLocArray(List<String> strings) {

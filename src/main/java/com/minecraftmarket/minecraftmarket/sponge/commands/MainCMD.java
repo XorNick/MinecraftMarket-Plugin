@@ -19,6 +19,7 @@ public class MainCMD implements CommandExecutor {
     public MainCMD(MCMarket plugin) {
         subCmds.add(new ApiKey(plugin));
         subCmds.add(new Check(plugin));
+        subCmds.add(new UpdateSigns(plugin));
         subCmds.add(new Reload(plugin));
         subCmds.add(new Version(plugin));
     }
