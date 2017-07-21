@@ -36,7 +36,7 @@ public class SignsListener {
                         int order = Utils.getInt(line2);
                         if (order > 0) {
                             if (plugin.getSignsConfig().addDonorSign(order, e.getTargetTile().getLocation())) {
-                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add")));
+                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("sign_added")));
                                 plugin.getSignsTask().updateSigns();
                             }
                         }
@@ -56,7 +56,7 @@ public class SignsListener {
                     if (optionalLocation.isPresent()) {
                         if (plugin.getSignsConfig().getDonorSignFor(optionalLocation.get()) != null) {
                             if (plugin.getSignsConfig().removeDonorSign(optionalLocation.get())) {
-                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
+                                player.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("sign_removed")));
                                 plugin.getSignsTask().updateSigns();
                             }
                         }

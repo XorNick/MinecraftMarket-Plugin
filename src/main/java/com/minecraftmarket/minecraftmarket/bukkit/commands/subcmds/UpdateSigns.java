@@ -15,11 +15,15 @@ public class UpdateSigns extends Cmd {
 
     @Override
     public void run(CommandSender sender, String[] args) {
-        if (plugin.isAuthenticated()) {
-            sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_update")));
-            plugin.getSignsTask().updateSigns();
+        if (plugin.getMainConfig().isUseSigns()) {
+            if (plugin.isAuthenticated()) {
+                sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_update")));
+                plugin.getSignsTask().updateSigns();
+            } else {
+                sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
+            }
         } else {
-            sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_auth_key")));
+            sender.sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_disabled")));
         }
     }
 }
