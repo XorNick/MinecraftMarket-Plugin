@@ -68,25 +68,27 @@ public class SignsTask implements Runnable {
                                     sign.setLine(3, "");
                                 }
 
-                                Block attached = getAttachedBlock(donorSign.getBlock());
-                                if (attached != null) {
-                                    Block up = attached.getRelative(BlockFace.UP);
-                                    if (up != null && up.getState() instanceof Skull) {
-                                        ProfileUtils.getUniqueId(recentDonor.getUser(), uuid -> {
-                                            if (uuid != null) {
-                                                ProfileUtils.getProfile(uuid.toString(), profile -> {
-                                                    if (profile != null && profile.get("skin") != null) {
-                                                        SkullUtils.setSkullWithNonPlayerProfile(profile.get("skin"), recentDonor.getUser(), up);
-                                                    } else {
-                                                        SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
-                                                    }
-                                                });
-                                            } else {
-                                                SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
-                                            }
-                                        });
+                                plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                    Block attached = getAttachedBlock(donorSign.getBlock());
+                                    if (attached != null) {
+                                        Block up = attached.getRelative(BlockFace.UP);
+                                        if (up != null && up.getState() instanceof Skull) {
+                                            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> ProfileUtils.getUniqueId(recentDonor.getUser(), uuid -> {
+                                                if (uuid != null) {
+                                                    ProfileUtils.getProfile(uuid.toString(), profile -> plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                                        if (profile != null && profile.get("skin") != null) {
+                                                            SkullUtils.setSkullWithNonPlayerProfile(profile.get("skin"), recentDonor.getUser(), up);
+                                                        } else {
+                                                            SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
+                                                        }
+                                                    }));
+                                                } else {
+                                                    plugin.getServer().getScheduler().runTask(plugin, () -> SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up));
+                                                }
+                                            }));
+                                        }
                                     }
-                                }
+                                });
                             } else {
                                 List<String> lines = plugin.getLayoutsConfig().getWaitingSignsLayout();
                                 if (lines.size() == 1) {
@@ -110,13 +112,15 @@ public class SignsTask implements Runnable {
                                     sign.setLine(3, "");
                                 }
 
-                                Block attached = getAttachedBlock(donorSign.getBlock());
-                                if (attached != null) {
-                                    Block up = attached.getRelative(BlockFace.UP);
-                                    if (up != null && up.getState() instanceof Skull) {
-                                        SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), "Steve", up);
+                                plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                    Block attached = getAttachedBlock(donorSign.getBlock());
+                                    if (attached != null) {
+                                        Block up = attached.getRelative(BlockFace.UP);
+                                        if (up != null && up.getState() instanceof Skull) {
+                                            SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), "Steve", up);
+                                        }
                                     }
-                                }
+                                });
                             }
                             plugin.getServer().getScheduler().runTask(plugin, () -> {
                                 sign.update();
