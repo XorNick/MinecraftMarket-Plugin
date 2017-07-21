@@ -87,7 +87,7 @@ public class InventoryGUI {
     public static Listener getListener() {
         return new Listener() {
             @EventHandler
-            public void onInventoryClick(InventoryClickEvent e) {
+            public void onInventoryClickEvent(InventoryClickEvent e) {
                 if (inventories.containsKey(e.getClickedInventory())) {
                     InventoryGUI current = inventories.get(e.getClickedInventory());
                     if (current.cancelClick) {
@@ -100,7 +100,7 @@ public class InventoryGUI {
             }
 
             @EventHandler
-            public void onInventoryClose(InventoryCloseEvent e) {
+            public void onInventoryCloseEvent(InventoryCloseEvent e) {
                 if (inventories.containsKey(e.getInventory())) {
                     if ((e.getInventory().getViewers().size() - 1) <= 0) {
                         InventoryGUI current = inventories.get(e.getInventory());

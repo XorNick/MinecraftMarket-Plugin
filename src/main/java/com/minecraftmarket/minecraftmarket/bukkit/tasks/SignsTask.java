@@ -36,79 +36,99 @@ public class SignsTask implements Runnable {
     }
 
     public void updateSigns() {
-        if (plugin.isAuthenticated()) {
-            List<MCMarketApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
-            Map<Integer, Set<SignsConfig.DonorSign>> donorSigns = plugin.getSignsConfig().getDonorSigns();
-            for (Integer key : donorSigns.keySet()) {
-                for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
-                    if (donorSign.getBlock().getState() instanceof Sign) {
-                        Sign sign = (Sign) donorSign.getBlock().getState();
-                        if (key <= recentDonors.size()) {
-                            MCMarketApi.RecentDonor recentDonor = recentDonors.get(key - 1);
-                            List<String> lines = plugin.getLayoutsConfig().getActiveSignsLayout();
-                            if (lines.size() >= 1) {
-                                sign.setLine(0, replaceVars(lines.get(0), recentDonor));
-                            }
-                            if (lines.size() >= 2) {
-                                sign.setLine(1, replaceVars(lines.get(1), recentDonor));
-                            }
-                            if (lines.size() >= 3) {
-                                sign.setLine(2, replaceVars(lines.get(2), recentDonor));
-                            }
-                            if (lines.size() >= 4) {
-                                sign.setLine(3, replaceVars(lines.get(3), recentDonor));
-                            }
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            if (plugin.isAuthenticated()) {
+                List<MCMarketApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
+                Map<Integer, Set<SignsConfig.DonorSign>> donorSigns = plugin.getSignsConfig().getDonorSigns();
+                for (Integer key : donorSigns.keySet()) {
+                    for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
+                        if (donorSign.getBlock().getState() instanceof Sign) {
+                            Sign sign = (Sign) donorSign.getBlock().getState();
+                            if (key <= recentDonors.size()) {
+                                MCMarketApi.RecentDonor recentDonor = recentDonors.get(key - 1);
+                                List<String> lines = plugin.getLayoutsConfig().getActiveSignsLayout();
+                                if (lines.size() == 1) {
+                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
+                                } else if (lines.size() == 2) {
+                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
+                                    sign.setLine(1, replaceVars(lines.get(1), recentDonor));
+                                } else if (lines.size() == 3) {
+                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
+                                    sign.setLine(1, replaceVars(lines.get(1), recentDonor));
+                                    sign.setLine(2, replaceVars(lines.get(2), recentDonor));
+                                } else if (lines.size() == 4) {
+                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
+                                    sign.setLine(1, replaceVars(lines.get(1), recentDonor));
+                                    sign.setLine(2, replaceVars(lines.get(2), recentDonor));
+                                    sign.setLine(3, replaceVars(lines.get(3), recentDonor));
+                                } else {
+                                    sign.setLine(0, "");
+                                    sign.setLine(1, "");
+                                    sign.setLine(2, "");
+                                    sign.setLine(3, "");
+                                }
 
-                            Block attached = getAttachedBlock(donorSign.getBlock());
-                            if (attached != null) {
-                                Block up = attached.getRelative(BlockFace.UP);
-                                if (up != null && up.getState() instanceof Skull) {
-                                    ProfileUtils.getUniqueId(recentDonor.getUser(), uuid -> {
-                                        if (uuid != null) {
-                                            ProfileUtils.getProfile(uuid.toString(), profile -> {
-                                                if (profile != null && profile.get("skin") != null) {
-                                                    SkullUtils.setSkullWithNonPlayerProfile(profile.get("skin"), recentDonor.getUser(), up);
-                                                } else {
-                                                    SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
-                                                }
-                                            });
-                                        } else {
-                                            SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
-                                        }
-                                    });
+                                Block attached = getAttachedBlock(donorSign.getBlock());
+                                if (attached != null) {
+                                    Block up = attached.getRelative(BlockFace.UP);
+                                    if (up != null && up.getState() instanceof Skull) {
+                                        ProfileUtils.getUniqueId(recentDonor.getUser(), uuid -> {
+                                            if (uuid != null) {
+                                                ProfileUtils.getProfile(uuid.toString(), profile -> {
+                                                    if (profile != null && profile.get("skin") != null) {
+                                                        SkullUtils.setSkullWithNonPlayerProfile(profile.get("skin"), recentDonor.getUser(), up);
+                                                    } else {
+                                                        SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
+                                                    }
+                                                });
+                                            } else {
+                                                SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
+                                            }
+                                        });
+                                    }
+                                }
+                            } else {
+                                List<String> lines = plugin.getLayoutsConfig().getWaitingSignsLayout();
+                                if (lines.size() == 1) {
+                                    sign.setLine(0, lines.get(0));
+                                } else if (lines.size() == 2) {
+                                    sign.setLine(0, lines.get(0));
+                                    sign.setLine(1, lines.get(1));
+                                } else if (lines.size() == 3) {
+                                    sign.setLine(0, lines.get(0));
+                                    sign.setLine(1, lines.get(1));
+                                    sign.setLine(2, lines.get(2));
+                                } else if (lines.size() == 4) {
+                                    sign.setLine(0, lines.get(0));
+                                    sign.setLine(1, lines.get(1));
+                                    sign.setLine(2, lines.get(2));
+                                    sign.setLine(3, lines.get(3));
+                                } else {
+                                    sign.setLine(0, "");
+                                    sign.setLine(1, "");
+                                    sign.setLine(2, "");
+                                    sign.setLine(3, "");
+                                }
+
+                                Block attached = getAttachedBlock(donorSign.getBlock());
+                                if (attached != null) {
+                                    Block up = attached.getRelative(BlockFace.UP);
+                                    if (up != null && up.getState() instanceof Skull) {
+                                        SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), "Steve", up);
+                                    }
                                 }
                             }
+                            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                sign.update();
+                                sign.update(true, true);
+                            });
                         } else {
-                            List<String> lines = plugin.getLayoutsConfig().getWaitingSignsLayout();
-                            if (lines.size() >= 1) {
-                                sign.setLine(0, lines.get(0));
-                            }
-                            if (lines.size() >= 2) {
-                                sign.setLine(1, lines.get(1));
-                            }
-                            if (lines.size() >= 3) {
-                                sign.setLine(2, lines.get(2));
-                            }
-                            if (lines.size() >= 4) {
-                                sign.setLine(3, lines.get(3));
-                            }
-
-                            Block attached = getAttachedBlock(donorSign.getBlock());
-                            if (attached != null) {
-                                Block up = attached.getRelative(BlockFace.UP);
-                                if (up != null && up.getState() instanceof Skull) {
-                                    SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), "Steve", up);
-                                }
-                            }
+                            plugin.getSignsConfig().removeDonorSign(donorSign.getBlock());
                         }
-                        plugin.getServer().getScheduler().runTask(plugin, () -> {
-                            sign.update();
-                            sign.update(true, true);
-                        });
                     }
                 }
             }
-        }
+        });
     }
 
     private Block getAttachedBlock(Block block) {
