@@ -34,8 +34,8 @@ public final class MCMarket extends Plugin {
 
         new BungeeMetrics(this);
         new Updater(this, 44031, pluginURL -> {
-            getLogger().info(I18n.tl("new_version"));
-            getLogger().info(pluginURL);
+            getLogger().warning(I18n.tl("new_version"));
+            getLogger().warning(pluginURL);
         });
     }
 

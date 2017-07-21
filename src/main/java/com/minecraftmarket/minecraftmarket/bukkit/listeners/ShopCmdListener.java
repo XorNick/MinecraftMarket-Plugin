@@ -13,7 +13,7 @@ public class ShopCmdListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
+    public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent e) {
         if (plugin.getMainConfig().isUseGUI()) {
             for (String cmd : plugin.getMainConfig().getShopCommands()) {
                 if (e.getMessage().split(" ")[0].equalsIgnoreCase("/" + cmd)) {

@@ -1,20 +1,21 @@
-package com.minecraftmarket.minecraftmarket.bukkit.configs;
+package com.minecraftmarket.minecraftmarket.nukkit.configs;
 
-import com.minecraftmarket.minecraftmarket.bukkit.utils.config.ConfigFile;
+import cn.nukkit.Server;
+import cn.nukkit.block.Block;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntitySign;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Location;
+import cn.nukkit.plugin.PluginBase;
 import com.minecraftmarket.minecraftmarket.common.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.minecraftmarket.minecraftmarket.nukkit.utils.config.ConfigFile;
 
 import java.util.*;
 
 public class SignsConfig extends ConfigFile {
     private final Map<Integer, Set<DonorSign>> donorSigns = new HashMap<>();
 
-    public SignsConfig(JavaPlugin plugin) {
+    public SignsConfig(PluginBase plugin) {
         super(plugin, "signs");
 
         for (String key : config.getKeys(false)) {
@@ -22,9 +23,9 @@ public class SignsConfig extends ConfigFile {
                 Set<DonorSign> signs = new HashSet<>();
                 for (Location loc : stringsToLocArray(config.getStringList(key))) {
                     if (loc != null) {
-                        Block block = loc.getWorld().getBlockAt(loc);
-                        if (block.getState() instanceof Sign) {
-                            signs.add(new DonorSign(Utils.getInt(key), block));
+                        BlockEntity block = loc.getLevel().getBlockEntity(loc);
+                        if (block != null && block instanceof BlockEntitySign) {
+                            signs.add(new DonorSign(Utils.getInt(key), block.getBlock()));
                         }
                     }
                 }
@@ -114,12 +115,12 @@ public class SignsConfig extends ConfigFile {
         public boolean isFor(Block block) {
             Location loc = this.block.getLocation();
             Location bLoc = block.getLocation();
-            return loc.getBlockX() == bLoc.getBlockX() && loc.getBlockY() == bLoc.getBlockY() && loc.getBlockZ() == bLoc.getBlockZ();
+            return loc.getFloorX() == bLoc.getFloorX() && loc.getFloorY() == bLoc.getFloorY() && loc.getFloorZ() == bLoc.getFloorZ();
         }
     }
 
     private String locToString(Location loc) {
-        return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
+        return loc.getLevel().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
     }
 
     private Location stringToLoc(String str) {
@@ -128,13 +129,16 @@ public class SignsConfig extends ConfigFile {
             return null;
         }
 
-        World w = Bukkit.getServer().getWorld(a[0]);
+        Level w = Server.getInstance().getLevelByName(a[0]);
+        if (w == null) {
+            return null;
+        }
 
         double x = Double.parseDouble(a[1]);
         double y = Double.parseDouble(a[2]);
         double z = Double.parseDouble(a[3]);
 
-        return new Location(w, x, y, z);
+        return new Location(x, y, z, w);
     }
 
     private List<Location> stringsToLocArray(List<String> strings) {

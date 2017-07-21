@@ -100,7 +100,7 @@ public class GSONApi extends MCMarketApi {
                 long id = recentDonor.get("id").getAsLong();
                 String user = recentDonor.get("username").getAsString();
                 String item = recentDonor.get("item").getAsString();
-                String price = String.valueOf(recentDonor.get("price").getAsLong());
+                String price = recentDonor.get("price").getAsString();
                 String currency = recentDonor.get("currency").getAsString();
                 String date = recentDonor.get("date").getAsString();
                 recentDonors.add(new RecentDonor(id, user, item, price, currency, date));

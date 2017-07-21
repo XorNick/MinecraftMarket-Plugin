@@ -2,6 +2,7 @@ package com.minecraftmarket.minecraftmarket.nukkit;
 
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.event.HandlerList;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.utils.TextFormat;
@@ -12,7 +13,11 @@ import com.minecraftmarket.minecraftmarket.common.metrics.NukkitMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import com.minecraftmarket.minecraftmarket.nukkit.commands.*;
 import com.minecraftmarket.minecraftmarket.nukkit.configs.MainConfig;
+import com.minecraftmarket.minecraftmarket.nukkit.configs.SignsConfig;
+import com.minecraftmarket.minecraftmarket.nukkit.configs.SignsLayoutConfig;
+import com.minecraftmarket.minecraftmarket.nukkit.listeners.SignsListener;
 import com.minecraftmarket.minecraftmarket.nukkit.tasks.PurchasesTask;
+import com.minecraftmarket.minecraftmarket.nukkit.tasks.SignsTask;
 import com.minecraftmarket.minecraftmarket.nukkit.utils.updater.Updater;
 
 import java.io.File;
@@ -24,8 +29,11 @@ public final class MCMarket extends PluginBase {
     private final List<Cmd> subCmds = new ArrayList<>();
     private I18n i18n;
     private MainConfig mainConfig;
+    private SignsConfig signsConfig;
+    private SignsLayoutConfig signsLayoutConfig;
     private MCMApi api;
     private boolean authenticated;
+    private SignsTask signsTask;
     private PurchasesTask purchasesTask;
 
     @Override
@@ -37,18 +45,20 @@ public final class MCMarket extends PluginBase {
 
         subCmds.add(new ApiKey(this));
         subCmds.add(new Check(this));
+        subCmds.add(new UpdateSigns(this));
         subCmds.add(new Reload(this));
         subCmds.add(new Version(this));
 
         new NukkitMetrics(this);
         new Updater(this, 44031, pluginURL -> {
-            getLogger().info(I18n.tl("new_version"));
-            getLogger().info(pluginURL);
+            getLogger().warning(I18n.tl("new_version"));
+            getLogger().warning(pluginURL);
         });
     }
 
     @Override
     public void onDisable() {
+        HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTask(this);
         i18n.onDisable();
     }
@@ -78,12 +88,23 @@ public final class MCMarket extends PluginBase {
 
     public void reloadConfigs(Response<Boolean> response) {
         mainConfig = new MainConfig(this);
+        signsConfig = new SignsConfig(this);
+        signsLayoutConfig = new SignsLayoutConfig(this);
 
         i18n.updateLocale(mainConfig.getLang());
 
+        HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTask(this);
 
         setKey(mainConfig.getApiKey(), false, response);
+
+        if (mainConfig.isUseSigns()) {
+            if (signsTask == null) {
+                signsTask = new SignsTask(this);
+            }
+            getServer().getScheduler().scheduleDelayedRepeatingTask(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+            getServer().getPluginManager().registerEvents(new SignsListener(this), this);
+        }
 
         if (purchasesTask == null) {
             purchasesTask = new PurchasesTask(this);
@@ -110,12 +131,28 @@ public final class MCMarket extends PluginBase {
         });
     }
 
+    public MainConfig getMainConfig() {
+        return mainConfig;
+    }
+
+    public SignsConfig getSignsConfig() {
+        return signsConfig;
+    }
+
+    public SignsLayoutConfig getSignsLayoutConfig() {
+        return signsLayoutConfig;
+    }
+
     public MCMarketApi getApi() {
         return api.getMarketApi();
     }
 
     public boolean isAuthenticated() {
         return authenticated;
+    }
+
+    public SignsTask getSignsTask() {
+        return signsTask;
     }
 
     public PurchasesTask getPurchasesTask() {

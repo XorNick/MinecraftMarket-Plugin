@@ -17,8 +17,8 @@ public class MMCmd implements CommandExecutor, TabCompleter {
 
     public MMCmd(MCMarket plugin) {
         subCmds.add(new ApiKey(plugin));
-        subCmds.add(new Signs(plugin));
         subCmds.add(new Check(plugin));
+        subCmds.add(new UpdateSigns(plugin));
         subCmds.add(new Reload(plugin));
         subCmds.add(new Version(plugin));
     }

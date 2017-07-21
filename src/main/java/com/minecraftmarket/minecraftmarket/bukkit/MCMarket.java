@@ -7,7 +7,6 @@ import com.minecraftmarket.minecraftmarket.bukkit.configs.SignsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.inventory.InventoryManager;
 import com.minecraftmarket.minecraftmarket.bukkit.listeners.ShopCmdListener;
 import com.minecraftmarket.minecraftmarket.bukkit.listeners.SignsListener;
-import com.minecraftmarket.minecraftmarket.bukkit.sentry.SentryReporter;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.PurchasesTask;
 import com.minecraftmarket.minecraftmarket.bukkit.tasks.SignsTask;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.inventories.InventoryGUI;
@@ -32,12 +31,6 @@ public final class MCMarket extends JavaPlugin {
     private InventoryManager inventoryManager;
     private SignsTask signsTask;
     private PurchasesTask purchasesTask;
-    private SentryReporter sentryReporter;
-
-    public MCMarket() {
-        sentryReporter = new SentryReporter(this);
-        sentryReporter.start();
-    }
 
     @Override
     public void onEnable() {
@@ -50,8 +43,8 @@ public final class MCMarket extends JavaPlugin {
 
         new BukkitMetrics(this);
         new Updater(this, 44031, pluginURL -> {
-            getLogger().info(I18n.tl("new_version"));
-            getLogger().info(pluginURL);
+            getLogger().warning(I18n.tl("new_version"));
+            getLogger().warning(pluginURL);
         });
     }
 
@@ -60,7 +53,6 @@ public final class MCMarket extends JavaPlugin {
         HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTasks(this);
         i18n.onDisable();
-        sentryReporter.stop();
     }
 
     public void reloadConfigs(Response<Boolean> response) {
@@ -87,7 +79,7 @@ public final class MCMarket extends JavaPlugin {
             if (signsTask == null) {
                 signsTask = new SignsTask(this);
             }
-            getServer().getScheduler().runTaskTimerAsynchronously(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+            getServer().getScheduler().runTaskTimer(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
             getServer().getPluginManager().registerEvents(new SignsListener(this), this);
         }
 

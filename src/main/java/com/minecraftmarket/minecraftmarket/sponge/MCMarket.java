@@ -8,7 +8,11 @@ import com.minecraftmarket.minecraftmarket.common.metrics.SpongeMetrics;
 import com.minecraftmarket.minecraftmarket.common.utils.FileUtils;
 import com.minecraftmarket.minecraftmarket.sponge.commands.MainCMD;
 import com.minecraftmarket.minecraftmarket.sponge.config.MainConfig;
+import com.minecraftmarket.minecraftmarket.sponge.config.SignsConfig;
+import com.minecraftmarket.minecraftmarket.sponge.config.SignsLayoutConfig;
+import com.minecraftmarket.minecraftmarket.sponge.listeners.SignsListener;
 import com.minecraftmarket.minecraftmarket.sponge.tasks.PurchasesTask;
+import com.minecraftmarket.minecraftmarket.sponge.tasks.SignsTask;
 import com.minecraftmarket.minecraftmarket.sponge.utils.updater.Updater;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -31,7 +35,7 @@ import java.nio.file.Path;
 @Plugin(
         id = "minecraftmarket",
         name = "MinecraftMarket",
-        version = "3.3.0",
+        version = "3.3.7",
         description = "The #1 automated Minecraft shopping system for servers",
         authors = "R4G3_BABY",
         url = "https://www.minecraftmarket.com"
@@ -49,8 +53,11 @@ public final class MCMarket {
 
     private I18n i18n;
     private MainConfig mainConfig;
+    private SignsConfig signsConfig;
+    private SignsLayoutConfig signsLayoutConfig;
     private MCMApi api;
     private boolean authenticated;
+    private SignsTask signsTask;
     private PurchasesTask purchasesTask;
 
     @Listener
@@ -75,8 +82,8 @@ public final class MCMarket {
         Sponge.getCommandManager().register(this, mainCMD, "minecraftmarket", "mm");
 
         new Updater(Sponge.getPluginManager().fromInstance(this).orElse(null), 44031, pluginURL -> {
-            logger.info(I18n.tl("new_version"));
-            logger.info(pluginURL);
+            logger.warn(I18n.tl("new_version"));
+            logger.warn(pluginURL);
         });
     }
 
@@ -91,6 +98,8 @@ public final class MCMarket {
 
     public void reloadConfigs(Response<Boolean> response) {
         mainConfig = new MainConfig(baseDirectory.toFile());
+        signsConfig = new SignsConfig(baseDirectory.toFile());
+        signsLayoutConfig = new SignsLayoutConfig(baseDirectory.toFile());
 
         i18n.updateLocale(mainConfig.getLang());
 
@@ -100,6 +109,14 @@ public final class MCMarket {
         }
 
         setKey(mainConfig.getApiKey(), false, response);
+
+        if (mainConfig.isUseSigns()) {
+            if (signsTask == null) {
+                signsTask = new SignsTask(this);
+            }
+            Sponge.getScheduler().createTaskBuilder().delayTicks(20 * 10).intervalTicks(20 * 60 * mainConfig.getCheckInterval()).execute(signsTask).submit(this);
+            Sponge.getEventManager().registerListeners(this, new SignsListener(this));
+        }
 
         if (purchasesTask == null) {
             purchasesTask = new PurchasesTask(this);
@@ -129,12 +146,28 @@ public final class MCMarket {
         }
     }
 
+    public MainConfig getMainConfig() {
+        return mainConfig;
+    }
+
+    public SignsConfig getSignsConfig() {
+        return signsConfig;
+    }
+
+    public SignsLayoutConfig getSignsLayoutConfig() {
+        return signsLayoutConfig;
+    }
+
     public MCMarketApi getApi() {
         return api.getMarketApi();
     }
 
     public boolean isAuthenticated() {
         return authenticated;
+    }
+
+    public SignsTask getSignsTask() {
+        return signsTask;
     }
 
     public PurchasesTask getPurchasesTask() {
