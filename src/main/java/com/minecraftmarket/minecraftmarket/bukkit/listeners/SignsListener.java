@@ -35,7 +35,7 @@ public class SignsListener implements Listener {
                     int order = Utils.getInt(lines.get(1));
                     if (order > 0) {
                         if (plugin.getSignsConfig().addDonorSign(order, e.getBlock())) {
-                            e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_add")));
+                            e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("sign_added")));
                             plugin.getSignsTask().updateSigns();
                         }
                     }
@@ -46,22 +46,22 @@ public class SignsListener implements Listener {
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
-        if (plugin.getSignsConfig().getDonorSignFor(e.getBlock()) != null) {
+        if (plugin.getMainConfig().isUseSigns()) {
             if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
-                if (plugin.getSignsConfig().removeDonorSign(e.getBlock())) {
-                    e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
-                    plugin.getSignsTask().updateSigns();
-                }
-            }
-        } else {
-            for (BlockFace blockFace : blockFaces) {
-                Block block = e.getBlock().getRelative(blockFace);
-                if (block != null && block.getState() instanceof Sign && Objects.equals(getAttachedBlock(block), e.getBlock())) {
-                    if (plugin.getSignsConfig().getDonorSignFor(block) != null) {
-                        if (e.getPlayer().hasPermission("minecraftmarket.signs")) {
-                            if (plugin.getSignsConfig().removeDonorSign(block)) {
-                                e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("cmd_sign_rem")));
-                                plugin.getSignsTask().updateSigns();
+                if (plugin.getSignsConfig().getDonorSignFor(e.getBlock()) != null) {
+                    if (plugin.getSignsConfig().removeDonorSign(e.getBlock())) {
+                        e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("sign_removed")));
+                        plugin.getSignsTask().updateSigns();
+                    }
+                } else {
+                    for (BlockFace blockFace : blockFaces) {
+                        Block block = e.getBlock().getRelative(blockFace);
+                        if (block != null && block.getState() instanceof Sign && Objects.equals(getAttachedBlock(block), e.getBlock())) {
+                            if (plugin.getSignsConfig().getDonorSignFor(block) != null) {
+                                if (plugin.getSignsConfig().removeDonorSign(block)) {
+                                    e.getPlayer().sendMessage(Colors.color(I18n.tl("prefix") + " " + I18n.tl("sign_removed")));
+                                    plugin.getSignsTask().updateSigns();
+                                }
                             }
                         }
                     }
