@@ -123,8 +123,11 @@ public class SignsTask implements Runnable {
                                 });
                             }
                             plugin.getServer().getScheduler().runTask(plugin, () -> {
-                                sign.update();
-                                sign.update(true, true);
+                                try {
+                                    sign.update();
+                                    sign.update(true, true);
+                                } catch (NullPointerException ignored) {
+                                }
                             });
                         } else {
                             plugin.getSignsConfig().removeDonorSign(donorSign.getBlock());
