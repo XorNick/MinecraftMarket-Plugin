@@ -26,7 +26,6 @@ public final class MCMarket extends JavaPlugin {
     private MainConfig mainConfig;
     private LayoutsConfig layoutsConfig;
     private SignsConfig signsConfig;
-    private MCMApi api;
     private boolean authenticated;
     private InventoryManager inventoryManager;
     private SignsTask signsTask;
@@ -98,8 +97,8 @@ public final class MCMarket extends JavaPlugin {
             mainConfig.setApiKey(apiKey);
         }
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON);
-            authenticated = api.getMarketApi().authAPI();
+            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON);
+            authenticated = getApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
             }
@@ -125,7 +124,7 @@ public final class MCMarket extends JavaPlugin {
     }
 
     public MCMarketApi getApi() {
-        return api.getMarketApi();
+        return MCMApi.getMarketApi();
     }
 
     public boolean isAuthenticated() {

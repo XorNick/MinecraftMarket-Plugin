@@ -55,7 +55,6 @@ public final class MCMarket {
     private MainConfig mainConfig;
     private SignsConfig signsConfig;
     private SignsLayoutConfig signsLayoutConfig;
-    private MCMApi api;
     private boolean authenticated;
     private SignsTask signsTask;
     private PurchasesTask purchasesTask;
@@ -134,8 +133,8 @@ public final class MCMarket {
         }
         if (Sponge.isServerAvailable()) {
             Sponge.getScheduler().createTaskBuilder().async().execute(() -> {
-                api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
-                authenticated = api.getMarketApi().authAPI();
+                new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+                authenticated = getApi().authAPI();
                 if (!authenticated) {
                     logger.warn(I18n.tl("invalid_key", "/MM apiKey <key>"));
                 }
@@ -163,7 +162,7 @@ public final class MCMarket {
     }
 
     public MCMarketApi getApi() {
-        return api.getMarketApi();
+        return MCMApi.getMarketApi();
     }
 
     public boolean isAuthenticated() {

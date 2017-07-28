@@ -4,7 +4,7 @@ import com.minecraftmarket.minecraftmarket.common.api.types.GSONApi;
 import com.minecraftmarket.minecraftmarket.common.api.types.JSONApi;
 
 public class MCMApi {
-    private final MCMarketApi marketApi;
+    private static MCMarketApi marketApi;
 
     public MCMApi(String apiKey, boolean debug, ApiType apiType) {
         if (apiType == ApiType.JSON) {
@@ -14,7 +14,7 @@ public class MCMApi {
         }
     }
 
-    public MCMarketApi getMarketApi() {
+    public static MCMarketApi getMarketApi() {
         return marketApi;
     }
 
