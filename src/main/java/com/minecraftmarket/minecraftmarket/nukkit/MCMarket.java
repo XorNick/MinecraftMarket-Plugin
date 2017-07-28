@@ -96,20 +96,24 @@ public final class MCMarket extends PluginBase {
         HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTask(this);
 
-        setKey(mainConfig.getApiKey(), false, response);
-
-        if (mainConfig.isUseSigns()) {
-            if (signsTask == null) {
-                signsTask = new SignsTask(this);
+        setKey(mainConfig.getApiKey(), false, result -> {
+            if (mainConfig.isUseSigns()) {
+                if (signsTask == null) {
+                    signsTask = new SignsTask(MCMarket.this);
+                }
+                getServer().getScheduler().scheduleDelayedRepeatingTask(MCMarket.this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+                getServer().getPluginManager().registerEvents(new SignsListener(MCMarket.this), MCMarket.this);
             }
-            getServer().getScheduler().scheduleDelayedRepeatingTask(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
-            getServer().getPluginManager().registerEvents(new SignsListener(this), this);
-        }
 
-        if (purchasesTask == null) {
-            purchasesTask = new PurchasesTask(this);
-        }
-        getServer().getScheduler().scheduleRepeatingTask(this, purchasesTask, 20 * 60 * mainConfig.getCheckInterval(), true);
+            if (purchasesTask == null) {
+                purchasesTask = new PurchasesTask(MCMarket.this);
+            }
+            getServer().getScheduler().scheduleRepeatingTask(MCMarket.this, purchasesTask, 20 * 60 * mainConfig.getCheckInterval(), true);
+
+            if (response != null) {
+                response.done(result);
+            }
+        });
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {

@@ -52,12 +52,16 @@ public final class MCMarket extends Plugin {
 
         getProxy().getScheduler().cancel(this);
 
-        setKey(mainConfig.getApiKey(), false, response);
+        setKey(mainConfig.getApiKey(), false, result -> {
+            if (purchasesTask == null) {
+                purchasesTask = new PurchasesTask(MCMarket.this);
+            }
+            getProxy().getScheduler().schedule(MCMarket.this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
 
-        if (purchasesTask == null) {
-            purchasesTask = new PurchasesTask(this);
-        }
-        getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
+            if (response != null) {
+                response.done(result);
+            }
+        });
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
