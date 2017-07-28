@@ -55,7 +55,6 @@ public final class MCMarket {
     private MainConfig mainConfig;
     private SignsConfig signsConfig;
     private SignsLayoutConfig signsLayoutConfig;
-    private MCMApi api;
     private boolean authenticated;
     private SignsTask signsTask;
     private PurchasesTask purchasesTask;
@@ -108,20 +107,24 @@ public final class MCMarket {
             task.cancel();
         }
 
-        setKey(mainConfig.getApiKey(), false, response);
-
-        if (mainConfig.isUseSigns()) {
-            if (signsTask == null) {
-                signsTask = new SignsTask(this);
+        setKey(mainConfig.getApiKey(), false, result -> {
+            if (mainConfig.isUseSigns()) {
+                if (signsTask == null) {
+                    signsTask = new SignsTask(MCMarket.this);
+                }
+                Sponge.getScheduler().createTaskBuilder().delayTicks(20 * 10).intervalTicks(20 * 60 * mainConfig.getCheckInterval()).execute(signsTask).submit(MCMarket.this);
+                Sponge.getEventManager().registerListeners(MCMarket.this, new SignsListener(MCMarket.this));
             }
-            Sponge.getScheduler().createTaskBuilder().delayTicks(20 * 10).intervalTicks(20 * 60 * mainConfig.getCheckInterval()).execute(signsTask).submit(this);
-            Sponge.getEventManager().registerListeners(this, new SignsListener(this));
-        }
 
-        if (purchasesTask == null) {
-            purchasesTask = new PurchasesTask(this);
-        }
-        Sponge.getScheduler().createTaskBuilder().async().delayTicks(20 * 10).intervalTicks(20 * 60 * mainConfig.getCheckInterval()).execute(purchasesTask).submit(this);
+            if (purchasesTask == null) {
+                purchasesTask = new PurchasesTask(MCMarket.this);
+            }
+            Sponge.getScheduler().createTaskBuilder().async().delayTicks(20 * 10).intervalTicks(20 * 60 * mainConfig.getCheckInterval()).execute(purchasesTask).submit(MCMarket.this);
+
+            if (response != null) {
+                response.done(result);
+            }
+        });
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
@@ -130,8 +133,8 @@ public final class MCMarket {
         }
         if (Sponge.isServerAvailable()) {
             Sponge.getScheduler().createTaskBuilder().async().execute(() -> {
-                api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
-                authenticated = api.getMarketApi().authAPI();
+                new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+                authenticated = getApi().authAPI();
                 if (!authenticated) {
                     logger.warn(I18n.tl("invalid_key", "/MM apiKey <key>"));
                 }
@@ -159,7 +162,7 @@ public final class MCMarket {
     }
 
     public MCMarketApi getApi() {
-        return api.getMarketApi();
+        return MCMApi.getMarketApi();
     }
 
     public boolean isAuthenticated() {

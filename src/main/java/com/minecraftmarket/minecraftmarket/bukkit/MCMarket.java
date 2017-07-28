@@ -26,7 +26,6 @@ public final class MCMarket extends JavaPlugin {
     private MainConfig mainConfig;
     private LayoutsConfig layoutsConfig;
     private SignsConfig signsConfig;
-    private MCMApi api;
     private boolean authenticated;
     private InventoryManager inventoryManager;
     private SignsTask signsTask;
@@ -65,28 +64,32 @@ public final class MCMarket extends JavaPlugin {
         HandlerList.unregisterAll(this);
         getServer().getScheduler().cancelTasks(this);
 
-        setKey(mainConfig.getApiKey(), false, response);
-
-        if (mainConfig.isUseGUI()) {
-            if (inventoryManager == null) {
-                inventoryManager = new InventoryManager(this);
+        setKey(mainConfig.getApiKey(), false, result -> {
+            if (mainConfig.isUseGUI()) {
+                if (inventoryManager == null) {
+                    inventoryManager = new InventoryManager(MCMarket.this);
+                }
+                getServer().getPluginManager().registerEvents(new ShopCmdListener(MCMarket.this), MCMarket.this);
+                getServer().getPluginManager().registerEvents(InventoryGUI.getListener(), MCMarket.this);
             }
-            getServer().getPluginManager().registerEvents(new ShopCmdListener(this), this);
-            getServer().getPluginManager().registerEvents(InventoryGUI.getListener(), this);
-        }
 
-        if (mainConfig.isUseSigns()) {
-            if (signsTask == null) {
-                signsTask = new SignsTask(this);
+            if (mainConfig.isUseSigns()) {
+                if (signsTask == null) {
+                    signsTask = new SignsTask(MCMarket.this);
+                }
+                getServer().getScheduler().runTaskTimer(MCMarket.this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+                getServer().getPluginManager().registerEvents(new SignsListener(MCMarket.this), MCMarket.this);
             }
-            getServer().getScheduler().runTaskTimer(this, signsTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
-            getServer().getPluginManager().registerEvents(new SignsListener(this), this);
-        }
 
-        if (purchasesTask == null) {
-            purchasesTask = new PurchasesTask(this);
-        }
-        getServer().getScheduler().runTaskTimerAsynchronously(this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+            if (purchasesTask == null) {
+                purchasesTask = new PurchasesTask(MCMarket.this);
+            }
+            getServer().getScheduler().runTaskTimerAsynchronously(MCMarket.this, purchasesTask, 20 * 10, 20 * 60 * mainConfig.getCheckInterval());
+
+            if (response != null) {
+                response.done(result);
+            }
+        });
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
@@ -94,8 +97,8 @@ public final class MCMarket extends JavaPlugin {
             mainConfig.setApiKey(apiKey);
         }
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON);
-            authenticated = api.getMarketApi().authAPI();
+            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON);
+            authenticated = getApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
             }
@@ -121,7 +124,7 @@ public final class MCMarket extends JavaPlugin {
     }
 
     public MCMarketApi getApi() {
-        return api.getMarketApi();
+        return MCMApi.getMarketApi();
     }
 
     public boolean isAuthenticated() {

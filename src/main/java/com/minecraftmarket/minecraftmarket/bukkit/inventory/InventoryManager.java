@@ -44,7 +44,7 @@ public class InventoryManager {
                                 }
                             }
                         } else {
-                            Material icon = Material.matchMaterial(category.getIcon());
+                            Material icon = Material.matchMaterial(item.getIcon());
                             if (icon != null) {
                                 iconItem = new ItemStackBuilder(icon);
                             }

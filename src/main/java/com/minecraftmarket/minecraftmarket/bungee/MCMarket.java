@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 public final class MCMarket extends Plugin {
     private I18n i18n;
     private MainConfig mainConfig;
-    private MCMApi api;
     private boolean authenticated;
     private PurchasesTask purchasesTask;
 
@@ -52,12 +51,16 @@ public final class MCMarket extends Plugin {
 
         getProxy().getScheduler().cancel(this);
 
-        setKey(mainConfig.getApiKey(), false, response);
+        setKey(mainConfig.getApiKey(), false, result -> {
+            if (purchasesTask == null) {
+                purchasesTask = new PurchasesTask(MCMarket.this);
+            }
+            getProxy().getScheduler().schedule(MCMarket.this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
 
-        if (purchasesTask == null) {
-            purchasesTask = new PurchasesTask(this);
-        }
-        getProxy().getScheduler().schedule(this, purchasesTask, 10, 60 * mainConfig.getCheckInterval(), TimeUnit.SECONDS);
+            if (response != null) {
+                response.done(result);
+            }
+        });
     }
 
     public void setKey(String apiKey, boolean save, Response<Boolean> response) {
@@ -65,8 +68,8 @@ public final class MCMarket extends Plugin {
             mainConfig.setApiKey(apiKey);
         }
         getProxy().getScheduler().runAsync(this, () -> {
-            api = new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
-            authenticated = api.getMarketApi().authAPI();
+            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+            authenticated = getApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
             }
@@ -77,7 +80,7 @@ public final class MCMarket extends Plugin {
     }
 
     public MCMarketApi getApi() {
-        return api.getMarketApi();
+        return MCMApi.getMarketApi();
     }
 
     public boolean isAuthenticated() {
