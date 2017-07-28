@@ -34,8 +34,8 @@ public abstract class MCMarketApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
         conn.setUseCaches(false);
-        conn.setConnectTimeout(3000);
-        conn.setReadTimeout(3000);
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
         return new BufferedReader(new InputStreamReader(conn.getInputStream()));
     }
 
