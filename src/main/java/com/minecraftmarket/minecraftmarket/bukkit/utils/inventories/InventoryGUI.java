@@ -3,7 +3,6 @@ package com.minecraftmarket.minecraftmarket.bukkit.utils.inventories;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,7 +93,7 @@ public class InventoryGUI {
                         e.setCancelled(true);
                     }
                     if (current.items.containsKey(e.getSlot())) {
-                        e.setCancelled(current.items.get(e.getSlot()).onClick(e.getWhoClicked(), e.getSlot(), e.getCurrentItem(), e.getClick()));
+                        e.setCancelled(current.items.get(e.getSlot()).onClick((Player) e.getWhoClicked(), e.getSlot(), e.getCurrentItem(), e.getClick()));
                     }
                 }
             }
@@ -126,6 +125,6 @@ public class InventoryGUI {
     }
 
     public interface ItemClick {
-        boolean onClick(HumanEntity player, int slot, ItemStack item, ClickType clickType);
+        boolean onClick(Player player, int slot, ItemStack item, ClickType clickType);
     }
 }
