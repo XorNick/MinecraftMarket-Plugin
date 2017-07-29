@@ -35,7 +35,7 @@ import java.nio.file.Path;
 @Plugin(
         id = "minecraftmarket",
         name = "MinecraftMarket",
-        version = "3.3.7",
+        version = "3.3.9",
         description = "The #1 automated Minecraft shopping system for servers",
         authors = "R4G3_BABY",
         url = "https://www.minecraftmarket.com"
