@@ -58,7 +58,7 @@ public class BungeeMetrics {
     }
 
     private void startSubmitting() {
-        plugin.getProxy().getScheduler().schedule(plugin, this::submitData, 2, 30, TimeUnit.MINUTES);
+        plugin.getProxy().getScheduler().schedule(plugin, this::submitData, 1, 30, TimeUnit.MINUTES);
     }
 
     private void submitData() {

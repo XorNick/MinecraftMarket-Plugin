@@ -87,7 +87,7 @@ public class SpongeMetrics {
                 Task.Builder taskBuilder = scheduler.createTaskBuilder();
                 taskBuilder.execute(() -> submitData()).submit(plugin);
             }
-        }, 1000 * 60 * 5, 1000 * 60 * 30);
+        }, 1000 * 60, 1000 * 60 * 30);
     }
 
     private void submitData() {
