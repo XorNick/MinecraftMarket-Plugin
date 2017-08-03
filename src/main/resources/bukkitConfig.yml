@@ -1,7 +1,7 @@
 # Get your APIKey from the MinecraftMarket panel
 APIKey: randomstring
 # Time between purchases and donors checks in minutes
-CheckInterval: 2
+CheckInterval: 1
 # Ingame GUI shop commands
 ShopCommands:
 - "Shop"
