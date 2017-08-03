@@ -47,14 +47,13 @@ public class PurchasesTask implements Runnable {
                 shouldExecute = false;
             }
             if (shouldExecute) {
-                Sponge.getScheduler().createTaskBuilder().async().delayTicks(command.getDelay() > 0 ? 20 * command.getDelay() : 1).execute(() -> {
-                    boolean canContinue = true;
-                    if (command.getSlots() > 0 && player.isPresent()) {
-                        if (getEmptySlots(player.get().getInventory()) < command.getSlots()) {
-                            canContinue = false;
-                        }
+                if (command.getSlots() > 0 && player.isPresent()) {
+                    if (getEmptySlots(player.get().getInventory()) < command.getSlots()) {
+                        shouldExecute = false;
                     }
-                    if (canContinue) {
+                }
+                if (shouldExecute) {
+                    Sponge.getScheduler().createTaskBuilder().async().delayTicks(command.getDelay() > 0 ? 20 * command.getDelay() : 1).execute(() -> {
                         Sponge.getScheduler().createTaskBuilder().execute(() -> {
                             Optional<CommandSource> commandSource = Sponge.getServer().getConsole().getCommandSource();
                             commandSource.ifPresent(source -> Sponge.getGame().getCommandManager().process(source, command.getCommand()));
@@ -76,9 +75,9 @@ public class PurchasesTask implements Runnable {
                                 }
                             }).submit(plugin);
                         }
-                        plugin.getApi().setExecuted(command.getId(), true);
-                    }
-                }).submit(plugin);
+                    }).submit(plugin);
+                    plugin.getApi().setExecuted(command.getId(), true);
+                }
             }
         }
     }

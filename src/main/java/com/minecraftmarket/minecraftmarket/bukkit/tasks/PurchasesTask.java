@@ -44,14 +44,13 @@ public class PurchasesTask implements Runnable {
             shouldExecute = false;
         }
         if (shouldExecute) {
-            plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-                boolean canContinue = true;
-                if (command.getSlots() > 0 && player != null) {
-                    if (getEmptySlots(player.getInventory()) < command.getSlots()) {
-                        canContinue = false;
-                    }
+            if (command.getSlots() > 0 && player != null) {
+                if (getEmptySlots(player.getInventory()) < command.getSlots()) {
+                    shouldExecute = false;
                 }
-                if (canContinue) {
+            }
+            if (shouldExecute) {
+                plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                     plugin.getServer().getScheduler().runTask(plugin, () -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand()));
                     if (command.isRepeat()) {
                         long period = command.getPeriod() > 0 ? 20 * 60 * 60 * command.getPeriod() : 1;
@@ -68,9 +67,9 @@ public class PurchasesTask implements Runnable {
                             }
                         }.runTaskTimerAsynchronously(plugin, period, period);
                     }
-                    plugin.getApi().setExecuted(command.getId(), true);
-                }
-            }, command.getDelay() > 0 ? 20 * command.getDelay() : 1);
+                }, command.getDelay() > 0 ? 20 * command.getDelay() : 1);
+                plugin.getApi().setExecuted(command.getId(), true);
+            }
         }
     }
 

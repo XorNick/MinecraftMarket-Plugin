@@ -60,8 +60,8 @@ public class PurchasesTask implements Runnable {
                         }
                     }.schedule(plugin, period, period, TimeUnit.SECONDS);
                 }
-                plugin.getApi().setExecuted(command.getId(), true);
             }, command.getDelay() > 0 ? command.getDelay() : 1, TimeUnit.SECONDS);
+            plugin.getApi().setExecuted(command.getId(), true);
         }
     }
 }
