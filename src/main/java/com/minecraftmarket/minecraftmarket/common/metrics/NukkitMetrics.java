@@ -57,7 +57,7 @@ public class NukkitMetrics {
                 }
                 plugin.getServer().getScheduler().scheduleTask(plugin, () -> submitData());
             }
-        }, 1000 * 60 * 5, 1000 * 60 * 30);
+        }, 1000 * 60, 1000 * 60 * 30);
     }
 
     private void submitData() {
