@@ -11,5 +11,5 @@ MinecraftMarket is a web based shopping platform that allows you as a Minecraft 
 ## Our Forum Posts
 [Spigot](https://www.spigotmc.org/resources/44031)\
 [Bukkit](https://dev.bukkit.org/projects/minecraft-market-free-donation)\
-[Nukkit](https://forums.nukkit.io/resources/140/)\
+[Nukkit](https://forums.nukkit.io/resources/140)\
 [Sponge](https://forums.spongepowered.org/t/20149)
