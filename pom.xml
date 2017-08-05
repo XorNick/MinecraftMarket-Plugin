@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
-    <description>The #1 automated Minecraft shopping system for servers</description>
+    <description>The #1 webstore platform for Minecraft servers</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
