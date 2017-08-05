@@ -36,7 +36,7 @@ import java.nio.file.Path;
         id = "minecraftmarket",
         name = "MinecraftMarket",
         version = "3.3.9",
-        description = "The #1 automated Minecraft shopping system for servers",
+        description = "The #1 webstore platform for Minecraft servers",
         authors = "R4G3_BABY",
         url = "https://www.minecraftmarket.com"
 )
