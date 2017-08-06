@@ -6,7 +6,7 @@ Plugin Stats: [https://bstats.org/plugin/bukkit/MinecraftMarket](https://bstats.
 License: [MIT](https://github.com/MinecraftMarket/MinecraftMarket-Plugin/blob/master/LICENSE)
 
 ## What is MinecraftMarket?
-MinecraftMarket is a web based shopping platform that allows you as a Minecraft server owner to sell collections of in-game commands to players.​
+MinecraftMarket is a web based shopping platform that allows you as a Minecraft server owner to sell collections of in-game aesthetics to players.​
 
 ## Our Forum Posts
 [Spigot](https://www.spigotmc.org/resources/44031)\
