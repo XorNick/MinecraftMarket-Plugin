@@ -9,8 +9,18 @@ import cn.nukkit.scheduler.NukkitRunnable;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import com.minecraftmarket.minecraftmarket.nukkit.MCMarket;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PurchasesTask extends AsyncTask {
     private final MCMarket plugin;
+    private final List<MCMarketApi.CommandType> commandTypes = Arrays.asList(
+            MCMarketApi.CommandType.EXPIRY,
+            MCMarketApi.CommandType.CHARGEBACK,
+            MCMarketApi.CommandType.REFUND,
+            MCMarketApi.CommandType.INITIAL,
+            MCMarketApi.CommandType.RENEWAL
+    );
 
     public PurchasesTask(MCMarket plugin) {
         this.plugin = plugin;
@@ -23,29 +33,23 @@ public class PurchasesTask extends AsyncTask {
 
     public void updatePurchases() {
         if (plugin.isAuthenticated()) {
-            for (MCMarketApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
-                for (MCMarketApi.Command command : expiredPurchase.getCommands()) {
-                    runCommand(expiredPurchase.getUser(), command);
-                }
-            }
-
-            for (MCMarketApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
-                for (MCMarketApi.Command command : pendingPurchase.getCommands()) {
-                    runCommand(pendingPurchase.getUser(), command);
+            for (MCMarketApi.CommandType commandType : commandTypes) {
+                for (MCMarketApi.Command command : plugin.getApi().getCommands(MCMarketApi.CommandStatus.NOT_EXECUTED, commandType)) {
+                    runCommand(command);
                 }
             }
         }
     }
 
-    private void runCommand(String user, MCMarketApi.Command command) {
-        Player player = Server.getInstance().getPlayerExact(user);
+    private void runCommand(MCMarketApi.Command command) {
+        Player player = Server.getInstance().getPlayerExact(command.getPlayer().getName());
         boolean shouldExecute = true;
-        if (command.isOnline() && (player == null || !player.isOnline())) {
+        if (command.isRequiredOnline() && (player == null || !player.isOnline())) {
             shouldExecute = false;
         }
         if (shouldExecute) {
-            if (command.getSlots() > 0 && player != null) {
-                if (getEmptySlots(player.getInventory()) < command.getSlots()) {
+            if (command.getRequiredSlots() > 0 && player != null) {
+                if (getEmptySlots(player.getInventory()) < command.getRequiredSlots()) {
                     shouldExecute = false;
                 }
             }
@@ -55,7 +59,7 @@ public class PurchasesTask extends AsyncTask {
                     public void onRun() {
                         plugin.getServer().getScheduler().scheduleTask(plugin, () -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand()));
                         if (command.isRepeat()) {
-                            long period = command.getPeriod() > 0 ? 20 * 60 * 60 * command.getPeriod() : 1;
+                            long period = command.getRepeatPeriod() > 0 ? 20 * 60 * 60 * command.getRepeatPeriod() : 1;
                             new NukkitRunnable() {
                                 int executed = 0;
 
@@ -64,7 +68,7 @@ public class PurchasesTask extends AsyncTask {
                                     plugin.getServer().getScheduler().scheduleTask(plugin, () -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), command.getCommand()));
                                     executed++;
 
-                                    if (executed >= command.getCycles()) {
+                                    if (executed >= command.getRepeatCycles()) {
                                         cancel();
                                     }
                                 }
@@ -72,7 +76,7 @@ public class PurchasesTask extends AsyncTask {
                         }
                     }
                 }, command.getDelay() > 0 ? (int) (20 * command.getDelay()) : 1, true);
-                plugin.getApi().setExecuted(command.getId(), true);
+                plugin.getApi().setExecuted(command.getId());
             }
         }
     }

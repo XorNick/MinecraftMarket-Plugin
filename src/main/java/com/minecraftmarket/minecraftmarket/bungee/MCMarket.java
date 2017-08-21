@@ -68,7 +68,7 @@ public final class MCMarket extends Plugin {
             mainConfig.setApiKey(apiKey);
         }
         getProxy().getScheduler().runAsync(this, () -> {
-            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON, getUserAgent());
             authenticated = getApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
@@ -113,5 +113,9 @@ public final class MCMarket extends Plugin {
             }
         }
         return langFolder;
+    }
+
+    private String getUserAgent() {
+        return getDescription().getName() + "-v" + getDescription().getVersion() + "-BUNGEE";
     }
 }

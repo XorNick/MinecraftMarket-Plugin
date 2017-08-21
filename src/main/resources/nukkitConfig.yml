@@ -5,7 +5,7 @@ CheckInterval: 1
 # Enable recent donors signs
 UseSigns: true
 # Date format to use on recent donors signs
-DateFormat: dd-MM-yyyy
+DateFormat: yyyy-MM-dd
 # Language to use on messages language files located at langs folder
 Lang: en
 # Log errors no need to activate this

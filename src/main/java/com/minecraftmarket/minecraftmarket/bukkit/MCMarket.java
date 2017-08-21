@@ -1,9 +1,10 @@
 package com.minecraftmarket.minecraftmarket.bukkit;
 
 import com.minecraftmarket.minecraftmarket.bukkit.commands.MMCmd;
-import com.minecraftmarket.minecraftmarket.bukkit.configs.LayoutsConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.configs.GUILayoutConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.MainConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.SignsConfig;
+import com.minecraftmarket.minecraftmarket.bukkit.configs.SignsLayoutConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.inventory.InventoryManager;
 import com.minecraftmarket.minecraftmarket.bukkit.listeners.ShopCmdListener;
 import com.minecraftmarket.minecraftmarket.bukkit.listeners.SignsListener;
@@ -24,8 +25,9 @@ import java.io.File;
 public final class MCMarket extends JavaPlugin {
     private I18n i18n;
     private MainConfig mainConfig;
-    private LayoutsConfig layoutsConfig;
     private SignsConfig signsConfig;
+    private GUILayoutConfig guiLayoutConfig;
+    private SignsLayoutConfig signsLayoutConfig;
     private boolean authenticated;
     private InventoryManager inventoryManager;
     private SignsTask signsTask;
@@ -56,8 +58,9 @@ public final class MCMarket extends JavaPlugin {
 
     public void reloadConfigs(Response<Boolean> response) {
         mainConfig = new MainConfig(this);
-        layoutsConfig = new LayoutsConfig(this);
         signsConfig = new SignsConfig(this);
+        guiLayoutConfig = new GUILayoutConfig(this);
+        signsLayoutConfig = new SignsLayoutConfig(this);
 
         i18n.updateLocale(mainConfig.getLang());
 
@@ -97,7 +100,7 @@ public final class MCMarket extends JavaPlugin {
             mainConfig.setApiKey(apiKey);
         }
         getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON);
+            new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.JSON, getUserAgent());
             authenticated = getApi().authAPI();
             if (!authenticated) {
                 getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
@@ -115,12 +118,16 @@ public final class MCMarket extends JavaPlugin {
         return mainConfig;
     }
 
-    public LayoutsConfig getLayoutsConfig() {
-        return layoutsConfig;
-    }
-
     public SignsConfig getSignsConfig() {
         return signsConfig;
+    }
+
+    public GUILayoutConfig getGUILayoutConfig() {
+        return guiLayoutConfig;
+    }
+
+    public SignsLayoutConfig getSignsLayoutConfig() {
+        return signsLayoutConfig;
     }
 
     public MCMarketApi getApi() {
@@ -161,5 +168,9 @@ public final class MCMarket extends JavaPlugin {
             }
         }
         return langFolder;
+    }
+
+    private String getUserAgent() {
+        return getDescription().getName() + "-v" + getDescription().getVersion() + "-BUKKIT";
     }
 }

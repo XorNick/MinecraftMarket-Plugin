@@ -11,7 +11,7 @@ UseGUI: true
 # Enable recent donors signs
 UseSigns: true
 # Date format to use on recent donors signs
-DateFormat: dd-MM-yyyy
+DateFormat: yyyy-MM-dd
 # Default skin to use on heads when account is cracked or request fails
 DefaultHeadSkin: https://textures.minecraft.net/texture/5163dafac1d91a8c91db576caac784336791a6e18d8f7f62778fc47bf146b6
 # Language to use on messages language files located at langs folder
