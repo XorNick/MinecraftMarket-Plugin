@@ -6,7 +6,7 @@
 
     <groupId>com.minecraftmarket</groupId>
     <artifactId>MinecraftMarket</artifactId>
-    <version>3.3.9</version>
+    <version>3.4.1</version>
     <packaging>jar</packaging>
 
     <name>MinecraftMarket</name>
