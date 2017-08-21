@@ -26,7 +26,7 @@ public class SignsTask implements Runnable {
 
     public SignsTask(MCMarket plugin) {
         this.plugin = plugin;
-        this.mcmDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.mcmDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         this.dateFormat = new SimpleDateFormat(plugin.getMainConfig().getDateFormat());
     }
 
@@ -38,33 +38,33 @@ public class SignsTask implements Runnable {
     public void updateSigns() {
         Sponge.getScheduler().createTaskBuilder().async().execute(() -> {
             if (plugin.isAuthenticated()) {
-                List<MCMarketApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
+                List<MCMarketApi.Purchase> purchases = plugin.getApi().getPurchases();
                 Map<Integer, Set<SignsConfig.DonorSign>> donorSigns = plugin.getSignsConfig().getDonorSigns();
                 for (Integer key : donorSigns.keySet()) {
                     for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
                         if (donorSign.getLocation().getTileEntity().isPresent() && donorSign.getLocation().getTileEntity().get() instanceof Sign) {
                             Sign sign = (Sign) donorSign.getLocation().getTileEntity().get();
-                            if (key <= recentDonors.size()) {
-                                MCMarketApi.RecentDonor recentDonor = recentDonors.get(key - 1);
-                                List<String> lines = plugin.getSignsLayoutConfig().getActiveSignsLayout();
+                            if (key <= purchases.size()) {
+                                MCMarketApi.Purchase purchase = purchases.get(key - 1);
+                                List<String> lines = plugin.getSignsLayoutConfig().getActiveLayout();
                                 Optional<SignData> optionalSignData = sign.get(SignData.class);
                                 if (optionalSignData.isPresent()) {
                                     SignData signData = optionalSignData.get();
                                     if (signData.getValue(Keys.SIGN_LINES).isPresent()) {
                                         if (lines.size() == 1) {
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), recentDonor)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), purchase)));
                                         } else if (lines.size() == 2) {
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), recentDonor)));
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, replaceVars(lines.get(1), recentDonor)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), purchase)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, replaceVars(lines.get(1), purchase)));
                                         } else if (lines.size() == 3) {
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), recentDonor)));
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, replaceVars(lines.get(1), recentDonor)));
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, replaceVars(lines.get(2), recentDonor)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), purchase)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, replaceVars(lines.get(1), purchase)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, replaceVars(lines.get(2), purchase)));
                                         } else if (lines.size() == 4) {
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), recentDonor)));
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, replaceVars(lines.get(1), recentDonor)));
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, replaceVars(lines.get(2), recentDonor)));
-                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, replaceVars(lines.get(3), recentDonor)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, replaceVars(lines.get(0), purchase)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, replaceVars(lines.get(1), purchase)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(2, replaceVars(lines.get(2), purchase)));
+                                            signData.set(signData.getValue(Keys.SIGN_LINES).get().set(3, replaceVars(lines.get(3), purchase)));
                                         } else {
                                             signData.set(signData.getValue(Keys.SIGN_LINES).get().set(0, Text.of("")));
                                             signData.set(signData.getValue(Keys.SIGN_LINES).get().set(1, Text.of("")));
@@ -75,7 +75,7 @@ public class SignsTask implements Runnable {
                                     }
                                 }
                             } else {
-                                List<String> lines = plugin.getSignsLayoutConfig().getWaitingSignsLayout();
+                                List<String> lines = plugin.getSignsLayoutConfig().getWaitingLayout();
                                 Optional<SignData> optionalSignData = sign.get(SignData.class);
                                 if (optionalSignData.isPresent()) {
                                     SignData signData = optionalSignData.get();
@@ -114,14 +114,14 @@ public class SignsTask implements Runnable {
         }).submit(plugin);
     }
 
-    private Text replaceVars(String msg, MCMarketApi.RecentDonor recentDonor) {
-        msg = msg.replace("{donor_id}", "" + recentDonor.getId())
-                .replace("{donor_name}", recentDonor.getUser())
-                .replace("{donor_item}", recentDonor.getItem())
-                .replace("{donor_price}", recentDonor.getPrice())
-                .replace("{donor_currency}", recentDonor.getCurrency());
+    private Text replaceVars(String msg, MCMarketApi.Purchase purchase) {
+        msg = msg.replace("{purchase_id}", "" + purchase.getId())
+                .replace("{purchase_name}", purchase.getName())
+                .replace("{purchase_price}", purchase.getPrice())
+                .replace("{purchase_currency}", purchase.getCurrency().getCode())
+                .replace("{player_name}", purchase.getPlayer().getName());
         try {
-            msg = msg.replace("{donor_date}", dateFormat.format(mcmDateFormat.parse(recentDonor.getDate())));
+            msg = msg.replace("{purchase_date}", dateFormat.format(mcmDateFormat.parse(purchase.getDate())));
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -1,8 +1,8 @@
-package com.minecraftmarket.minecraftmarket.nukkit.configs;
+package com.minecraftmarket.minecraftmarket.bukkit.configs;
 
-import cn.nukkit.plugin.PluginBase;
-import com.minecraftmarket.minecraftmarket.nukkit.utils.chat.Colors;
-import com.minecraftmarket.minecraftmarket.nukkit.utils.config.ConfigFile;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.chat.Colors;
+import com.minecraftmarket.minecraftmarket.bukkit.utils.config.ConfigFile;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class SignsLayoutConfig extends ConfigFile {
     private final List<String> activeLayout;
     private final List<String> waitingLayout;
 
-    public SignsLayoutConfig(PluginBase plugin) {
+    public SignsLayoutConfig(JavaPlugin plugin) {
         super(plugin, "signsLayout");
 
         activeLayout = Colors.colorList(config.getStringList("Active"));

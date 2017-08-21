@@ -1,12 +1,13 @@
-# Signs layout
-SignsLayout:
-  Active:
-  - "&9{donor_name}"
-  - "&b{donor_item}"
-  - "&e{donor_price}{donor_currency}"
-  - "&f{donor_date}"
-  Waiting:
-  - "&cWaiting for $"
-  - ""
-  - ""
-  - ""
+# Active signs layout
+Active:
+- "&9{player_name}"
+- "&b{purchase_name}"
+- "&e{purchase_price}{purchase_currency}"
+- "&f{purchase_date}"
+
+# Waiting signs layout
+Waiting:
+- "&cWaiting for $"
+- ""
+- ""
+- ""

@@ -79,6 +79,10 @@ public class InventoryGUI {
         return inventory.getItem(slot);
     }
 
+    public int getSize() {
+        return inventory.getSize();
+    }
+
     public void clear() {
         inventory.clear();
     }

@@ -7,10 +7,14 @@ public class MCMApi {
     private static MCMarketApi marketApi;
 
     public MCMApi(String apiKey, boolean debug, ApiType apiType) {
+        this(apiKey, debug, apiType, null);
+    }
+
+    public MCMApi(String apiKey, boolean debug, ApiType apiType, String userAgent) {
         if (apiType == ApiType.JSON) {
-            marketApi = new JSONApi(apiKey, debug);
+            marketApi = new JSONApi(apiKey, userAgent, debug);
         } else {
-            marketApi = new GSONApi(apiKey, debug);
+            marketApi = new GSONApi(apiKey, userAgent, debug);
         }
     }
 

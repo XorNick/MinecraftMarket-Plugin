@@ -3,7 +3,6 @@ package com.minecraftmarket.minecraftmarket.bukkit.tasks;
 import com.minecraftmarket.minecraftmarket.bukkit.MCMarket;
 import com.minecraftmarket.minecraftmarket.bukkit.configs.SignsConfig;
 import com.minecraftmarket.minecraftmarket.bukkit.utils.items.SkullUtils;
-import com.minecraftmarket.minecraftmarket.bukkit.utils.mojang.ProfileUtils;
 import com.minecraftmarket.minecraftmarket.common.api.MCMarketApi;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -26,7 +25,7 @@ public class SignsTask implements Runnable {
 
     public SignsTask(MCMarket plugin) {
         this.plugin = plugin;
-        this.mcmDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.mcmDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         this.dateFormat = new SimpleDateFormat(plugin.getMainConfig().getDateFormat());
     }
 
@@ -38,29 +37,29 @@ public class SignsTask implements Runnable {
     public void updateSigns() {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             if (plugin.isAuthenticated()) {
-                List<MCMarketApi.RecentDonor> recentDonors = plugin.getApi().getRecentDonors();
+                List<MCMarketApi.Purchase> purchases = plugin.getApi().getPurchases();
                 Map<Integer, Set<SignsConfig.DonorSign>> donorSigns = plugin.getSignsConfig().getDonorSigns();
                 for (Integer key : donorSigns.keySet()) {
                     for (SignsConfig.DonorSign donorSign : donorSigns.get(key)) {
                         if (donorSign.getBlock().getState() instanceof Sign) {
                             Sign sign = (Sign) donorSign.getBlock().getState();
-                            if (key <= recentDonors.size()) {
-                                MCMarketApi.RecentDonor recentDonor = recentDonors.get(key - 1);
-                                List<String> lines = plugin.getLayoutsConfig().getActiveSignsLayout();
+                            if (key <= purchases.size()) {
+                                MCMarketApi.Purchase purchase = purchases.get(key - 1);
+                                List<String> lines = plugin.getSignsLayoutConfig().getActiveLayout();
                                 if (lines.size() == 1) {
-                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
+                                    sign.setLine(0, replaceVars(lines.get(0), purchase));
                                 } else if (lines.size() == 2) {
-                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
-                                    sign.setLine(1, replaceVars(lines.get(1), recentDonor));
+                                    sign.setLine(0, replaceVars(lines.get(0), purchase));
+                                    sign.setLine(1, replaceVars(lines.get(1), purchase));
                                 } else if (lines.size() == 3) {
-                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
-                                    sign.setLine(1, replaceVars(lines.get(1), recentDonor));
-                                    sign.setLine(2, replaceVars(lines.get(2), recentDonor));
+                                    sign.setLine(0, replaceVars(lines.get(0), purchase));
+                                    sign.setLine(1, replaceVars(lines.get(1), purchase));
+                                    sign.setLine(2, replaceVars(lines.get(2), purchase));
                                 } else if (lines.size() == 4) {
-                                    sign.setLine(0, replaceVars(lines.get(0), recentDonor));
-                                    sign.setLine(1, replaceVars(lines.get(1), recentDonor));
-                                    sign.setLine(2, replaceVars(lines.get(2), recentDonor));
-                                    sign.setLine(3, replaceVars(lines.get(3), recentDonor));
+                                    sign.setLine(0, replaceVars(lines.get(0), purchase));
+                                    sign.setLine(1, replaceVars(lines.get(1), purchase));
+                                    sign.setLine(2, replaceVars(lines.get(2), purchase));
+                                    sign.setLine(3, replaceVars(lines.get(3), purchase));
                                 } else {
                                     sign.setLine(0, "");
                                     sign.setLine(1, "");
@@ -73,24 +72,16 @@ public class SignsTask implements Runnable {
                                     if (attached != null) {
                                         Block up = attached.getRelative(BlockFace.UP);
                                         if (up != null && up.getState() instanceof Skull) {
-                                            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> ProfileUtils.getUniqueId(recentDonor.getUser(), uuid -> {
-                                                if (uuid != null) {
-                                                    ProfileUtils.getProfile(uuid.toString(), profile -> plugin.getServer().getScheduler().runTask(plugin, () -> {
-                                                        if (profile != null && profile.get("skin") != null) {
-                                                            SkullUtils.setSkullWithNonPlayerProfile(profile.get("skin"), recentDonor.getUser(), up);
-                                                        } else {
-                                                            SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up);
-                                                        }
-                                                    }));
-                                                } else {
-                                                    plugin.getServer().getScheduler().runTask(plugin, () -> SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), recentDonor.getUser(), up));
-                                                }
-                                            }));
+                                            if (purchase.getPlayer().getSkinUrl().length() > 0) {
+                                                SkullUtils.setSkullWithNonPlayerProfile(purchase.getPlayer().getSkinUrl(), purchase.getPlayer().getName(), up);
+                                            } else {
+                                                SkullUtils.setSkullWithNonPlayerProfile(plugin.getMainConfig().getDefaultHeadSkin(), purchase.getPlayer().getName(), up);
+                                            }
                                         }
                                     }
                                 });
                             } else {
-                                List<String> lines = plugin.getLayoutsConfig().getWaitingSignsLayout();
+                                List<String> lines = plugin.getSignsLayoutConfig().getWaitingLayout();
                                 if (lines.size() == 1) {
                                     sign.setLine(0, lines.get(0));
                                 } else if (lines.size() == 2) {
@@ -146,14 +137,14 @@ public class SignsTask implements Runnable {
         return null;
     }
 
-    private String replaceVars(String msg, MCMarketApi.RecentDonor recentDonor) {
-        msg = msg.replace("{donor_id}", "" + recentDonor.getId())
-                .replace("{donor_name}", recentDonor.getUser())
-                .replace("{donor_item}", recentDonor.getItem())
-                .replace("{donor_price}", recentDonor.getPrice())
-                .replace("{donor_currency}", recentDonor.getCurrency());
+    private String replaceVars(String msg, MCMarketApi.Purchase purchase) {
+        msg = msg.replace("{purchase_id}", "" + purchase.getId())
+                .replace("{purchase_name}", purchase.getName())
+                .replace("{purchase_price}", purchase.getPrice())
+                .replace("{purchase_currency}", purchase.getCurrency().getCode())
+                .replace("{player_name}", purchase.getPlayer().getName());
         try {
-            msg = msg.replace("{donor_date}", dateFormat.format(mcmDateFormat.parse(recentDonor.getDate())));
+            msg = msg.replace("{purchase_date}", dateFormat.format(mcmDateFormat.parse(purchase.getDate())));
         } catch (ParseException e) {
             e.printStackTrace();
         }

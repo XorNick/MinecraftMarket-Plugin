@@ -8,11 +8,20 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
 import org.spongepowered.api.scheduler.Task;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class PurchasesTask implements Runnable {
     private final MCMarket plugin;
+    private final List<MCMarketApi.CommandType> commandTypes = Arrays.asList(
+            MCMarketApi.CommandType.EXPIRY,
+            MCMarketApi.CommandType.CHARGEBACK,
+            MCMarketApi.CommandType.REFUND,
+            MCMarketApi.CommandType.INITIAL,
+            MCMarketApi.CommandType.RENEWAL
+    );
 
     public PurchasesTask(MCMarket plugin) {
         this.plugin = plugin;
@@ -25,30 +34,24 @@ public class PurchasesTask implements Runnable {
 
     public void updatePurchases() {
         if (plugin.isAuthenticated()) {
-            for (MCMarketApi.ExpiredPurchase expiredPurchase : plugin.getApi().getExpiredPurchases()) {
-                for (MCMarketApi.Command command : expiredPurchase.getCommands()) {
-                    runCommand(expiredPurchase.getUser(), command);
-                }
-            }
-
-            for (MCMarketApi.PendingPurchase pendingPurchase : plugin.getApi().getPendingPurchases()) {
-                for (MCMarketApi.Command command : pendingPurchase.getCommands()) {
-                    runCommand(pendingPurchase.getUser(), command);
+            for (MCMarketApi.CommandType commandType : commandTypes) {
+                for (MCMarketApi.Command command : plugin.getApi().getCommands(MCMarketApi.CommandStatus.NOT_EXECUTED, commandType)) {
+                    runCommand(command);
                 }
             }
         }
     }
 
-    private void runCommand(String user, MCMarketApi.Command command) {
+    private void runCommand(MCMarketApi.Command command) {
         if (Sponge.isServerAvailable()) {
-            Optional<Player> player = Sponge.getServer().getPlayer(user);
+            Optional<Player> player = Sponge.getServer().getPlayer(command.getPlayer().getName());
             boolean shouldExecute = true;
-            if (command.isOnline() && player.isPresent()) {
+            if (command.isRequiredOnline() && player.isPresent()) {
                 shouldExecute = false;
             }
             if (shouldExecute) {
-                if (command.getSlots() > 0 && player.isPresent()) {
-                    if (getEmptySlots(player.get().getInventory()) < command.getSlots()) {
+                if (command.getRequiredSlots() > 0 && player.isPresent()) {
+                    if (getEmptySlots(player.get().getInventory()) < command.getRequiredSlots()) {
                         shouldExecute = false;
                     }
                 }
@@ -60,7 +63,7 @@ public class PurchasesTask implements Runnable {
                         }).submit(plugin);
 
                         if (command.isRepeat()) {
-                            long period = command.getPeriod() > 0 ? 20 * 60 * 60 * command.getPeriod() : 1;
+                            long period = command.getRepeatPeriod() > 0 ? 20 * 60 * 60 * command.getRepeatPeriod() : 1;
                             Sponge.getScheduler().createTaskBuilder().intervalTicks(period).execute(new Consumer<Task>() {
                                 int executed = 0;
                                 @Override
@@ -69,14 +72,14 @@ public class PurchasesTask implements Runnable {
                                     commandSource.ifPresent(source -> Sponge.getGame().getCommandManager().process(source, command.getCommand()));
                                     executed++;
 
-                                    if (executed >= command.getCycles()) {
+                                    if (executed >= command.getRepeatCycles()) {
                                         task.cancel();
                                     }
                                 }
                             }).submit(plugin);
                         }
                     }).submit(plugin);
-                    plugin.getApi().setExecuted(command.getId(), true);
+                    plugin.getApi().setExecuted(command.getId());
                 }
             }
         }
