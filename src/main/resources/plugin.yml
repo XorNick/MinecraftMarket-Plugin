@@ -1,7 +1,7 @@
 name: ${project.name}
 version: ${project.version}
 main: com.minecraftmarket.minecraftmarket.bukkit.MCMarket
-softdepend: [Multiverse-Core]
+softdepend: [Multiverse-Core, MultiWorld]
 authors: [R4G3_BABY, NLThijs48]
 description: ${project.description}
 website: ${project.url}

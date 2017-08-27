@@ -122,7 +122,7 @@ public final class MCMarket extends PluginBase {
         getServer().getScheduler().scheduleAsyncTask(this, new AsyncTask() {
             @Override
             public void onRun() {
-                new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+                new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON, getUserAgent());
                 authenticated = getApi().authAPI();
                 if (!authenticated) {
                     getLogger().warning(I18n.tl("invalid_key", "/MM apiKey <key>"));
@@ -192,5 +192,9 @@ public final class MCMarket extends PluginBase {
             }
         }
         return langFolder;
+    }
+
+    private String getUserAgent() {
+        return getDescription().getName() + "-v" + getDescription().getVersion() + "-NUKKIT";
     }
 }

@@ -24,6 +24,7 @@ import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 
@@ -31,12 +32,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @Plugin(
         id = "minecraftmarket",
         name = "MinecraftMarket",
-        version = "3.3.9",
-        description = "The #1 automated Minecraft shopping system for servers",
+        version = "3.4.1",
+        description = "The #1 webstore platform for Minecraft servers",
         authors = "R4G3_BABY",
         url = "https://www.minecraftmarket.com"
 )
@@ -133,7 +135,7 @@ public final class MCMarket {
         }
         if (Sponge.isServerAvailable()) {
             Sponge.getScheduler().createTaskBuilder().async().execute(() -> {
-                new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON);
+                new MCMApi(apiKey, mainConfig.isDebug(), MCMApi.ApiType.GSON, getUserAgent());
                 authenticated = getApi().authAPI();
                 if (!authenticated) {
                     logger.warn(I18n.tl("invalid_key", "/MM apiKey <key>"));
@@ -199,5 +201,10 @@ public final class MCMarket {
             }
         }
         return langFolder;
+    }
+
+    private String getUserAgent() {
+        Optional<PluginContainer> plugin = Sponge.getPluginManager().fromInstance(this);
+        return plugin.map(pluginContainer -> pluginContainer.getName() + "-v" + pluginContainer.getVersion() + "-SPONGE").orElse(null);
     }
 }
